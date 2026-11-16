@@ -602,7 +602,7 @@ export function UpcomingClubEvents({
       setEditingEventId(null);
       setFeedback(
         res.noticesSent > 0
-          ? `Event updated (${res.changeSummary}). Dispatched ${res.noticesSent} schedule-change email notice(s).`
+          ? `Event updated (${res.changeSummary}). Recorded ${res.noticesSent} schedule-change email notice(s); check delivery status in Email Reminders.`
           : `Event details saved for "${ev.title}".`
       );
       await onRefresh();
@@ -1103,7 +1103,7 @@ export function UpcomingClubEvents({
                           <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                           <span>
                             {(ev.reminderSentCount ?? 0) > 0
-                              ? `24h email reminder sent (${ev.reminderSentCount})`
+                              ? `24h reminder records (${ev.reminderSentCount})`
                               : '24h email reminder scheduled'}
                           </span>
                         </span>

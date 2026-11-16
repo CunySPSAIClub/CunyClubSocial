@@ -156,7 +156,7 @@ export function EventRemindersView({ onRefreshParent }: EventRemindersViewProps)
         { method: 'POST' }
       );
       setFeedback(
-        `Sent ${res.dispatchedCount} reminder email(s) for "${slot.eventTitle}" to active ${slot.clubShortCode} members.`
+        `Recorded ${res.dispatchedCount} reminder attempt(s) for "${slot.eventTitle}". Check individual delivery statuses below.`
       );
       await loadReminders();
       if (onRefreshParent) await onRefreshParent();
@@ -659,7 +659,7 @@ export function EventRemindersView({ onRefreshParent }: EventRemindersViewProps)
                       {slot.status === 'Sent (24h Window)' ? (
                         <span className="inline-flex items-center gap-1.5 font-medium text-emerald-700">
                           <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                          <span>Sent (24h Window)</span>
+                          <span>{slot.dispatchedCount > 0 ? 'Reminder records created' : 'Window reached · no records'}</span>
                         </span>
                       ) : slot.status === 'Scheduled (24h Prior)' ? (
                         <span className="inline-flex items-center gap-1.5 font-medium text-[#004B87]">
@@ -667,7 +667,7 @@ export function EventRemindersView({ onRefreshParent }: EventRemindersViewProps)
                           <span>Scheduled (24h Prior)</span>
                         </span>
                       ) : (
-                        <span className="text-slate-500">Event Passed</span>
+                        <span className="text-slate-500">{slot.status}</span>
                       )}
                     </td>
                     {canManageReminders && (
@@ -702,7 +702,7 @@ export function EventRemindersView({ onRefreshParent }: EventRemindersViewProps)
         <div className="px-5 py-4 border-b border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <h2 className="text-sm font-semibold text-slate-900">
-              Dispatched Event Email Reminders
+              Recorded Event Email Reminders
             </h2>
             <p className="text-xs text-slate-500 mt-0.5 font-mono-tabular">
               {dispatched.length} email reminder{dispatched.length === 1 ? '' : 's'} logged
