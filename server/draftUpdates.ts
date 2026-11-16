@@ -1,7 +1,11 @@
 import type { Post } from '../src/types.ts';
 
 export class DraftUpdateError extends Error {
-  constructor(public status: number, message: string) { super(message); }
+  status: number;
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
 }
 
 // Only authoring fields may be changed here. Lifecycle and tenant fields have
