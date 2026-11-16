@@ -18,14 +18,14 @@ export function AdminReportsView({ data }: AdminReportsViewProps) {
   const publishedPostsCount = data.posts.filter((p) => p.status === 'Published').length;
   const failedPostsCount = data.posts.filter((p) => p.status === 'Failed').length;
   const successRate =
-    totalAttempts.length > 0 ? Math.round((successfulAttempts / totalAttempts.length) * 100) : 100;
+    totalAttempts.length > 0 ? Math.round((successfulAttempts / totalAttempts.length) * 100) : 0;
 
   const pilotKpis = [
     {
       kpi: 'Clubs onboarded',
       target: '2–3 approved clubs',
-      observed: `${data.summary.participatingClubs} active pilot clubs`,
-      met: data.summary.participatingClubs >= 2,
+      observed: `${data.summary.participatingClubs} directory workspaces; approved pilot cohort not verified`,
+      met: false,
     },
     {
       kpi: 'Authorized club leaders',
@@ -36,26 +36,26 @@ export function AdminReportsView({ data }: AdminReportsViewProps) {
     {
       kpi: 'Successful test publications',
       target: '>= 95% valid attempts',
-      observed: `${successRate}% (${successfulAttempts}/${totalAttempts.length} logged attempts)`,
-      met: true,
+      observed: `${totalAttempts.length} logged attempts; real provider publication not verified`,
+      met: false,
     },
     {
       kpi: 'Unauthorized cross-club access',
       target: 'Zero access-control violations',
-      observed: '0 violations (server RBAC enforced)',
-      met: true,
+      observed: 'Independent server authorization testing required',
+      met: false,
     },
     {
       kpi: 'Account request traceability',
       target: '100% requests recorded with decision history',
-      observed: `100% (${data.accountRequests.length} tracked requests)`,
-      met: true,
+      observed: `${data.accountRequests.length} tracked requests; coverage review required`,
+      met: false,
     },
     {
       kpi: 'Publishing audit coverage',
       target: '100% completed attempts logged',
-      observed: `100% (${data.auditLogs.length} audit events)`,
-      met: true,
+      observed: `${data.auditLogs.length} audit events; attempt reconciliation required`,
+      met: false,
     },
   ];
 
@@ -217,7 +217,7 @@ export function AdminReportsView({ data }: AdminReportsViewProps) {
                 <td className="py-3 px-4">
                   <span className="inline-flex items-center gap-1.5 font-medium text-emerald-700">
                     <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>{item.met ? 'On Target' : 'In Progress'}</span>
+                    <span>{item.met ? 'Recorded Target Met' : 'Verification Required'}</span>
                   </span>
                 </td>
               </tr>
