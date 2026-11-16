@@ -293,7 +293,7 @@ export async function dispatchEventReminders(params: {
       '— CUNY SPS Office of Student Life & Club Social Hub',
     ].join('\n');
 
-    let deliveryStatus: EmailReminderDeliveryStatus = 'Delivered (Hub Outbox)';
+    let deliveryStatus: EmailReminderDeliveryStatus = 'Queued (Hub Outbox)';
     let providerMessageId = `outbox_${Date.now()}_${recipient.userId}`;
     let errorMessage: string | undefined;
 
@@ -345,7 +345,7 @@ export async function dispatchEventReminders(params: {
         clubId: event.clubId,
         type: 'Event Reminder',
         title: `24-Hour Event Reminder: ${event.title}`,
-        message: `${clubShortCode} meets on ${event.date} at ${event.time} (${event.location}). Email reminder sent to ${recipient.email}.`,
+        message: `${clubShortCode} meets on ${event.date} at ${event.time} (${event.location}). Reminder recorded for ${recipient.email}; delivery status: ${deliveryStatus}.`,
       });
     }
   }
@@ -506,7 +506,7 @@ export async function dispatchEventUpdateEmails(input: {
     ].join('\n');
 
     const sentAt = new Date().toISOString();
-    let deliveryStatus: EmailReminderRecord['deliveryStatus'] = 'Delivered (Hub Outbox)';
+    let deliveryStatus: EmailReminderRecord['deliveryStatus'] = 'Queued (Hub Outbox)';
     let providerMessageId = `hub-upd-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
     let errorMessage: string | undefined;
 
