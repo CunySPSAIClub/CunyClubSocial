@@ -1310,7 +1310,7 @@ export function ClubEventCalendar({
                               <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                               <span>
                                 {(ev.reminderSentCount ?? 0) > 0
-                                  ? `24h reminder sent (${ev.reminderSentCount})`
+                                  ? `24h reminder records (${ev.reminderSentCount})`
                                   : '24h reminder scheduled'}
                               </span>
                             </span>
