@@ -571,7 +571,7 @@ export interface ScheduledReminderSlot {
   reminderScheduledFor: string;
   eligibleMemberCount: number;
   dispatchedCount: number;
-  status: 'Sent (24h Window)' | 'Scheduled (24h Prior)' | 'Event Passed';
+  status: 'Sent (24h Window)' | 'Scheduled (24h Prior)' | 'Event Passed' | 'Invalid Event Time';
 }
 
 export type InboxThreadTag = 'Event Question' | 'Join Inquiry' | 'Escalation' | 'General';
