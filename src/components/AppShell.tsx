@@ -1,5 +1,5 @@
 import { requestDraftDiscard } from '../utils/draftProtection';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Activity,
   ArrowRight,
@@ -176,30 +176,30 @@ const ADMIN_NAV = [
 ];
 
 const CLUB_NAV = [
-  { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-  { id: 'club-announcements', label: 'Club Announcements', icon: Megaphone },
-  { id: 'club-dashboard', label: 'Club Dashboard', icon: Building2 },
-  { id: 'upcoming-events', label: 'Upcoming Events', icon: CalendarPlus },
-  { id: 'event-calendar', label: 'Club Event Calendar', icon: CalendarDays },
-  { id: 'event-analytics', label: 'Event Analytics', icon: TrendingUp },
-  { id: 'event-reminders', label: 'Email Reminders', icon: Mail },
-  { id: 'club-forums', label: 'Club Forums', icon: MessageSquare },
-  { id: 'project-tasks', label: 'Project Tasks', icon: ListChecks },
-  { id: 'member-directory', label: 'Member Directory', icon: Users },
-  { id: 'campus-directory', label: 'Campus Directory', icon: Globe },
-  { id: 'club-resources', label: 'Club Resources', icon: FolderDown },
-  { id: 'social-accounts', label: 'My Social Accounts', icon: Share2 },
-  { id: 'whatsapp', label: 'WhatsApp Group', icon: MessageCircle },
-  { id: 'messaging-center', label: 'Messaging Center', icon: Megaphone },
-  { id: 'club-blog', label: 'Club Blog', icon: BookOpen },
-  { id: 'create-post', label: 'Create Post', icon: PenSquare },
-  { id: 'calendar', label: 'Content Calendar', icon: CalendarDays },
-  { id: 'ai-assistant', label: 'AI Assistant', icon: Sparkles },
-  { id: 'inbox', label: 'Inbox', icon: Inbox },
-  { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-  { id: 'team', label: 'Team Management', icon: UserCheck },
-  { id: 'account-requests', label: 'Account Requests', icon: ClipboardCheck },
-  { id: 'settings', label: 'Settings', icon: Settings },
+  { id: 'overview', label: 'Overview', icon: LayoutDashboard, section: 'Workspace' },
+  { id: 'club-announcements', label: 'Club Announcements', icon: Megaphone, section: 'Workspace' },
+  { id: 'create-post', label: 'Create Post', icon: PenSquare, section: 'Social Publishing' },
+  { id: 'calendar', label: 'Content Calendar', icon: CalendarDays, section: 'Social Publishing' },
+  { id: 'social-accounts', label: 'My Social Accounts', icon: Share2, section: 'Social Publishing' },
+  { id: 'ai-assistant', label: 'AI Assistant', icon: Sparkles, section: 'Social Publishing' },
+  { id: 'inbox', label: 'Inbox', icon: Inbox, section: 'Social Publishing' },
+  { id: 'analytics', label: 'Analytics', icon: BarChart3, section: 'Social Publishing' },
+  { id: 'upcoming-events', label: 'Upcoming Events', icon: CalendarPlus, section: 'Club Community' },
+  { id: 'event-calendar', label: 'Club Event Calendar', icon: CalendarDays, section: 'Club Community' },
+  { id: 'event-analytics', label: 'Event Analytics', icon: TrendingUp, section: 'Club Community' },
+  { id: 'event-reminders', label: 'Email Reminders', icon: Mail, section: 'Club Community' },
+  { id: 'club-forums', label: 'Club Forums', icon: MessageSquare, section: 'Club Community' },
+  { id: 'messaging-center', label: 'Messaging Center', icon: Megaphone, section: 'Club Community' },
+  { id: 'whatsapp', label: 'WhatsApp Group', icon: MessageCircle, section: 'Club Community' },
+  { id: 'club-blog', label: 'Club Blog', icon: BookOpen, section: 'Club Community' },
+  { id: 'project-tasks', label: 'Project Tasks', icon: ListChecks, section: 'Club Community' },
+  { id: 'club-dashboard', label: 'Club Dashboard', icon: Building2, section: 'Administration' },
+  { id: 'member-directory', label: 'Member Directory', icon: Users, section: 'Administration' },
+  { id: 'team', label: 'Team Management', icon: UserCheck, section: 'Administration' },
+  { id: 'account-requests', label: 'Account Requests', icon: ClipboardCheck, section: 'Administration' },
+  { id: 'club-resources', label: 'Club Resources', icon: FolderDown, section: 'Administration' },
+  { id: 'campus-directory', label: 'Campus Directory', icon: Globe, section: 'Administration' },
+  { id: 'settings', label: 'Settings', icon: Settings, section: 'Administration' },
 ];
 
 interface ClubDashboardProps {
@@ -1358,6 +1358,8 @@ export function AppShell() {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
+  const workspaceRequest = useRef(0);
+  const refreshRequest = useRef(0);
   const [error, setError] = useState('');
 
   const loadAuthorizedClubs = useCallback(async () => {
@@ -1392,13 +1394,15 @@ export function AppShell() {
 
   const loadClubWorkspace = useCallback(
     async (clubId: string) => {
+      const request = ++workspaceRequest.current;
       const res = await apiFetch<ClubWorkspacePayload>(`/api/clubs/${clubId}`);
-      setClubData(res);
+      if (request === workspaceRequest.current) setClubData(res);
     },
     [apiFetch]
   );
 
   const refreshAll = useCallback(async () => {
+    const request = ++refreshRequest.current;
     setError('');
     try {
       const [clubs] = await Promise.all([
@@ -1410,6 +1414,7 @@ export function AppShell() {
       if (session?.effectiveAdminRole) {
         await loadAdminOverview();
       }
+      if (request !== refreshRequest.current) return;
       const targetClubId =
         activeClubId && clubs.some((c) => c.clubId === activeClubId)
           ? activeClubId
@@ -1421,9 +1426,9 @@ export function AppShell() {
         setClubData(null);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to load workspace data.');
+      if (request === refreshRequest.current) setError(err instanceof Error ? err.message : 'Unable to load workspace data.');
     } finally {
-      setLoading(false);
+      if (request === refreshRequest.current) setLoading(false);
     }
   }, [
     activeClubId,
@@ -1661,6 +1666,7 @@ export function AppShell() {
                   )}
                   <button
                     type="button"
+                    aria-current={active ? 'page' : undefined}
                     onClick={() => handleSelectNav(item.id)}
                     className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
                       active
@@ -1854,12 +1860,14 @@ export function AppShell() {
           </div>
           {error && (
             <div role="alert" className="mb-6 p-4 text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg">
-              {error}
+              <p>{error}</p>
+              <button type="button" onClick={() => { setLoading(true); void refreshAll(); }} className="mt-2 font-semibold underline">Retry loading workspace</button>
             </div>
           )}
 
-          {loading ? (
-            <div className="space-y-4">
+          {loading || (!error && portalMode === 'CLUB' && activeClubId && clubData?.club.clubId !== activeClubId) ? (
+            <div className="space-y-4" role="status" aria-live="polite" aria-busy="true">
+              <p className="text-sm text-slate-600">Loading workspace data…</p>
               <div className="h-8 w-64 bg-slate-200 rounded animate-pulse" />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="h-28 bg-slate-200 rounded animate-pulse" />
@@ -2058,17 +2066,15 @@ export function AppShell() {
               {adminTab === 'ai-assistant' && <AdminAiAssistantView />}
               {adminTab === 'settings' && <AdminSettingsView onRefresh={refreshAll} />}
             </>
-          ) : portalMode === 'CLUB' && clubData ? (
+          ) : portalMode === 'CLUB' && clubData && clubData.club.clubId === activeClubId ? (
             <>
               {clubTab === 'overview' && (
                 <div className="space-y-8">
-                  <ClubAnnouncements
-                    announcements={announcements}
-                    variant="banner"
-                    onRefresh={refreshAll}
-                    onOpenFullView={() => setClubTab('club-announcements')}
-                  />
+                  <button type="button" onClick={() => setClubTab('club-announcements')} className="w-full text-left rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-[#004B87] hover:bg-sky-100">
+                    Student Life announcements ({announcements.length}) · View updates and deadlines →
+                  </button>
                   <ClubOverview
+                    key={clubData.club.clubId}
                     club={clubData.club}
                     effectiveRole={clubData.effectiveRole}
                     socialAccounts={clubData.socialAccounts}
@@ -2085,22 +2091,6 @@ export function AppShell() {
                       setClubTab('create-post');
                     }}
                     onRefresh={refreshAll}
-                  />
-                  <ClubDashboard
-                    clubs={authorizedClubs}
-                    activeClubId={activeClubId}
-                    portalMode={portalMode}
-                    onOpenClubWorkspace={handleOpenClubWorkspace}
-                  />
-                  <UpcomingClubEvents
-                    events={upcomingEvents}
-                    clubs={authorizedClubs}
-                    activeClubId={activeClubId}
-                    portalMode={portalMode}
-                    onRefresh={refreshAll}
-                    onDraftPostForEvent={
-                      clubData.effectiveRole !== 'VIEWER' ? handleDraftPostFromEvent : undefined
-                    }
                   />
                 </div>
               )}

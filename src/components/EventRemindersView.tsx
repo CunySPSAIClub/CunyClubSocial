@@ -244,11 +244,20 @@ export function EventRemindersView({ onRefreshParent }: EventRemindersViewProps)
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-lg p-6 space-y-3">
+      <div role="status" aria-busy="true" className="bg-white border border-slate-200 rounded-lg p-6 space-y-3">
+        <p className="text-sm text-slate-600">Loading email reminders…</p>
         <div className="h-5 w-56 bg-slate-200 rounded animate-pulse" />
         <div className="h-24 bg-slate-100 rounded animate-pulse" />
       </div>
     );
+  }
+
+  if (!data) {
+    return <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-6 text-sm text-red-800">
+      <h1 className="font-semibold">Email reminders unavailable</h1>
+      <p className="mt-2">{error || 'Reminder data has not loaded.'}</p>
+      <button type="button" onClick={() => { setLoading(true); void loadReminders(); }} className="mt-3 underline font-semibold">Retry loading reminders</button>
+    </div>;
   }
 
   const dispatched = (data?.dispatchedReminders ?? []).filter((r) => {

@@ -427,6 +427,10 @@ export function ClubWhatsAppPanel({
 
   return (
     <section className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+      <p role="note" className="border-b border-amber-200 bg-amber-50 px-5 py-3 text-xs text-amber-900">
+        Share-link workflow: saving an alert prepares a WhatsApp link. Open WhatsApp and send it there.
+        The Hub cannot confirm sending, delivery, or reading in WhatsApp.
+      </p>
       {/* Section Header */}
       <div className="px-5 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="space-y-0.5">
@@ -769,7 +773,7 @@ export function ClubWhatsAppPanel({
               <div className="min-w-0 space-y-1">
                 <div className="flex flex-wrap items-center gap-2.5">
                   <span className="text-sm font-semibold text-slate-900">{grp.groupName}</span>
-                  <StatusText status={grp.status} />
+                  <StatusText status={grp.status === 'Connected' ? 'Share link ready' : grp.status} />
                 </div>
                 <div className="text-xs text-slate-500 flex flex-wrap items-center gap-x-2 gap-y-0.5">
                   <span>{grp.groupCategory}</span>
@@ -1064,7 +1068,7 @@ export function ClubWhatsAppPanel({
                     className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-white bg-[#004B87] hover:bg-[#003865] rounded-md whitespace-nowrap shrink-0 disabled:opacity-60 cursor-pointer"
                   >
                     <Send className="w-3.5 h-3.5" />
-                    <span>{sendingAlert ? 'Sending...' : 'Send & Log Alert'}</span>
+                    <span>{sendingAlert ? 'Preparing...' : 'Prepare & Log Share Link'}</span>
                   </button>
                 )}
 
@@ -1108,7 +1112,7 @@ export function ClubWhatsAppPanel({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
               <h3 className="text-sm font-semibold text-slate-900">
-                Sent WhatsApp Messages & Alert Log
+                Prepared WhatsApp Shares & Alert Log
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
                 Institutional audit trail with 1-click WhatsApp Web resend
@@ -1179,7 +1183,7 @@ export function ClubWhatsAppPanel({
                             ·
                           </span>
                           <span>
-                            Sent by {msg.sentByName} ({msg.sentByRoleLabel})
+                            Prepared by {msg.sentByName} ({msg.sentByRoleLabel})
                           </span>
                           <span className="mx-1.5" aria-hidden="true">
                             ·
@@ -1193,7 +1197,7 @@ export function ClubWhatsAppPanel({
                         status={
                           msg.deliveryStatus === 'Failed'
                             ? 'Failed'
-                            : 'Connected'
+                            : 'Prepared · delivery unverified'
                         }
                       />
                     </div>

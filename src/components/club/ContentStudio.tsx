@@ -1,3 +1,4 @@
+import { integrationStatus } from '../../utils/integrationStatus';
 import { requestDraftDiscard, useDraftProtection } from '../../utils/draftProtection';
 import { campusDate, campusTimeMs } from '../../utils/calendarDates';
 import { userFacingAiError } from '../../utils/userFacingError';
@@ -1133,7 +1134,7 @@ export function ContentStudio({
                         <div className="text-slate-500">{acc.platform}</div>
                       </div>
                     </div>
-                    <StatusText status={acc.connection.status} />
+                    <StatusText status={integrationStatus(acc).label} />
                   </label>
                 );
               })}
