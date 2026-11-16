@@ -1,3 +1,4 @@
+import { integrationStatus } from '../../utils/integrationStatus';
 import { useCallback, useEffect, useState } from 'react';
 import {
   ArrowRight,
@@ -71,6 +72,8 @@ export function ClubOverview({
   const { apiFetch, session } = useAuth();
   const [submissions, setSubmissions] = useState<ResourceSubmission[]>([]);
   const [transition, setTransition] = useState<OfficerTransitionChecklist | null>(null);
+  const [extrasLoading, setExtrasLoading] = useState(true);
+  const [extrasError, setExtrasError] = useState('');
   const [actionBusyId, setActionBusyId] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState('');
   const [actionError, setActionError] = useState('');
@@ -100,6 +103,8 @@ export function ClubOverview({
     effectiveRole === 'CLUB_LEAD' || Boolean(session?.effectiveAdminRole);
 
   const loadGovernanceExtras = useCallback(async () => {
+    setExtrasLoading(true);
+    setExtrasError('');
     try {
       const [subsRes, transRes] = await Promise.all([
         apiFetch<{ submissions: ResourceSubmission[] }>('/api/resource-submissions'),
@@ -108,7 +113,9 @@ export function ClubOverview({
       setSubmissions(subsRes.submissions.filter((s) => s.clubId === club.clubId));
       setTransition(transRes.transition);
     } catch {
-      // Non-blocking governance extras
+      setExtrasError('Advisor items could not be loaded.');
+    } finally {
+      setExtrasLoading(false);
     }
   }, [apiFetch, club.clubId]);
 
@@ -279,8 +286,8 @@ export function ClubOverview({
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <div className="flex items-start gap-4">
+      <div className="flex flex-col gap-4">
+        <div className="flex items-start gap-4 min-w-0">
           <ClubLogoMark
             clubId={club.clubId}
             clubShortCode={club.shortCode}
@@ -327,7 +334,7 @@ export function ClubOverview({
             )}
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-2 shrink-0">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => onNavigate('club-blog')}
@@ -404,6 +411,115 @@ export function ClubOverview({
         </div>
       )}
 
+      {/* Upcoming Scheduled, Drafts, Publishing Activity */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <section className="bg-white border border-slate-200 rounded-lg flex flex-col">
+          <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+              <CalendarClock className="w-4 h-4 text-slate-400" />
+              <span>Upcoming Scheduled Posts</span>
+            </h2>
+            <span className="text-xs font-mono-tabular text-slate-500">{scheduledPosts.length}</span>
+          </div>
+          <div className="divide-y divide-slate-200 flex-1">
+            {scheduledPosts.length === 0 ? (
+              <div className="p-5 text-xs text-slate-500">No upcoming scheduled posts.</div>
+            ) : (
+              scheduledPosts.slice(0, 3).map((post) => (
+                <button
+                  key={post.postId}
+                  type="button"
+                  onClick={() => onEditPost(post)}
+                  className="w-full text-left px-5 py-3.5 hover:bg-slate-50 transition-colors cursor-pointer"
+                >
+                  <div className="text-sm font-medium text-slate-900 truncate">{post.title}</div>
+                  <div className="text-xs font-mono-tabular text-slate-500 mt-1">
+                    {post.scheduledAt ? new Date(post.scheduledAt).toLocaleString('en-US', { timeZone: 'America/New_York', timeZoneName: 'short' }) : ''}
+                  </div>
+                </button>
+              ))
+            )}
+          </div>
+        </section>
+
+        <section className="bg-white border border-slate-200 rounded-lg flex flex-col">
+          <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+              <FileEdit className="w-4 h-4 text-slate-400" />
+              <span>Drafts & Peer Review Queue</span>
+            </h2>
+            <span className="text-xs font-mono-tabular text-slate-500">{draftPosts.length}</span>
+          </div>
+          <div className="divide-y divide-slate-200 flex-1">
+            {draftPosts.length === 0 ? (
+              <div className="p-5 text-xs text-slate-500">No pending drafts.</div>
+            ) : (
+              draftPosts.slice(0, 3).map((post) => (
+                <button
+                  key={post.postId}
+                  type="button"
+                  onClick={() => onEditPost(post)}
+                  className="w-full text-left px-5 py-3.5 hover:bg-slate-50 transition-colors flex items-center justify-between gap-2 cursor-pointer"
+                >
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-slate-900 truncate">{post.title}</div>
+                    <div className="text-xs text-slate-500 mt-1">
+                      Author: {post.authorName} · {post.aiAssisted ? 'AI-assisted draft' : 'Manual draft'}
+                    </div>
+                  </div>
+                  <StatusText status={post.status} />
+                </button>
+              ))
+            )}
+          </div>
+        </section>
+
+        <section className="bg-white border border-slate-200 rounded-lg flex flex-col">
+          <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+              <Send className="w-4 h-4 text-slate-400" />
+              <span>Recorded Publishing Activity</span>
+            </h2>
+            <span className="text-xs font-mono-tabular text-slate-500">{recentPublished.length}</span>
+          </div>
+          <div className="divide-y divide-slate-200 flex-1">
+            {recentPublished.length === 0 ? (
+              <div className="p-5 text-xs text-slate-500">No publishing history recorded yet.</div>
+            ) : (
+              recentPublished.slice(0, 3).map((post) => (
+                <button
+                  key={post.postId}
+                  type="button"
+                  onClick={() => onEditPost(post)}
+                  className="w-full text-left px-5 py-3.5 hover:bg-slate-50 transition-colors flex items-center justify-between gap-3 cursor-pointer"
+                >
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-slate-900 truncate">{post.title}</div>
+                    <div className="text-xs font-mono-tabular text-slate-500 mt-0.5">
+                      {new Date(post.updatedAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <StatusText status={post.status} />
+                </button>
+              ))
+            )}
+          </div>
+        </section>
+      </div>
+      <p className="text-xs text-slate-500">Showing up to 3 items per list. <button type="button" onClick={() => onNavigate('calendar')} className="text-[#004B87] underline">View all in Content Calendar</button>. Recorded statuses may include simulation.</p>
+
+      <section aria-label="Workspace shortcuts" className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[['upcoming-events', 'Upcoming events', `${events.length} event records`], ['messaging-center', 'Messaging Center', 'Broadcasts and replies'], ['whatsapp', 'WhatsApp Group', `${whatsappGroups.length} linked groups · share links`], ['club-resources', 'Club Resources', 'Forms and submissions']].map(([tab, label, detail]) => (
+          <button key={tab} type="button" onClick={() => onNavigate(tab)} className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 text-left hover:border-sky-400 focus-visible:outline-2 focus-visible:outline-sky-700">
+            <span className="block text-sm font-semibold text-[#004B87]">{label} →</span>
+            <span className="mt-1 block text-xs text-slate-500">{detail}</span>
+          </button>
+        ))}
+      </section>
+
+      <details className="rounded-lg border border-slate-200 bg-white p-4">
+        <summary className="cursor-pointer text-sm font-semibold text-slate-800">Budget & advisor items · expand details</summary>
+        <div className="mt-4">
       {/* Semester Budget Ledger & Faculty Advisor Co-Sign Queue */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {budget && (
@@ -643,7 +759,11 @@ export function ClubOverview({
               </p>
             </div>
           </div>
-          {pendingAdvisorProposals.length === 0 && !pendingTransitionSignOff ? (
+          {extrasLoading ? (
+            <p role="status" className="text-xs text-slate-500">Loading advisor items…</p>
+          ) : extrasError ? (
+            <div role="alert" className="text-xs text-red-700">{extrasError} <button type="button" onClick={() => void loadGovernanceExtras()} className="underline">Retry advisor items</button></div>
+          ) : pendingAdvisorProposals.length === 0 && !pendingTransitionSignOff ? (
             <div className="py-3 flex items-center gap-2 text-xs text-emerald-700">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>All advisor co-sign items for {club.shortCode} are currently complete.</span>
@@ -712,11 +832,14 @@ export function ClubOverview({
         </section>
       </div>
 
+        </div>
+      </details>
+
       {/* Connected Accounts & Engagement Snapshot */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <section className="lg:col-span-6 bg-white border border-slate-200 rounded-lg">
           <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-900">Connected Official Accounts</h2>
+            <h2 className="text-sm font-semibold text-slate-900">Social Account Status</h2>
             <button
               type="button"
               onClick={() => onNavigate('social-accounts')}
@@ -732,14 +855,14 @@ export function ClubOverview({
           ) : (
             <div className="divide-y divide-slate-200">
               {socialAccounts.map((acc) => (
-                <div key={acc.accountId} className="px-5 py-3.5 flex items-center justify-between gap-4">
+                <div key={acc.accountId} className="px-5 py-3.5 flex flex-wrap items-center justify-between gap-4">
                   <div className="min-w-0">
                     <div className="text-sm font-semibold text-slate-900">{acc.handle}</div>
                     <div className="text-xs text-slate-500 mt-0.5">
                       {acc.platform} · Custodian: {acc.custodian.staffName}
                     </div>
                   </div>
-                  <StatusText status={acc.connection.status} />
+                  <StatusText status={integrationStatus(acc).label} />
                 </div>
               ))}
             </div>
@@ -749,7 +872,7 @@ export function ClubOverview({
         <section className="lg:col-span-6 bg-white border border-slate-200 rounded-lg">
           <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-slate-900">
-              Recent Engagement Summaries (By Platform)
+              Recorded Engagement Summaries
             </h2>
             <button
               type="button"
@@ -759,6 +882,7 @@ export function ClubOverview({
               Full analytics
             </button>
           </div>
+          <p className="px-5 pt-3 text-xs text-amber-800">Demo records · provider data and freshness are unverified.</p>
           {analytics.length === 0 ? (
             <div className="p-6 text-sm text-slate-500">
               Analytics appear here once an official platform integration is active.
@@ -766,14 +890,14 @@ export function ClubOverview({
           ) : (
             <div className="divide-y divide-slate-200">
               {analytics.map((m) => (
-                <div key={m.metricId} className="px-5 py-3.5 flex items-center justify-between gap-4">
+                <div key={m.metricId} className="px-5 py-3.5 flex flex-wrap items-center justify-between gap-4">
                   <div>
                     <div className="text-sm font-semibold text-slate-900">
                       {m.platform} ({m.handle})
                     </div>
                     <div className="text-xs text-slate-500 mt-0.5">{m.reportingPeriod}</div>
                   </div>
-                  <div className="flex items-center gap-6 text-right font-mono-tabular">
+                  <div className="flex items-center gap-3 text-right font-mono-tabular">
                     <div>
                       <div className="text-sm font-bold text-slate-900">{m.reach.toLocaleString()}</div>
                       <div className="text-[11px] text-slate-500">Reach</div>
@@ -787,124 +911,6 @@ export function ClubOverview({
               ))}
             </div>
           )}
-        </section>
-      </div>
-
-      {/* Club WhatsApp Group & Instant Alerts */}
-      <ClubWhatsAppPanel
-        club={club}
-        effectiveRole={effectiveRole}
-        groups={whatsappGroups}
-        messages={whatsappMessages}
-        events={events}
-        variant="dashboard"
-        onNavigate={onNavigate}
-        onRefresh={onRefresh ?? (async () => {})}
-      />
-
-      {/* Integrated Club Messaging Center (Broadcasts & Member Replies) */}
-      <ClubMessagingCenter
-        clubId={club.clubId}
-        clubName={club.name}
-        clubShortCode={club.shortCode}
-        variant="dashboard"
-        onOpenFullView={() => onNavigate('messaging-center')}
-        onRefreshParent={onRefresh}
-      />
-
-      {/* Upcoming Scheduled, Drafts, Publishing Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <section className="bg-white border border-slate-200 rounded-lg flex flex-col">
-          <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-              <CalendarClock className="w-4 h-4 text-slate-400" />
-              <span>Upcoming Scheduled Posts</span>
-            </h2>
-            <span className="text-xs font-mono-tabular text-slate-500">{scheduledPosts.length}</span>
-          </div>
-          <div className="divide-y divide-slate-200 flex-1">
-            {scheduledPosts.length === 0 ? (
-              <div className="p-5 text-xs text-slate-500">No upcoming scheduled posts.</div>
-            ) : (
-              scheduledPosts.map((post) => (
-                <button
-                  key={post.postId}
-                  type="button"
-                  onClick={() => onEditPost(post)}
-                  className="w-full text-left px-5 py-3.5 hover:bg-slate-50 transition-colors cursor-pointer"
-                >
-                  <div className="text-sm font-medium text-slate-900 truncate">{post.title}</div>
-                  <div className="text-xs font-mono-tabular text-slate-500 mt-1">
-                    {post.scheduledAt ? new Date(post.scheduledAt).toLocaleString() : ''}
-                  </div>
-                </button>
-              ))
-            )}
-          </div>
-        </section>
-
-        <section className="bg-white border border-slate-200 rounded-lg flex flex-col">
-          <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-              <FileEdit className="w-4 h-4 text-slate-400" />
-              <span>Drafts & Peer Review Queue</span>
-            </h2>
-            <span className="text-xs font-mono-tabular text-slate-500">{draftPosts.length}</span>
-          </div>
-          <div className="divide-y divide-slate-200 flex-1">
-            {draftPosts.length === 0 ? (
-              <div className="p-5 text-xs text-slate-500">No pending drafts.</div>
-            ) : (
-              draftPosts.map((post) => (
-                <button
-                  key={post.postId}
-                  type="button"
-                  onClick={() => onEditPost(post)}
-                  className="w-full text-left px-5 py-3.5 hover:bg-slate-50 transition-colors flex items-center justify-between gap-2 cursor-pointer"
-                >
-                  <div className="min-w-0">
-                    <div className="text-sm font-medium text-slate-900 truncate">{post.title}</div>
-                    <div className="text-xs text-slate-500 mt-1">
-                      Author: {post.authorName} · {post.aiAssisted ? 'AI-assisted draft' : 'Manual draft'}
-                    </div>
-                  </div>
-                  <StatusText status={post.status} />
-                </button>
-              ))
-            )}
-          </div>
-        </section>
-
-        <section className="bg-white border border-slate-200 rounded-lg flex flex-col">
-          <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-              <Send className="w-4 h-4 text-slate-400" />
-              <span>Recent Publishing Activity</span>
-            </h2>
-            <span className="text-xs font-mono-tabular text-slate-500">{recentPublished.length}</span>
-          </div>
-          <div className="divide-y divide-slate-200 flex-1">
-            {recentPublished.length === 0 ? (
-              <div className="p-5 text-xs text-slate-500">No publishing history recorded yet.</div>
-            ) : (
-              recentPublished.map((post) => (
-                <button
-                  key={post.postId}
-                  type="button"
-                  onClick={() => onEditPost(post)}
-                  className="w-full text-left px-5 py-3.5 hover:bg-slate-50 transition-colors flex items-center justify-between gap-3 cursor-pointer"
-                >
-                  <div className="min-w-0">
-                    <div className="text-sm font-medium text-slate-900 truncate">{post.title}</div>
-                    <div className="text-xs font-mono-tabular text-slate-500 mt-0.5">
-                      {new Date(post.updatedAt).toLocaleDateString()}
-                    </div>
-                  </div>
-                  <StatusText status={post.status} />
-                </button>
-              ))
-            )}
-          </div>
         </section>
       </div>
 

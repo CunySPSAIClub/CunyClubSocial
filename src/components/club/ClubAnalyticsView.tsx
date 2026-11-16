@@ -12,8 +12,8 @@ export function ClubAnalyticsView({ metrics }: ClubAnalyticsViewProps) {
       <div>
         <h1 className="text-xl font-bold text-slate-900">Engagement & Analytics</h1>
         <p className="text-sm text-slate-600 mt-0.5">
-          Platform-verified engagement metrics labeled strictly by source platform, reporting
-          period, and API availability—incompatible metrics are never merged (Module 10).
+          Recorded metrics by platform and reporting period. These demonstration records do not
+          establish live provider results; provider collection time and freshness are unverified.
         </p>
       </div>
 
@@ -43,7 +43,7 @@ export function ClubAnalyticsView({ metrics }: ClubAnalyticsViewProps) {
                       Reporting Period: {m.reportingPeriod}
                     </div>
                   </div>
-                  <StatusText status={m.availability} />
+                  <StatusText status="Demo data · unverified" />
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -87,7 +87,7 @@ export function ClubAnalyticsView({ metrics }: ClubAnalyticsViewProps) {
 
                 <div className="pt-4 border-t border-slate-100">
                   <div className="text-xs font-medium text-slate-600 mb-3">
-                    7-Day Reach & Engagement Trend ({m.platform} API)
+                    Recorded 7-Day Reach & Engagement Trend ({m.platform})
                   </div>
                   <div className="grid grid-cols-7 gap-3 items-end h-32">
                     {m.dailySeries.map((day) => {

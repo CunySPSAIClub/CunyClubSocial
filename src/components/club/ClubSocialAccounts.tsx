@@ -1,3 +1,4 @@
+import { integrationStatus } from '../../utils/integrationStatus';
 import { useState } from 'react';
 import { AlertTriangle, KeyRound, Lock, PlusCircle, Settings2, ShieldCheck, Unplug } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -80,7 +81,7 @@ export function ClubSocialAccounts({
       await apiFetch(`/api/clubs/${clubId}/social-accounts/${accountId}/connect`, {
         method: 'POST',
       });
-      setNotice('Official platform authorization verified. Integration connected without altering university ownership.');
+      setNotice('Hub connection record updated. Review the status below; this action does not verify provider authorization.');
       await onRefresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to connect account.');
@@ -136,7 +137,7 @@ export function ClubSocialAccounts({
       setNotice(
         clearToken
           ? 'Cleared stored Meta Graph access token (reverted to Hub sandbox simulation).'
-          : 'Saved Meta Graph API endpoint configuration securely server-side.'
+          : 'Saved account configuration. Provider authorization still needs verification.'
       );
       await onRefresh();
     } catch (err) {
@@ -152,8 +153,7 @@ export function ClubSocialAccounts({
         <div>
           <h1 className="text-xl font-bold text-slate-900">My Social Accounts</h1>
           <p className="text-sm text-slate-600 mt-0.5">
-            Official club social media accounts authorized through official platform APIs—never
-            shared passwords (Module 5, B6).
+            Review account setup and publishing mode. A stored connection is not proof of live provider authorization.
           </p>
         </div>
         {canManageConnections && (
@@ -211,13 +211,10 @@ export function ClubSocialAccounts({
                       <span className="text-slate-300" aria-hidden="true">·</span>
                       <span className="text-xs font-medium text-slate-700">{acc.platform}</span>
                       <span className="text-slate-300" aria-hidden="true">·</span>
-                      <StatusText status={acc.connection.status} />
-                      {acc.hasLiveMetaToken && (
-                        <span className="text-[11px] font-mono text-emerald-700 font-semibold">
-                          Live Meta Graph API Enabled
-                        </span>
-                      )}
+                      <StatusText status={integrationStatus(acc).label} />
+
                     </div>
+                    <p className="max-w-xl text-xs text-slate-600">{integrationStatus(acc).detail}</p>
                     <div className="text-xs text-slate-600">
                       Institutional Owner: <span className="font-medium">{acc.institutionalOwner}</span>
                     </div>
@@ -243,8 +240,8 @@ export function ClubSocialAccounts({
                       <div className="p-2.5 mt-1 bg-amber-50 border border-amber-200 rounded text-xs text-amber-800 flex items-center gap-2">
                         <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-amber-700" />
                         <span>
-                          Token expiring in {acc.tokenExpiresInDays} day(s) — Custodian{' '}
-                          <strong>{acc.custodian.staffName}</strong> alerted for OAuth refresh.
+                          Recorded token expiry in {acc.tokenExpiresInDays} day(s) — contact custodian{' '}
+                          <strong>{acc.custodian.staffName}</strong> to review reconnect options.
                         </span>
                       </div>
                     )}
@@ -273,7 +270,7 @@ export function ClubSocialAccounts({
                           className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-white bg-[#004B87] hover:bg-[#003865] rounded-md whitespace-nowrap cursor-pointer"
                         >
                           <KeyRound className="w-3.5 h-3.5" />
-                          <span>{busyId === acc.accountId ? 'Authorizing...' : 'Authorize & Connect'}</span>
+                          <span>{busyId === acc.accountId ? 'Authorizing...' : 'Update connection record'}</span>
                         </button>
                       ) : (
                         <button
