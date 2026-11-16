@@ -1,12 +1,11 @@
 import { spawn } from 'node:child_process';
 import { mkdtempSync, readFileSync } from 'node:fs';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
 import assert from 'node:assert/strict';
 const root=process.cwd();
 const fixtureDir=mkdtempSync(path.join(root,'work','isolated-draft-check-'));
 const before=readFileSync(path.join(root,'.data/hub-store.json'));
-const proc=spawn(process.execPath,['--import',pathToFileURL(path.join(root,'node_modules/tsx/dist/loader.mjs')).href,path.join(root,'server.ts')],{cwd:fixtureDir,env:{...process.env,NODE_ENV:'production',PORT:'43127',SMTP_HOST:'',SMTP_USER:'',SMTP_PASS:'',GEMINI_API_KEY:''},stdio:['ignore','pipe','pipe'],windowsHide:true});
+const proc=spawn(process.execPath,[path.join(root,'server.ts')],{cwd:fixtureDir,env:{...process.env,NODE_ENV:'production',PORT:'43127',SMTP_HOST:'',SMTP_USER:'',SMTP_PASS:'',GEMINI_API_KEY:''},stdio:['ignore','pipe','pipe'],windowsHide:true});
 let logs='';proc.stdout.on('data',d=>logs+=d);proc.stderr.on('data',d=>logs+=d);
 try {
  await new Promise((resolve,reject)=>{ const timeout=setTimeout(()=>reject(new Error('Server failed to start: '+logs)),15000); const poll=setInterval(()=>{if(logs.includes('server running')){clearTimeout(timeout);clearInterval(poll);resolve();}if(proc.exitCode!==null){clearTimeout(timeout);clearInterval(poll);reject(new Error(logs));}},100); });
