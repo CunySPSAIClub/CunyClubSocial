@@ -1,3 +1,4 @@
+import { DataLoadState } from './DataLoadState';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   AtSign,
@@ -71,6 +72,7 @@ export function ClubForums({ clubs, activeClubId, onRefreshParent }: ClubForumsP
   const [threads, setThreads] = useState<ForumThread[]>([]);
   const [clubMembers, setClubMembers] = useState<ClubForumMemberOption[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [error, setError] = useState('');
   const [feedback, setFeedback] = useState('');
 
@@ -104,7 +106,8 @@ export function ClubForums({ clubs, activeClubId, onRefreshParent }: ClubForumsP
       setLoading(false);
       return;
     }
-    setError('');
+    setLoading(true);
+    setLoadError('');
     try {
       const res = await apiFetch<{
         threads: ForumThread[];
@@ -118,7 +121,7 @@ export function ClubForums({ clubs, activeClubId, onRefreshParent }: ClubForumsP
           : res.threads[0]?.threadId ?? null
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to load club forum threads.');
+      setLoadError(err instanceof Error ? err.message : 'Unable to load club forum threads.');
     } finally {
       setLoading(false);
     }
@@ -324,6 +327,8 @@ export function ClubForums({ clubs, activeClubId, onRefreshParent }: ClubForumsP
       </section>
     );
   }
+
+  if (loading || loadError) return <DataLoadState label="forum threads" loading={loading} error={loadError} onRetry={() => void loadForumThreads()} />;
 
   return (
     <section
@@ -553,19 +558,15 @@ export function ClubForums({ clubs, activeClubId, onRefreshParent }: ClubForumsP
         </form>
       )}
 
-      {loading ? (
-        <div className="p-6 space-y-3">
-          <div className="h-16 bg-slate-100 rounded animate-pulse" />
-          <div className="h-16 bg-slate-100 rounded animate-pulse" />
-        </div>
-      ) : visibleThreads.length === 0 ? (
+      {visibleThreads.length === 0 ? (
         <div className="p-8 text-center space-y-2">
           <div className="text-sm font-medium text-slate-800">
-            No forum threads match the current filter
+            {threads.length === 0 ? 'No forum threads yet' : 'No forum threads match the current filter'}
           </div>
           <p className="text-xs text-slate-500">
-            Start a new thread to ask a question, mention officers, or propose an initiative.
+            Try clearing your search and category filters, or use Start Thread to start a discussion if your role allows it.
           </p>
+          <button type="button" onClick={() => { setSearchQuery(''); setCategoryFilter('All'); setStatusFilter('all'); }} className="text-xs text-[#004B87] underline">Clear forum search and category</button>
         </div>
       ) : (
         <div className="divide-y divide-slate-200">

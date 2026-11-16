@@ -1,3 +1,4 @@
+import { DataLoadState } from './DataLoadState';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   AlertCircle,
@@ -99,6 +100,7 @@ export function ClubProjectTasks({
   const [posts, setPosts] = useState<LinkedPostOption[]>([]);
   const [clubLabel, setClubLabel] = useState('');
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [error, setError] = useState('');
   const [feedback, setFeedback] = useState('');
 
@@ -142,7 +144,8 @@ export function ClubProjectTasks({
       setLoading(false);
       return;
     }
-    setError('');
+    setLoading(true);
+    setLoadError('');
     try {
       const res = await apiFetch<TasksApiResponse>(`/api/clubs/${selectedClubId}/tasks`);
       setTasks(res.tasks);
@@ -161,7 +164,7 @@ export function ClubProjectTasks({
           : (res.events?.[0]?.eventId ?? '')
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to load club project tasks.');
+      setLoadError(err instanceof Error ? err.message : 'Unable to load club project tasks.');
     } finally {
       setLoading(false);
     }
@@ -371,6 +374,8 @@ export function ClubProjectTasks({
       setBusyTaskId(null);
     }
   };
+
+  if (loading || loadError) return <DataLoadState label="project tasks" loading={loading} error={loadError} onRetry={() => void loadTasks()} />;
 
   return (
     <div className="space-y-6">
@@ -808,13 +813,7 @@ export function ClubProjectTasks({
           </div>
         </div>
 
-        {loading ? (
-          <div className="p-5 space-y-3">
-            <div className="h-20 bg-slate-100 rounded animate-pulse" />
-            <div className="h-20 bg-slate-100 rounded animate-pulse" />
-            <div className="h-20 bg-slate-100 rounded animate-pulse" />
-          </div>
-        ) : filteredTasks.length === 0 ? (
+        {filteredTasks.length === 0 ? (
           <div className="p-10 text-center space-y-3">
             <p className="text-sm font-medium text-slate-800">
               No project tasks match the current filters.

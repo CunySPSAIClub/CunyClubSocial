@@ -1,3 +1,4 @@
+import { notificationText, searchWorkspacePages } from '../utils/workspacePresentation';
 import { requestDraftDiscard } from '../utils/draftProtection';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -1347,6 +1348,7 @@ export function AppShell() {
   const [adminTab, setAdminTab] = useState('dashboard');
   const [clubTab, setClubTab] = useState('overview');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [pageSearch, setPageSearch] = useState('');
 
   const [adminData, setAdminData] = useState<AdminOverviewData | null>(null);
   const [authorizedClubs, setAuthorizedClubs] = useState<Club[]>([]);
@@ -1826,7 +1828,7 @@ export function AppShell() {
                         >
                           {n.title}
                         </button>
-                        <p className="text-[11px] text-slate-600">{n.message}</p>
+                        <p className="text-[11px] text-slate-600">{notificationText(n.message)}</p>
                         {!n.read && (
                           <button
                             type="button"
@@ -1858,6 +1860,20 @@ export function AppShell() {
           <div role="note" className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
             <strong>Demonstration workspace.</strong> Persona sign-in does not verify institutional identity. Sample account, publishing and analytics records are not evidence of live integrations. Do not enter confidential student information.
           </div>
+          <section role="search" aria-label="Workspace page search" className="mb-6 rounded-lg border border-slate-200 bg-white p-3">
+            <label htmlFor="workspace-page-search" className="mb-1 block text-xs font-semibold text-slate-700">Find a page or tool</label>
+            <div className="flex gap-2">
+              <input id="workspace-page-search" type="search" maxLength={100} value={pageSearch} onChange={e => setPageSearch(e.target.value)} onKeyDown={e => { if (e.key === 'Escape') setPageSearch(''); }} placeholder="Search posts, members, reminders…" aria-controls="workspace-search-results" className="min-w-0 flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm" />
+              {pageSearch && <button type="button" onClick={() => setPageSearch('')} className="px-2 text-xs text-[#004B87] underline">Clear search</button>}
+            </div>
+            {pageSearch.trim() && <div id="workspace-search-results" className="mt-3">
+              <p role="status" className="mb-2 text-xs text-slate-500">{searchWorkspacePages(navItems, pageSearch).length} matching pages in this portal. Tab to a result and press Enter.</p>
+              <ul className="grid gap-1 sm:grid-cols-2">
+                {searchWorkspacePages(navItems, pageSearch).map(item => <li key={item.id}><button type="button" onClick={async () => { await handleSelectNav(item.id); setPageSearch(''); }} className="w-full rounded-md p-2 text-left text-sm text-[#004B87] hover:bg-sky-50 focus-visible:outline-2 focus-visible:outline-sky-700">{item.label} <span className="text-xs text-slate-500">· {item.section}</span></button></li>)}
+              </ul>
+              {searchWorkspacePages(navItems, pageSearch).length === 0 && <p className="text-sm text-slate-600">Try a shorter page name or a term such as posts, roster, or email. Search covers pages and tools in your current portal.</p>}
+            </div>}
+          </section>
           {error && (
             <div role="alert" className="mb-6 p-4 text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg">
               <p>{error}</p>
