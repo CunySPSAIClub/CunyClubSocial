@@ -638,7 +638,7 @@ export function EventRemindersView({ onRefreshParent }: EventRemindersViewProps)
                       {slot.eventDate} · {slot.eventTime}
                     </td>
                     <td className="py-3 px-4 font-mono-tabular text-slate-600 whitespace-nowrap">
-                      {new Date(slot.reminderScheduledFor).toLocaleString()}
+                      {slot.reminderScheduledFor ? new Date(slot.reminderScheduledFor).toLocaleString('en-US', { timeZone: 'America/New_York', timeZoneName: 'short' }) : 'Needs a valid, unambiguous New York event time'}
                     </td>
                     <td className="py-3 px-4 text-right font-mono-tabular font-semibold text-slate-800">
                       {slot.eligibleMemberCount}
