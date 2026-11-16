@@ -1,3 +1,4 @@
+import { userFacingAiError } from '../../utils/userFacingError';
 import React, { useState } from 'react';
 import {
   ArrowRight,
@@ -259,7 +260,7 @@ export function AiAssistantView({
 
       {error && (
         <div role="alert" className="p-3 text-xs text-red-700 bg-red-50 border border-red-200 rounded-md">
-          {error}
+          {userFacingAiError(error)}
         </div>
       )}
 

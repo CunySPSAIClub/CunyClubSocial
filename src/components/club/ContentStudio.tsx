@@ -1,3 +1,4 @@
+import { userFacingAiError } from '../../utils/userFacingError';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AlertTriangle,
@@ -299,7 +300,7 @@ export function ContentStudio({
       setMediaAsset((prev) => (prev ? { ...prev, altText: res.altText } : prev));
       setFeedback(`Generated WCAG 2.1 AA alt-text via ${res.modelUsed ?? 'Gemini Vision'}.`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to generate alt-text.');
+      setError(userFacingAiError(err instanceof Error ? err.message : ''));
     } finally {
       setAltLoading(false);
     }
@@ -488,7 +489,7 @@ export function ContentStudio({
       setAiAssisted(true);
       setFeedback(`AI draft ready (human review required). Note: ${res.accessibilityNote}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'AI caption service unavailable.');
+      setError(userFacingAiError(err instanceof Error ? err.message : ''));
     } finally {
       setAiLoading(false);
     }
@@ -755,7 +756,7 @@ export function ContentStudio({
         {/* Composer Column */}
         <form
           onSubmit={handleSaveDraft}
-          className="lg:col-span-7 bg-white border border-slate-200 rounded-lg p-6 space-y-5"
+          className="lg:col-span-7 min-w-0 bg-white border border-slate-200 rounded-lg p-6 space-y-5"
         >
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div className="flex items-center gap-2.5">
@@ -818,10 +819,10 @@ export function ContentStudio({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-slate-700 mb-1">
+              <label htmlFor="post-title" className="block text-xs font-medium text-slate-700 mb-1">
                 Internal Post Title
               </label>
-              <input
+              <input id="post-title"
                 type="text"
                 required
                 disabled={!canDraft}
@@ -832,10 +833,10 @@ export function ContentStudio({
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">
+              <label htmlFor="post-event" className="block text-xs font-medium text-slate-700 mb-1">
                 Related Club Event (Optional)
               </label>
-              <input
+              <input id="post-event"
                 type="text"
                 disabled={!canDraft}
                 value={relatedEvent}
@@ -845,10 +846,10 @@ export function ContentStudio({
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">
+              <label htmlFor="post-event-date" className="block text-xs font-medium text-slate-700 mb-1">
                 Event Date (Optional)
               </label>
-              <input
+              <input id="post-event-date"
                 type="date"
                 disabled={!canDraft}
                 value={eventDate}
@@ -860,7 +861,7 @@ export function ContentStudio({
 
           <div>
             <div className="flex items-center justify-between gap-2 mb-1.5">
-              <label className="block text-xs font-medium text-slate-700">Post Copy</label>
+              <label htmlFor="post-copy" className="block text-xs font-medium text-slate-700">Post Copy</label>
               <div className="flex items-center gap-3">
                 {canDraft && (
                   <AudioRecorderButton
@@ -880,7 +881,7 @@ export function ContentStudio({
                 </span>
               </div>
             </div>
-            <textarea
+            <textarea id="post-copy"
               rows={5}
               required
               disabled={!canDraft}
@@ -893,10 +894,10 @@ export function ContentStudio({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">
+              <label htmlFor="post-cta" className="block text-xs font-medium text-slate-700 mb-1">
                 Call to Action
               </label>
-              <input
+              <input id="post-cta"
                 type="text"
                 disabled={!canDraft}
                 value={callToAction}
@@ -907,7 +908,7 @@ export function ContentStudio({
             </div>
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-medium text-slate-700">
+                <label htmlFor="post-hashtags" className="block text-xs font-medium text-slate-700">
                   Hashtags (WCAG CamelCase)
                 </label>
                 {nonCamelTags.length > 0 && canDraft && (
@@ -920,7 +921,7 @@ export function ContentStudio({
                   </button>
                 )}
               </div>
-              <input
+              <input id="post-hashtags"
                 type="text"
                 disabled={!canDraft}
                 value={hashtagsText}
@@ -1186,8 +1187,8 @@ export function ContentStudio({
           )}
 
           {canDraft && (
-            <div className="pt-4 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
+            <div className="pt-4 border-t border-slate-200 flex flex-col gap-4">
+              <div className="flex flex-wrap items-center gap-2 min-w-0">
                 <label htmlFor="schedule-dt" className="text-xs font-medium text-slate-600 whitespace-nowrap">
                   Schedule Date/Time:
                 </label>
@@ -1197,7 +1198,7 @@ export function ContentStudio({
                   disabled={!canPublishOrSchedule}
                   value={scheduledAt}
                   onChange={(e) => setScheduledAt(e.target.value)}
-                  className="px-2.5 py-1.5 text-xs font-mono-tabular border border-slate-300 rounded-md disabled:bg-slate-100"
+                  className="min-w-0 max-w-full px-2.5 py-1.5 text-xs font-mono-tabular border border-slate-300 rounded-md disabled:bg-slate-100"
                 />
               </div>
               <div className="flex items-center gap-2 flex-wrap">
@@ -1237,7 +1238,7 @@ export function ContentStudio({
         </form>
 
         {/* Platform-Specific Preview & Queues Column */}
-        <div className="lg:col-span-5 space-y-6">
+        <div className="lg:col-span-5 min-w-0 space-y-6">
           <div className="bg-white border border-slate-200 rounded-lg p-5 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
