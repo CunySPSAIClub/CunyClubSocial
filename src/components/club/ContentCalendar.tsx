@@ -1,3 +1,4 @@
+import { CAMPUS_TIME_ZONE, campusDate, shiftCalendarDate } from '../../utils/calendarDates';
 import { useMemo, useState } from 'react';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import type { ClubEvent, Post, SocialAccount } from '../../types';
@@ -34,15 +35,15 @@ export function ContentCalendar({
   const [viewMode, setViewMode] = useState<CalendarViewMode>('Monthly');
   const [platformFilter, setPlatformFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
-  const [selectedDay, setSelectedDay] = useState('2026-11-16');
+  const [selectedDay, setSelectedDay] = useState(() => campusDate());
 
   const entries: CalendarEntry[] = useMemo(() => {
     const accountMap = new Map(accounts.map((a) => [a.accountId, a]));
     const postEntries: CalendarEntry[] = posts.map((p) => {
       const iso = p.scheduledAt || p.publishedAt || p.createdAt;
       const d = new Date(iso);
-      const dateStr = d.toISOString().slice(0, 10);
-      const timeLabel = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const dateStr = campusDate(d);
+      const timeLabel = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: CAMPUS_TIME_ZONE });
       const platformLabel =
         p.targetAccountIds
           .map((id) => accountMap.get(id)?.platform)
@@ -83,15 +84,21 @@ export function ContentCalendar({
       .sort((a, b) => a.dateStr.localeCompare(b.dateStr));
   }, [posts, events, accounts, platformFilter, statusFilter]);
 
-  // November 2026 grid (Nov 1 2026 is Sunday)
-  const novemberDays = Array.from({ length: 30 }, (_, i) => {
-    const dayNum = i + 1;
-    const dateStr = `2026-11-${String(dayNum).padStart(2, '0')}`;
-    return { dayNum, dateStr };
+  const selectedDate = new Date(`${selectedDay}T12:00:00Z`);
+  const year = selectedDate.getUTCFullYear();
+  const month = selectedDate.getUTCMonth();
+  const monthLabel = selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const dayLabel = (date: string) => new Date(`${date}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+  const monthDays = Array.from({ length: new Date(Date.UTC(year, month + 1, 0)).getUTCDate() }, (_, i) => ({
+    dayNum: i + 1, dateStr: `${year}-${String(month + 1).padStart(2, '0')}-${String(i + 1).padStart(2, '0')}`,
+  }));
+  const leadingDays = new Date(Date.UTC(year, month, 1)).getUTCDay();
+  const weekStart = shiftCalendarDate(selectedDay, -selectedDate.getUTCDay(), 'day');
+  const weekDays = Array.from({ length: 7 }, (_, i) => {
+    const dateStr = shiftCalendarDate(weekStart, i, 'day');
+    return { dayNum: Number(dateStr.slice(8)), dateStr };
   });
-
-  // Weekly view centered around Nov 15–21, 2026
-  const weekDays = novemberDays.slice(14, 21);
+  const navigate = (direction: number) => setSelectedDay(shiftCalendarDate(selectedDay, direction * (viewMode === 'Weekly' ? 7 : 1), viewMode === 'Monthly' ? 'month' : 'day'));
 
   return (
     <div className="space-y-6">
@@ -149,12 +156,21 @@ export function ContentCalendar({
         </div>
       </div>
 
+      <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Calendar date navigation">
+        <button type="button" onClick={() => navigate(-1)} className="px-3 py-2 text-sm bg-white border border-slate-300 rounded-md">Previous</button>
+        <button type="button" onClick={() => setSelectedDay(campusDate())} className="px-3 py-2 text-sm bg-white border border-slate-300 rounded-md">Today</button>
+        <button type="button" onClick={() => navigate(1)} className="px-3 py-2 text-sm bg-white border border-slate-300 rounded-md">Next</button>
+        <label htmlFor="calendar-date" className="text-sm text-slate-600">Go to date</label>
+        <input id="calendar-date" type="date" value={selectedDay} onChange={e => { if (e.target.value) setSelectedDay(e.target.value); }} className="min-w-0 px-3 py-2 border border-slate-300 rounded-md" />
+        <span className="text-xs text-slate-500">All times America/New_York</span>
+      </div>
+
       {viewMode === 'Monthly' && (
         <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
           <div className="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between">
             <span className="text-sm font-semibold text-slate-900 flex items-center gap-2">
               <CalendarIcon className="w-4 h-4 text-[#004B87]" />
-              <span>November 2026</span>
+              <span aria-live="polite">{monthLabel}</span>
             </span>
             <span className="text-xs text-slate-500">Click any post to open in Content Studio</span>
           </div>
@@ -166,7 +182,8 @@ export function ContentCalendar({
             ))}
           </div>
           <div className="grid grid-cols-7">
-            {novemberDays.map(({ dayNum, dateStr }) => {
+            {Array.from({ length: leadingDays }, (_, i) => <div key={`blank-${i}`} aria-hidden="true" className="border-b border-r border-slate-200 bg-slate-50" />)}
+            {monthDays.map(({ dayNum, dateStr }) => {
               const dayItems = entries.filter((e) => e.dateStr === dateStr);
               return (
                 <div
@@ -215,7 +232,7 @@ export function ContentCalendar({
       {viewMode === 'Weekly' && (
         <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
           <div className="px-5 py-3.5 border-b border-slate-200 text-sm font-semibold text-slate-900">
-            Week of Nov 15 – Nov 21, 2026
+            Week of {dayLabel(weekStart)} – {dayLabel(weekDays[6].dateStr)}, {year}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-7 divide-y md:divide-y-0 md:divide-x divide-slate-200">
             {weekDays.map(({ dayNum, dateStr }) => {
@@ -223,7 +240,7 @@ export function ContentCalendar({
               return (
                 <div key={dateStr} className="p-3 min-h-[220px] space-y-2">
                   <div className="text-xs font-mono-tabular font-semibold text-slate-700 border-b border-slate-100 pb-1.5">
-                    Nov {dayNum}
+                    {dayLabel(dateStr)}
                   </div>
                   {dayItems.length === 0 ? (
                     <div className="text-[11px] text-slate-400">No items</div>
@@ -259,8 +276,9 @@ export function ContentCalendar({
             </h2>
             <input
               type="date"
+              aria-label="Daily schedule date"
               value={selectedDay}
-              onChange={(e) => setSelectedDay(e.target.value)}
+              onChange={(e) => { if (e.target.value) setSelectedDay(e.target.value); }}
               className="px-3 py-1.5 text-xs font-mono-tabular border border-slate-300 rounded-md"
             />
           </div>
