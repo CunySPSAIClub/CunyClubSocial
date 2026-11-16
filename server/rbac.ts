@@ -44,16 +44,15 @@ export const PERMISSIONS_MATRIX: PermissionRow[] = [
   { capability: 'Manage platform-wide configuration', slSuperAdmin: 'Allowed', slAdmin: 'Not allowed', clubLead: 'Not allowed', editor: 'Not allowed', contributor: 'Not allowed', viewer: 'Not allowed' },
 ];
 
-export function getUserEffectiveClubRole(user: User, clubId: string): RoleName | null {
+export function getUserEffectiveClubRole(user: User, clubId: string, memberships?: ClubMembership[]): RoleName | null {
   if (user.status !== 'Active') return null;
   if (user.systemRole === 'SL_SUPER_ADMIN') return 'SL_SUPER_ADMIN';
   if (user.systemRole === 'SL_ADMIN') {
-    if (!user.assignedAdminClubIds || user.assignedAdminClubIds.includes(clubId)) {
+    if (user.assignedAdminClubIds?.includes(clubId)) {
       return 'SL_ADMIN';
     }
   }
-  const db = getDb();
-  const membership: ClubMembership | undefined = db.memberships.find(
+  const membership: ClubMembership | undefined = (memberships ?? getDb().memberships).find(
     (m) => m.userId === user.userId && m.clubId === clubId && m.status === 'Active'
   );
   return membership ? membership.role : null;
@@ -65,8 +64,11 @@ export function canAccessClub(user: User, clubId: string): boolean {
 
 export function hasClubCapability(user: User, clubId: string, capability: Capability): boolean {
   const role = getUserEffectiveClubRole(user, clubId);
-  if (!role) return false;
+  return roleHasCapability(role, capability);
+}
 
+export function roleHasCapability(role: RoleName | null, capability: Capability): boolean {
+  if (!role) return false;
   switch (capability) {
     case 'VIEW_CLUB_DIRECTORY':
       return true;

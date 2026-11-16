@@ -153,6 +153,7 @@ export function ContentStudio({
   const [reshareTargetClubId, setReshareTargetClubId] = useState('');
   const [reshareNote, setReshareNote] = useState('');
 
+  const baseUpdatedAt = useRef<string | null>(null);
   const [busy, setBusy] = useState(false);
   const { dirty, markChanged, markClean, version, discardDialog } = useDraftProtection(busy);
   const [feedback, setFeedback] = useState('');
@@ -202,6 +203,7 @@ export function ContentStudio({
     if (editingPost) {
       markClean();
       setPostId(editingPost.postId);
+      baseUpdatedAt.current = editingPost.updatedAt;
       setTitle(editingPost.title);
       setCaption(editingPost.caption);
       setHashtagsText(editingPost.hashtags.join(' '));
@@ -224,6 +226,7 @@ export function ContentStudio({
     if (draftHandoff) {
       markChanged();
       setPostId(null);
+      baseUpdatedAt.current = null;
       setTitle(draftHandoff.title);
       setCaption(draftHandoff.caption);
       setHashtagsText(draftHandoff.hashtags.join(' '));
@@ -239,6 +242,7 @@ export function ContentStudio({
   const resetForm = () => {
     markClean();
     setPostId(null);
+    baseUpdatedAt.current = null;
     setTitle('');
     setCaption('');
     setHashtagsText('#CUNYSPS');
@@ -512,7 +516,7 @@ export function ContentStudio({
     }
   };
 
-  const saveOrUpdateDraft = async (): Promise<Post> => {
+  const saveOrUpdateDraft = async (saveCopy = false): Promise<Post> => {
     const savedVersion = version.current;
     const hashtags = hashtagsText
       .split(/[\s,]+/)
@@ -523,10 +527,11 @@ export function ContentStudio({
       ? { ...mediaAsset, altText: altText || mediaAsset.altText }
       : undefined;
 
-    if (postId) {
+    if (postId && !saveCopy) {
       const res = await apiFetch<{ post: Post }>(`/api/clubs/${club.clubId}/posts/${postId}`, {
         method: 'PATCH',
         body: JSON.stringify({
+          expectedUpdatedAt: baseUpdatedAt.current,
           title,
           caption,
           hashtags,
@@ -538,6 +543,7 @@ export function ContentStudio({
           aiAssisted,
         }),
       });
+      baseUpdatedAt.current = res.post.updatedAt;
       markClean(savedVersion);
       return res.post;
     }
@@ -558,6 +564,7 @@ export function ContentStudio({
     });
     markClean(savedVersion);
     setPostId(res.post.postId);
+    baseUpdatedAt.current = res.post.updatedAt;
     return res.post;
   };
 
@@ -790,6 +797,20 @@ export function ContentStudio({
         </div>
       )}
       {canDraft && <p role="status" className="text-xs font-medium text-slate-600">{dirty ? 'Unsaved changes — save your draft before leaving.' : 'No unsaved changes.'}</p>}
+      {error && postId && canDraft && (
+        <button type="button" disabled={busy} className="text-sm font-semibold text-[#004B87] underline disabled:opacity-50"
+          onClick={async () => {
+            setBusy(true);
+            try {
+              await saveOrUpdateDraft(true);
+              setError('');
+              setFeedback('Your edits were saved as a separate draft. The original post was not changed.');
+              await onRefresh();
+            } catch (err) {
+              setError(err instanceof Error ? err.message : 'Unable to save a copy. Your edits are still here.');
+            } finally { setBusy(false); }
+          }}>Save my edits as a new draft</button>
+      )}
       {feedback && (
         <div className="p-3.5 text-xs text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-md flex items-start gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
@@ -1487,6 +1508,7 @@ export function ContentStudio({
                           if (!(await requestDraftDiscard())) return;
                           markClean();
                           setPostId(p.postId);
+                          baseUpdatedAt.current = p.updatedAt;
                           setTitle(p.title);
                           setCaption(p.caption);
                           setHashtagsText(p.hashtags.join(' '));
