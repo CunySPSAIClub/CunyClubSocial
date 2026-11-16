@@ -865,10 +865,10 @@ async function startServer() {
       actorId: user.userId,
       actorName: user.name,
       actorRole: user.systemRole,
-      action: 'INSTITUTIONAL_LOGIN',
+      action: 'DEMO_PERSONA_LOGIN',
       category: 'Authentication',
       target: user.identitySubject,
-      details: `Authenticated via verified CUNY institutional identity (${user.email}).`,
+      details: `Demo persona selected (${user.email}); institutional identity was not verified.`,
     });
     const memberships = db.memberships
       .filter((m) => m.userId === user.userId && m.status === 'Active')
