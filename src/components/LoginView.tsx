@@ -85,7 +85,7 @@ export function LoginView() {
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            Institutional Sign-In
+            Demo Sign-In
           </button>
           <button
             type="button"
@@ -101,7 +101,7 @@ export function LoginView() {
         </div>
 
         <div className="text-xs font-medium text-[#004B87] whitespace-nowrap shrink-0">
-          Verified CUNY Identity Required
+          Demonstration — institutional SSO not connected
         </div>
       </header>
 
@@ -153,9 +153,9 @@ export function LoginView() {
                 Centralized social media governance and publishing for student clubs
               </h1>
               <p className="text-base text-slate-600 leading-relaxed">
-                One institutional sign-in connects authorized student officers, faculty advisors, and
-                Student Life administrators to approved club workspaces—without shared passwords or
-                loss of university custodianship.
+                Explore example workspaces for student officers, faculty advisors, and
+                Student Life administrators. This demonstration uses synthetic identities and is not ready for
+                real student records or official social publishing.
               </p>
               <div className="pt-1">
                 <button
@@ -175,10 +175,10 @@ export function LoginView() {
             >
               <div className="space-y-1">
                 <h2 className="text-base font-semibold text-slate-900">
-                  Institutional Identity Sign-In
+                  Demo Workspace Access
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Sign in with your verified <span className="font-mono">@sps.cuny.edu</span> or{' '}
+                  Explore with a listed demo <span className="font-mono">@sps.cuny.edu</span> or{' '}
                   <span className="font-mono">@spsmail.cuny.edu</span> address.
                 </p>
               </div>
@@ -213,7 +213,7 @@ export function LoginView() {
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-[#004B87] hover:bg-[#003865] disabled:opacity-60 rounded-md transition-colors cursor-pointer"
               >
                 <KeyRound className="w-4 h-4" />
-                <span>{submitting ? 'Verifying Identity...' : 'Sign In via CUNY SSO'}</span>
+                <span>{submitting ? 'Opening Demo...' : 'Enter Demo Workspace'}</span>
               </button>
 
               {personas.length > 0 && (() => {
@@ -225,7 +225,7 @@ export function LoginView() {
                 return (
                   <div className="pt-3 border-t border-slate-100 space-y-2">
                     <div className="text-[11px] font-semibold text-slate-500">
-                      Quick Pilot Portal Launch
+                      Quick Demo Portal Launch
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {adminPersona && (
@@ -258,11 +258,11 @@ export function LoginView() {
               <div className="pt-3 border-t border-slate-100 grid grid-cols-1 gap-2 text-xs text-slate-500">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-slate-400 shrink-0" />
-                  <span>Server-enforced RBAC and club workspace isolation (BR-019)</span>
+                  <span>Demo role restrictions — institutional security review outstanding</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Lock className="w-4 h-4 text-slate-400 shrink-0" />
-                  <span>Social provider tokens isolated from user sessions</span>
+                  <span>Do not enter passwords or real social account credentials</span>
                 </div>
               </div>
             </form>
@@ -272,14 +272,14 @@ export function LoginView() {
             <div className="flex items-baseline justify-between border-b border-slate-200 pb-3">
               <div>
                 <h2 className="text-base font-semibold text-slate-900">
-                  Pilot Stakeholder &amp; Persona Directory
+                  Demo Persona Directory
                 </h2>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Select any verified institutional persona below to inspect role-scoped permissions and portals.
+                  Choose a synthetic persona to explore permissions. This does not verify your identity.
                 </p>
               </div>
               <span className="text-xs font-mono-tabular text-slate-500">
-                {personas.length} verified identities
+                {personas.length} demo personas
               </span>
             </div>
 
@@ -295,7 +295,7 @@ export function LoginView() {
                   user.systemRole === 'SL_SUPER_ADMIN'
                     ? 'All participating clubs'
                     : user.systemRole === 'SL_ADMIN'
-                      ? 'Scoped: AI Club · Data Science Society'
+                      ? `Scoped administrator: ${user.assignedAdminClubIds?.length ?? 0} assigned clubs`
                       : memberships.length > 0
                         ? memberships.map((m) => `${m.clubShortCode} (${m.role})`).join(' · ')
                         : 'No active club workspace';

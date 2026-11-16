@@ -134,7 +134,7 @@ export function EventRemindersView({ onRefreshParent }: EventRemindersViewProps)
       );
       setFeedback(
         res.dispatchedCount > 0
-          ? `24-hour reminder sweep sent ${res.dispatchedCount} email reminder(s) across ${res.checkedEvents} scheduled events.`
+          ? `24-hour reminder sweep recorded ${res.dispatchedCount} email reminder(s) across ${res.checkedEvents} scheduled events.`
           : `Checked ${res.checkedEvents} events — all reminders currently inside the 24-hour window have already been delivered.`
       );
       await loadReminders();
@@ -614,7 +614,7 @@ export function EventRemindersView({ onRefreshParent }: EventRemindersViewProps)
                   <th className="py-3 px-4">Event Start</th>
                   <th className="py-3 px-4">24h Trigger Time</th>
                   <th className="py-3 px-4 text-right">Eligible Members</th>
-                  <th className="py-3 px-4 text-right">Emails Sent</th>
+                  <th className="py-3 px-4 text-right">Reminder Records</th>
                   <th className="py-3 px-4">Reminder Status</th>
                   {canManageReminders && <th className="py-3 px-4 text-right">Action</th>}
                 </tr>
@@ -766,7 +766,7 @@ export function EventRemindersView({ onRefreshParent }: EventRemindersViewProps)
                               : 'font-medium text-emerald-700'
                           }
                         >
-                          {rec.deliveryStatus}
+                          {rec.deliveryStatus === 'Delivered (Hub Outbox)' ? 'Queued (Hub Outbox; legacy record)' : rec.deliveryStatus}
                         </span>
                         <span aria-hidden="true">·</span>
                         <span className="font-mono-tabular">

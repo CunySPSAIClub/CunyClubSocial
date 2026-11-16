@@ -1842,6 +1842,9 @@ export function AppShell() {
         </header>
 
         <main className="flex-1 p-6 lg:p-8 max-w-[1280px] w-full mx-auto">
+          <div role="note" className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+            <strong>Demonstration workspace.</strong> Persona sign-in does not verify institutional identity. Sample account, publishing and analytics records are not evidence of live integrations. Do not enter confidential student information.
+          </div>
           {error && (
             <div role="alert" className="mb-6 p-4 text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg">
               {error}
