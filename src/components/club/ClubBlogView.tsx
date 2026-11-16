@@ -1,3 +1,4 @@
+import { ActionConfirmation, type ConfirmationAction } from '../ActionConfirmation';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
@@ -263,6 +264,7 @@ export function ClubBlogView({
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'ALL' | BlogPostCategory>('ALL');
   const [tagFilter, setTagFilter] = useState<'ALL' | string>('ALL');
+  const [publicationConfirmation, setPublicationConfirmation] = useState<ConfirmationAction | null>(null);
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'Published' | 'Drafts' | 'Archived'>(
     'ALL'
   );
@@ -425,7 +427,12 @@ export function ClubBlogView({
     }
   };
 
-  const handleSubmitArticle = async (targetStatus: BlogPostStatus) => {
+  const handleSubmitArticle = async (targetStatus: BlogPostStatus, confirmed = false) => {
+    if (targetStatus === 'Published' && !confirmed) {
+      if (!title.trim() || !bodyMarkdown.trim()) { setError('Add an article title and body before publishing.'); return; }
+      setPublicationConfirmation({ title: 'Confirm blog audience', description: `Audience: ${visibility}. ${visibility === 'Public Campus' ? 'Anyone visiting the public campus directory may read this article.' : 'This article is intended for signed-in members of this club.'}\nConfirm the audience and preview before publishing.`, preview: `${title}\n\n${excerpt || bodyMarkdown}`, confirmLabel: 'Confirm blog publication', onConfirm: () => { setPublicationConfirmation(null); void handleSubmitArticle(targetStatus, true); } });
+      return;
+    }
     setSaving(true);
     setError('');
     setNotice('');
@@ -650,7 +657,11 @@ export function ClubBlogView({
     }
   };
 
-  const handleQuickStatusChange = async (post: ClubBlogPost, nextStatus: BlogPostStatus) => {
+  const handleQuickStatusChange = async (post: ClubBlogPost, nextStatus: BlogPostStatus, confirmed = false) => {
+    if (nextStatus === 'Published' && !confirmed) {
+      setPublicationConfirmation({ title: 'Confirm blog audience', description: `Audience: ${post.visibility}. ${post.visibility === 'Public Campus' ? 'Anyone visiting the public campus directory may read this article.' : 'This article is intended for signed-in members of this club.'}`, preview: `${post.title}\n\n${post.excerpt || post.bodyMarkdown}`, confirmLabel: 'Confirm blog publication', onConfirm: () => { setPublicationConfirmation(null); void handleQuickStatusChange(post, nextStatus, true); } });
+      return;
+    }
     setBusyPostId(post.blogPostId);
     setError('');
     setNotice('');
@@ -818,6 +829,7 @@ export function ClubBlogView({
 
   return (
     <div className="space-y-6">
+      <ActionConfirmation action={publicationConfirmation} onCancel={() => setPublicationConfirmation(null)} />
       {/* Page Header */}
       <div className="bg-white border border-slate-200 rounded-lg p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div className="flex items-start gap-3.5 min-w-0">
@@ -1335,6 +1347,7 @@ export function ClubBlogView({
                     Audience Visibility
                   </label>
                   <select
+                    aria-label="Article audience"
                     value={visibility}
                     onChange={(e) =>
                       setVisibility(e.target.value as 'Public Campus' | 'Club Members Only')

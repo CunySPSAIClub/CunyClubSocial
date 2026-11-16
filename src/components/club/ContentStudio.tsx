@@ -1,3 +1,5 @@
+import { ActionConfirmation, type ConfirmationAction } from '../ActionConfirmation';
+import { publishingPreflight } from '../../utils/publishingPreflight';
 import { integrationStatus } from '../../utils/integrationStatus';
 import { requestDraftDiscard, useDraftProtection } from '../../utils/draftProtection';
 import { campusDate, campusTimeMs } from '../../utils/calendarDates';
@@ -121,6 +123,7 @@ export function ContentStudio({
   const [callToAction, setCallToAction] = useState('');
   const [relatedEvent, setRelatedEvent] = useState('');
   const [eventDate, setEventDate] = useState('');
+  const [pendingPublishAction, setPendingPublishAction] = useState<ConfirmationAction | null>(null);
   const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>(
     accounts.filter((a) => a.connection.status === 'Connected').map((a) => a.accountId)
   );
@@ -670,7 +673,22 @@ export function ContentStudio({
     }
   };
 
-  const handleSchedule = async () => {
+  const currentPreflight = publishingPreflight({ title, caption, targetAccountIds: selectedAccountIds, mediaAsset: mediaAsset ? { ...mediaAsset, altText } : undefined }, accounts);
+  const confirmPublishing = (action: 'schedule' | 'publish', run: () => void, savedPost?: Post) => {
+    const check = savedPost ? publishingPreflight(savedPost, accounts) : currentPreflight;
+    if (check.errors.length) { setError(check.errors.join(' ')); return; }
+    setError('');
+    setPendingPublishAction({
+      title: action === 'schedule' ? 'Confirm scheduled destinations' : 'Confirm publishing destinations',
+      description: `${action === 'schedule' ? `Schedule at ${scheduledAt.replace('T', ' ')} New York time.` : 'Publish now.'}\n${check.destinations.join('\n')}\nSimulation creates no external post. Configured destinations may contact a provider; configuration does not prove delivery.`,
+      preview: savedPost?.caption ?? caption,
+      confirmLabel: action === 'schedule' ? 'Confirm schedule' : 'Confirm publish',
+      onConfirm: () => { setPendingPublishAction(null); run(); },
+    });
+  };
+
+  const handleSchedule = async (confirmed = false) => {
+    if (!confirmed) { confirmPublishing('schedule', () => void handleSchedule(true)); return; }
     setBusy(true);
     setError('');
     setFeedback('');
@@ -685,7 +703,7 @@ export function ContentStudio({
           targetAccountIds: selectedAccountIds,
         }),
       });
-      setFeedback('Post validated and scheduled for automated publishing.');
+      setFeedback('Schedule recorded. Check the destination modes and queue for publishing outcomes.');
       resetForm();
       await onRefresh();
     } catch (err) {
@@ -695,7 +713,12 @@ export function ContentStudio({
     }
   };
 
-  const handlePublishNow = async (overridePostId?: string) => {
+  const handlePublishNow = async (overridePostId?: string, confirmed = false) => {
+    if (!confirmed) {
+      const queued = overridePostId ? posts.find(post => post.postId === overridePostId) : undefined;
+      if (overridePostId && !queued) { setError('This queued post is unavailable. Refresh the workspace.'); return; }
+      confirmPublishing('publish', () => void handlePublishNow(overridePostId, true), queued); return;
+    }
     setBusy(true);
     setError('');
     setFeedback('');
@@ -715,7 +738,7 @@ export function ContentStudio({
         );
       } else {
         setFeedback(
-          'Content published directly via official platform APIs without routine Student Life pre-approval.'
+          'Publishing attempt recorded. Simulation destinations do not create external posts; check queue results for provider evidence.'
         );
         if (!overridePostId) resetForm();
       }
@@ -733,6 +756,7 @@ export function ContentStudio({
 
   return (
     <div className="space-y-8">
+      <ActionConfirmation action={pendingPublishAction} onCancel={() => setPendingPublishAction(null)} />
       {discardDialog}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -1210,6 +1234,12 @@ export function ContentStudio({
             </div>
           )}
 
+          <section aria-label="Publishing preflight" className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-xs space-y-2">
+            <h2 className="font-semibold text-slate-900">Before scheduling or publishing</h2>
+            {currentPreflight.errors.length ? <ul className="list-disc pl-4 text-amber-900">{currentPreflight.errors.map(issue => <li key={issue}>{issue}</li>)}</ul> : <p className="text-slate-700">Required fields are complete. Review each destination below.</p>}
+            <ul className="space-y-1 text-slate-700">{currentPreflight.destinations.map(destination => <li key={destination}>{destination}</li>)}</ul>
+            <p className="text-slate-500">You can save an incomplete draft. These checks do not verify provider delivery or replace platform validation.</p>
+          </section>
           {canDraft && (
             <div className="pt-4 border-t border-slate-200 flex flex-col gap-4">
               <div className="flex flex-wrap items-center gap-2 min-w-0">
