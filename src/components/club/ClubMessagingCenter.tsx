@@ -1,3 +1,4 @@
+import { DataLoadState } from '../DataLoadState';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ArrowRight,
@@ -86,6 +87,7 @@ export function ClubMessagingCenter({
   const { apiFetch } = useAuth();
   const [payload, setPayload] = useState<MessagingCenterPayload | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
 
@@ -121,7 +123,8 @@ export function ClubMessagingCenter({
 
   const loadMessagingCenter = useCallback(async () => {
     if (!clubId) return;
-    setError('');
+    setLoading(true);
+    setLoadError('');
     try {
       const data = await apiFetch<MessagingCenterPayload>(
         `/api/clubs/${clubId}/messaging-center`
@@ -137,7 +140,7 @@ export function ClubMessagingCenter({
         setWhatsappGroupId('');
       }
     } catch (err) {
-      setError(
+      setLoadError(
         err instanceof Error ? err.message : 'Unable to load club messaging center.'
       );
     } finally {
@@ -304,6 +307,8 @@ export function ClubMessagingCenter({
     variant === 'dashboard' ? filteredBroadcasts.slice(0, 3) : filteredBroadcasts;
 
   const selectedGroup = whatsappGroups.find((g) => g.groupId === whatsappGroupId);
+
+  if (loading || loadError) return <DataLoadState label="messages" loading={loading} error={loadError} onRetry={() => void loadMessagingCenter()} />;
 
   return (
     <section
@@ -685,16 +690,12 @@ export function ClubMessagingCenter({
       )}
 
       {/* Broadcast Feed & Club-Scoped Member Reply Threads */}
-      {loading ? (
-        <div className="p-5 space-y-3">
-          <div className="h-24 bg-slate-100 rounded-md animate-pulse" />
-          <div className="h-24 bg-slate-100 rounded-md animate-pulse" />
-        </div>
-      ) : displayedBroadcasts.length === 0 ? (
+      {displayedBroadcasts.length === 0 ? (
         <div className="p-6 text-center text-xs text-slate-500">
           {broadcasts.length === 0
-            ? `No broadcasts sent in the ${resolvedClubName} workspace yet.`
-            : 'No broadcasts match your current search or filter.'}
+            ? `No broadcasts sent in the ${resolvedClubName} workspace yet. Authorized officers can use New Broadcast; members can return later for updates.`
+            : 'No broadcasts match your current search or filter. Clear the search or choose another channel.'}
+          {(searchQuery || channelFilter !== 'all') && <button type="button" onClick={() => { setSearchQuery(''); setChannelFilter('all'); }} className="mt-3 block mx-auto text-[#004B87] underline">Clear message search and channel</button>}
         </div>
       ) : (
         <div className="divide-y divide-slate-200">

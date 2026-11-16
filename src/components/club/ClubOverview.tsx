@@ -1,3 +1,4 @@
+import { notificationText } from '../../utils/workspacePresentation';
 import { integrationStatus } from '../../utils/integrationStatus';
 import { useCallback, useEffect, useState } from 'react';
 import {
@@ -939,7 +940,7 @@ export function ClubOverview({
                 <div className="text-xs">
                   <span className="font-semibold text-slate-900">{n.title}</span>
                   <span className="text-slate-400 mx-1.5">·</span>
-                  <span className="text-slate-600">{n.message}</span>
+                  <span className="text-slate-600">{notificationText(n.message)}</span>
                 </div>
                 {!n.read && (
                   <button

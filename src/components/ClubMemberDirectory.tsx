@@ -1,3 +1,4 @@
+import { DataLoadState } from './DataLoadState';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ArrowRightLeft,
@@ -70,6 +71,7 @@ export function ClubMemberDirectory({
   const [eligibleStudents, setEligibleStudents] = useState<EligibleStudent[]>([]);
   const [joinRequests, setJoinRequests] = useState<ClubJoinRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
 
@@ -102,7 +104,8 @@ export function ClubMemberDirectory({
   const [submitting, setSubmitting] = useState(false);
 
   const loadDirectory = useCallback(async () => {
-    setError('');
+    setLoading(true);
+    setLoadError('');
     try {
       const [res, jrRes] = await Promise.all([
         apiFetch<MemberDirectoryResponse>('/api/member-directory'),
@@ -113,7 +116,7 @@ export function ClubMemberDirectory({
       setEligibleStudents(res.eligibleStudents);
       setJoinRequests(jrRes.joinRequests ?? []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to load club member directory.');
+      setLoadError(err instanceof Error ? err.message : 'Unable to load club member directory.');
     } finally {
       setLoading(false);
     }
@@ -336,6 +339,8 @@ export function ClubMemberDirectory({
       e.officerTitle !== 'General Member' &&
       e.officerTitle !== 'Faculty Advisor'
   ).length;
+
+  if (loading || loadError) return <DataLoadState label="member directory" loading={loading} error={loadError} onRetry={() => void loadDirectory()} />;
 
   return (
     <div className="space-y-6">
@@ -788,12 +793,7 @@ export function ClubMemberDirectory({
       </div>
 
       {/* Club-Grouped Member Rosters */}
-      {loading ? (
-        <div className="space-y-4">
-          <div className="h-32 bg-slate-200 rounded-lg animate-pulse" />
-          <div className="h-32 bg-slate-200 rounded-lg animate-pulse" />
-        </div>
-      ) : groupedByClub.length === 0 ? (
+      {groupedByClub.length === 0 ? (
         <div className="bg-white border border-slate-200 rounded-lg p-8 text-center space-y-3">
           <p className="text-sm text-slate-600">
             {hasActiveFilters
