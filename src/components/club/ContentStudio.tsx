@@ -1,3 +1,5 @@
+import { requestDraftDiscard, useDraftProtection } from '../../utils/draftProtection';
+import { campusDate, campusTimeMs } from '../../utils/calendarDates';
 import { userFacingAiError } from '../../utils/userFacingError';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -121,7 +123,7 @@ export function ContentStudio({
   const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>(
     accounts.filter((a) => a.connection.status === 'Connected').map((a) => a.accountId)
   );
-  const [scheduledAt, setScheduledAt] = useState('2026-11-20T15:00');
+  const [scheduledAt, setScheduledAt] = useState(() => `${campusDate()}T15:00`);
   const [mediaAsset, setMediaAsset] = useState<MediaAsset | undefined>(undefined);
   const [altText, setAltText] = useState('');
   const [previewPlatform, setPreviewPlatform] = useState<SocialPlatform>('Facebook Pages');
@@ -148,6 +150,7 @@ export function ContentStudio({
   const [reshareNote, setReshareNote] = useState('');
 
   const [busy, setBusy] = useState(false);
+  const { dirty, markChanged, markClean, version, discardDialog } = useDraftProtection(busy);
   const [feedback, setFeedback] = useState('');
   const [error, setError] = useState('');
 
@@ -193,6 +196,7 @@ export function ContentStudio({
 
   useEffect(() => {
     if (editingPost) {
+      markClean();
       setPostId(editingPost.postId);
       setTitle(editingPost.title);
       setCaption(editingPost.caption);
@@ -202,7 +206,9 @@ export function ContentStudio({
       setEventDate(editingPost.eventDate ?? '');
       setSelectedAccountIds(editingPost.targetAccountIds);
       if (editingPost.scheduledAt) {
-        setScheduledAt(editingPost.scheduledAt.slice(0, 16));
+        const instant = new Date(editingPost.scheduledAt);
+        const time = instant.toLocaleTimeString('en-GB', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+        setScheduledAt(`${campusDate(instant)}T${time}`);
       }
       setMediaAsset(editingPost.mediaAsset);
       setAltText(editingPost.mediaAsset?.altText ?? '');
@@ -212,6 +218,7 @@ export function ContentStudio({
 
   useEffect(() => {
     if (draftHandoff) {
+      markChanged();
       setPostId(null);
       setTitle(draftHandoff.title);
       setCaption(draftHandoff.caption);
@@ -226,6 +233,7 @@ export function ContentStudio({
   }, [draftHandoff, setDraftHandoff]);
 
   const resetForm = () => {
+    markClean();
     setPostId(null);
     setTitle('');
     setCaption('');
@@ -251,6 +259,7 @@ export function ContentStudio({
       .split(/(\s+)/)
       .map((part) => (part.startsWith('#') ? toCamelCaseHashtag(part) : part))
       .join('');
+    markChanged();
     setHashtagsText(converted);
     setFeedback('Converted hashtags to WCAG CamelCase for screen-reader accessibility.');
   };
@@ -260,6 +269,7 @@ export function ContentStudio({
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
+      markChanged();
       const dataUrl = String(reader.result);
       setMediaAsset({
         assetId: `asset-${Date.now()}`,
@@ -296,6 +306,7 @@ export function ContentStudio({
           }),
         }
       );
+      markChanged();
       setAltText(res.altText);
       setMediaAsset((prev) => (prev ? { ...prev, altText: res.altText } : prev));
       setFeedback(`Generated WCAG 2.1 AA alt-text via ${res.modelUsed ?? 'Gemini Vision'}.`);
@@ -447,6 +458,7 @@ export function ContentStudio({
 
     const dataUrl = canvas.toDataURL('image/png');
     const generatedAlt = `${flyerTemplate} flyer for ${club.name}: ${headline}. ${cardSubtitle}. Date: ${eventDate || 'Upcoming'}.`;
+    markChanged();
     setAltText(generatedAlt);
     setMediaAsset({
       assetId: `asset-gfx-${Date.now()}`,
@@ -483,6 +495,7 @@ export function ContentStudio({
           tone: aiTone,
         }),
       });
+      markChanged();
       setCaption(res.caption);
       setHashtagsText(res.hashtags.join(' '));
       setCallToAction(res.callToAction);
@@ -496,6 +509,7 @@ export function ContentStudio({
   };
 
   const saveOrUpdateDraft = async (): Promise<Post> => {
+    const savedVersion = version.current;
     const hashtags = hashtagsText
       .split(/[\s,]+/)
       .map((t) => t.trim())
@@ -520,6 +534,7 @@ export function ContentStudio({
           aiAssisted,
         }),
       });
+      markClean(savedVersion);
       return res.post;
     }
 
@@ -537,6 +552,7 @@ export function ContentStudio({
         aiAssisted,
       }),
     });
+    markClean(savedVersion);
     setPostId(res.post.postId);
     return res.post;
   };
@@ -658,11 +674,13 @@ export function ContentStudio({
     setError('');
     setFeedback('');
     try {
+      const instant = campusTimeMs(scheduledAt.slice(0, 10), scheduledAt.slice(11));
+      if (!Number.isFinite(instant) || instant <= Date.now()) throw new Error('Choose a future New York time. Daylight-saving gaps and repeated-hour times are not supported; choose another time.');
       const saved = await saveOrUpdateDraft();
       await apiFetch(`/api/clubs/${club.clubId}/posts/${saved.postId}/schedule`, {
         method: 'POST',
         body: JSON.stringify({
-          scheduledAt: new Date(scheduledAt).toISOString(),
+          scheduledAt: new Date(instant).toISOString(),
           targetAccountIds: selectedAccountIds,
         }),
       });
@@ -714,6 +732,7 @@ export function ContentStudio({
 
   return (
     <div className="space-y-8">
+      {discardDialog}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Content Creation Studio</h1>
@@ -725,7 +744,7 @@ export function ContentStudio({
         {postId && (
           <button
             type="button"
-            onClick={resetForm}
+            onClick={async () => { if (await requestDraftDiscard()) resetForm(); }}
             className="px-3.5 py-2 text-xs font-medium text-slate-700 border border-slate-300 bg-white hover:bg-slate-50 rounded-md whitespace-nowrap cursor-pointer"
           >
             New Blank Draft
@@ -745,6 +764,7 @@ export function ContentStudio({
           <span>{error}</span>
         </div>
       )}
+      {canDraft && <p role="status" className="text-xs font-medium text-slate-600">{dirty ? 'Unsaved changes — save your draft before leaving.' : 'No unsaved changes.'}</p>}
       {feedback && (
         <div className="p-3.5 text-xs text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-md flex items-start gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
@@ -755,9 +775,11 @@ export function ContentStudio({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Composer Column */}
         <form
+          onChangeCapture={markChanged}
           onSubmit={handleSaveDraft}
           className="lg:col-span-7 min-w-0 bg-white border border-slate-200 rounded-lg p-6 space-y-5"
         >
+          <fieldset disabled={busy} className="min-w-0 space-y-5">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div className="flex items-center gap-2.5">
               <h2 className="text-sm font-semibold text-slate-900">
@@ -869,6 +891,7 @@ export function ContentStudio({
                     compact
                     contextHint={`Social post caption for ${club.name}`}
                     onTranscript={(transcript) => {
+                      markChanged();
                       setCaption((prev) => (prev ? `${prev}\n\n${transcript}` : transcript));
                       setAiAssisted(true);
                       setFeedback('Voice transcript added to Post Copy. Review and edit before publishing.');
@@ -1044,7 +1067,7 @@ export function ContentStudio({
                     {canDraft && (
                       <button
                         type="button"
-                        onClick={() => setMediaAsset(undefined)}
+                        onClick={() => { markChanged(); setMediaAsset(undefined); }}
                         className="text-red-700 hover:underline cursor-pointer"
                       >
                         Remove
@@ -1190,7 +1213,7 @@ export function ContentStudio({
             <div className="pt-4 border-t border-slate-200 flex flex-col gap-4">
               <div className="flex flex-wrap items-center gap-2 min-w-0">
                 <label htmlFor="schedule-dt" className="text-xs font-medium text-slate-600 whitespace-nowrap">
-                  Schedule Date/Time:
+                  Schedule Date/Time (New York):
                 </label>
                 <input
                   id="schedule-dt"
@@ -1235,6 +1258,7 @@ export function ContentStudio({
               </div>
             </div>
           )}
+          </fieldset>
         </form>
 
         {/* Platform-Specific Preview & Queues Column */}
@@ -1428,7 +1452,9 @@ export function ContentStudio({
                     <div className="flex items-start justify-between gap-2">
                       <button
                         type="button"
-                        onClick={() => {
+                        onClick={async () => {
+                          if (!(await requestDraftDiscard())) return;
+                          markClean();
                           setPostId(p.postId);
                           setTitle(p.title);
                           setCaption(p.caption);

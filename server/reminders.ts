@@ -1,3 +1,4 @@
+import { campusTimeMs } from '../src/utils/calendarDates.ts';
 import nodemailer, { type Transporter } from 'nodemailer';
 import type {
   ClubEvent,
@@ -14,14 +15,12 @@ import { getDb, pushNotification, recordAudit, saveDb } from './store.ts';
 const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
 
 export function parseEventStartMs(dateStr: string, timeStr: string): number {
-  const normalizedTime = /^\d{2}:\d{2}$/.test(timeStr.trim()) ? `${timeStr.trim()}:00` : timeStr.trim();
-  const parsed = new Date(`${dateStr.trim()}T${normalizedTime}`);
-  return parsed.getTime();
+  return campusTimeMs(dateStr, timeStr);
 }
 
 export function get24HourTriggerIso(dateStr: string, timeStr: string): string {
   const startMs = parseEventStartMs(dateStr, timeStr);
-  if (Number.isNaN(startMs)) return new Date().toISOString();
+  if (Number.isNaN(startMs)) return ''; // Invalid or ambiguous local time: never invent a trigger.
   return new Date(startMs - TWENTY_FOUR_HOURS_MS).toISOString();
 }
 
@@ -434,7 +433,9 @@ export function getReminderOverviewForUser(user: User): {
       const eligibleMemberCount = getEligibleRecipientsForEvent(ev).length;
 
       let status: ScheduledReminderSlot['status'] = 'Scheduled (24h Prior)';
-      if (!Number.isNaN(startMs) && startMs <= nowMs) {
+      if (Number.isNaN(startMs)) {
+        status = 'Invalid Event Time';
+      } else if (startMs <= nowMs) {
         status = 'Event Passed';
       } else if (dispatchedCount > 0 || (!Number.isNaN(triggerMs) && nowMs >= triggerMs)) {
         status = 'Sent (24h Window)';

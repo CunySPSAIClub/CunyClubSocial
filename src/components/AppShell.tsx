@@ -1,3 +1,4 @@
+import { requestDraftDiscard } from '../utils/draftProtection';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   Activity,
@@ -1451,6 +1452,7 @@ export function AppShell() {
   };
 
   const handleNotificationSelect = async (n: NotificationItem) => {
+    if (!(await requestDraftDiscard())) return;
     if (!n.read) {
       await handleMarkNotificationRead(n.notificationId);
     }
@@ -1484,7 +1486,8 @@ export function AppShell() {
     }
   };
 
-  const handleDraftPostFromEvent = (ev: ClubEvent) => {
+  const handleDraftPostFromEvent = async (ev: ClubEvent) => {
+    if (!(await requestDraftDiscard())) return;
     setActiveClubId(ev.clubId);
     setPortalMode('CLUB');
     setEditingPost(null);
@@ -1503,7 +1506,8 @@ export function AppShell() {
     setClubTab('create-post');
   };
 
-  const handleOpenClubWorkspace = (clubId: string) => {
+  const handleOpenClubWorkspace = async (clubId: string) => {
+    if (!(await requestDraftDiscard())) return;
     setActiveClubId(clubId);
     setPortalMode('CLUB');
     setClubTab('overview');
@@ -1514,7 +1518,8 @@ export function AppShell() {
   const currentTabLabel =
     navItems.find((item) => item.id === currentTabId)?.label ?? 'Overview';
 
-  const handleSelectNav = (id: string) => {
+  const handleSelectNav = async (id: string) => {
+    if (!(await requestDraftDiscard())) return;
     if (portalMode === 'ADMIN') setAdminTab(id);
     else setClubTab(id);
     setMobileMenuOpen(false);
@@ -1553,7 +1558,7 @@ export function AppShell() {
             <div className="grid grid-cols-2 gap-1 p-1 bg-slate-100 rounded-md">
               <button
                 type="button"
-                onClick={() => setPortalMode('ADMIN')}
+                onClick={async () => { if (await requestDraftDiscard()) setPortalMode('ADMIN'); }}
                 className={`py-1.5 px-2 text-xs font-medium rounded transition-colors whitespace-nowrap cursor-pointer ${
                   portalMode === 'ADMIN'
                     ? 'bg-white text-slate-900 shadow-sm'
@@ -1564,7 +1569,7 @@ export function AppShell() {
               </button>
               <button
                 type="button"
-                onClick={() => setPortalMode('CLUB')}
+                onClick={async () => { if (await requestDraftDiscard()) setPortalMode('CLUB'); }}
                 className={`py-1.5 px-2 text-xs font-medium rounded transition-colors whitespace-nowrap cursor-pointer ${
                   portalMode === 'CLUB'
                     ? 'bg-white text-slate-900 shadow-sm'
@@ -1600,8 +1605,10 @@ export function AppShell() {
                 <select
                   id="workspace-select"
                   value={activeClubId ?? ''}
-                  onChange={(e) => {
-                    setActiveClubId(e.target.value);
+                  onChange={async (e) => {
+                    const nextClub = e.target.value;
+                    if (!(await requestDraftDiscard())) return;
+                    setActiveClubId(nextClub);
                     setEditingPost(null);
                   }}
                   className="w-full px-2.5 py-1.5 text-xs font-medium text-slate-900 bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:border-[#004B87]"
@@ -1679,7 +1686,7 @@ export function AppShell() {
             </div>
             <button
               type="button"
-              onClick={logout}
+              onClick={async () => { if (await requestDraftDiscard()) logout(); }}
               className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-700 border border-slate-300 hover:bg-slate-50 rounded-md transition-colors cursor-pointer whitespace-nowrap"
             >
               <LogOut className="w-3.5 h-3.5 shrink-0" />
