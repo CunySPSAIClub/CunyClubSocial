@@ -1,3 +1,4 @@
+import { integrationStatus } from '../../utils/integrationStatus';
 import { useState } from 'react';
 import { KeyRound, Lock, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -21,7 +22,7 @@ export function AdminAccountsView({ data, onRefresh }: AdminAccountsViewProps) {
       await apiFetch(`/api/clubs/${clubId}/social-accounts/${accountId}/connect`, {
         method: 'POST',
       });
-      setMessage('OAuth token refreshed and recorded in secret vault reference.');
+      setMessage('Hub connection record updated. Provider authorization has not been verified by this action.');
       await onRefresh();
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Failed to reconnect account.');
@@ -87,7 +88,7 @@ export function AdminAccountsView({ data, onRefresh }: AdminAccountsViewProps) {
                   </div>
                 </td>
                 <td className="py-3.5 px-4">
-                  <StatusText status={acc.connection.status} />
+                  <StatusText status={integrationStatus(acc).label} /><p className="mt-1 max-w-xs text-xs text-slate-500">{integrationStatus(acc).detail}</p>
                 </td>
                 <td className="py-3.5 px-4 text-right">
                   {acc.connection.status !== 'Connected' ? (
@@ -108,7 +109,7 @@ export function AdminAccountsView({ data, onRefresh }: AdminAccountsViewProps) {
                       className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-slate-700 border border-slate-300 hover:bg-slate-50 rounded-md whitespace-nowrap cursor-pointer"
                     >
                       <RefreshCw className="w-3 h-3" />
-                      <span>Verify Token</span>
+                      <span>Update record</span>
                     </button>
                   )}
                 </td>
