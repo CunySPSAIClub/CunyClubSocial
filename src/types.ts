@@ -500,7 +500,8 @@ export interface NotificationItem {
 
 export type EmailReminderDeliveryStatus =
   | 'Sent (SMTP)'
-  | 'Delivered (Hub Outbox)'
+  | 'Delivered (Hub Outbox)' // Legacy records only; not proof of delivery
+  | 'Queued (Hub Outbox)'
   | 'Delivered (Webhook Verified)'
   | 'Bounced'
   | 'Deferred'
