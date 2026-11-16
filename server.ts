@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { DraftUpdateError, updateDraft } from './server/draftUpdates.ts';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import path from 'node:path';
 import { createServer as createViteServer } from 'vite';
@@ -3491,7 +3492,22 @@ async function startServer() {
       res.status(404).json({ error: 'Post not found.' });
       return;
     }
-    Object.assign(post, req.body, { updatedAt: new Date().toISOString() });
+    if (post.status === 'Scheduled' && !hasClubCapability(user, clubId, 'SCHEDULE_CONTENT')) {
+      res.status(403).json({ error: 'Only an Editor or Club Lead may change scheduled content.' });
+      return;
+    }
+    try {
+      const updated = updateDraft(post, req.body ?? {});
+      if (updated.targetAccountIds.some(id => !db.socialAccounts.some(a => a.accountId === id && a.clubId === clubId))) {
+        res.status(400).json({ error: 'Every destination must belong to this club workspace.' });
+        return;
+      }
+      Object.assign(post, updated);
+    } catch (err) {
+      if (!(err instanceof DraftUpdateError)) throw err;
+      res.status(err.status).json({ error: err.message });
+      return;
+    }
     saveDb();
     res.json({ post });
   });
@@ -8514,7 +8530,7 @@ async function startServer() {
     });
   }
 
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT || 3000);
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`CUNY SPS Club Social Hub server running on http://0.0.0.0:${PORT}`);
   });
