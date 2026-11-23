@@ -20,6 +20,12 @@ test('Screen 1 (Home) renders required hero, CTA, featured clubs, and events', (
   // 3. Mobile responsiveness safeguards
   assert.match(html, /overflow-x-hidden/i, 'Root container must guard against sideways scrolling');
   assert.match(html, /w-full/i, 'Containers must be fluidly responsive');
+
+  // 4. Top utility bar social networks (LinkedIn & Facebook)
+  assert.match(html, /https:\/\/www\.linkedin\.com\/school\/cuny-school-of-professional-studies\//i, 'Top header must feature student LinkedIn link');
+  assert.match(html, /https:\/\/www\.facebook\.com\/cunysps\//i, 'Top header must feature SPS Facebook link');
+  assert.match(html, /Student LinkedIn/i, 'Must have Student LinkedIn action label');
+  assert.match(html, /SPS Facebook/i, 'Must have SPS Facebook action label');
 });
 
 test('Screen 2 (Directory Dataset) contains all 34 recognized clubs and metadata', () => {

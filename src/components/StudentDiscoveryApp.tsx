@@ -189,6 +189,51 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-[#FFB81C]/30 selection:text-slate-900 overflow-x-hidden">
       {/* Top Banner & Main Header */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200">
+        {/* Top Community Utility Bar: Student & Alumni Social Networks */}
+        <div className="bg-gradient-to-r from-[#00284d] via-[#004B87] to-[#00284d] text-white border-b border-white/10 shadow-xs relative z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between gap-3 text-xs">
+            {/* Left Tagline & Badge */}
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-[#FFD100] text-[10px] sm:text-[11px] font-bold tracking-wide uppercase shadow-2xs shrink-0 border border-white/15">
+                <Sparkles className="w-3 h-3 text-[#FFD100] animate-pulse" />
+                <span>SPS Networks</span>
+              </span>
+              <p className="text-white/90 text-xs font-medium truncate hidden sm:block">
+                Connect with 25,000+ CUNY SPS students &amp; alumni on official school channels:
+              </p>
+            </div>
+
+            {/* Right Action Pills: Student LinkedIn & SPS Facebook */}
+            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+              <a
+                href="https://www.linkedin.com/school/cuny-school-of-professional-studies/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Connect on CUNY SPS Student & Alumni LinkedIn"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0A66C2] hover:bg-[#004182] text-white font-semibold text-xs transition-all duration-150 shadow-sm hover:shadow-md hover:shadow-[#0A66C2]/40 hover:scale-[1.03] active:scale-[0.98] group cursor-pointer border border-white/20"
+                title="Connect with CUNY SPS on LinkedIn"
+              >
+                <LinkedInIcon className="w-3.5 h-3.5 fill-white shrink-0 group-hover:rotate-6 transition-transform" />
+                <span className="font-semibold tracking-tight">Student LinkedIn</span>
+                <ExternalLink className="w-2.5 h-2.5 opacity-70 group-hover:opacity-100" />
+              </a>
+
+              <a
+                href="https://www.facebook.com/cunysps/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Join CUNY SPS Student Facebook Community"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1877F2] hover:bg-[#0d65d9] text-white font-semibold text-xs transition-all duration-150 shadow-sm hover:shadow-md hover:shadow-[#1877F2]/40 hover:scale-[1.03] active:scale-[0.98] group cursor-pointer border border-white/20"
+                title="Follow CUNY SPS on Facebook"
+              >
+                <FacebookIcon className="w-3.5 h-3.5 fill-white shrink-0 group-hover:rotate-6 transition-transform" />
+                <span className="font-semibold tracking-tight">SPS Facebook</span>
+                <ExternalLink className="w-2.5 h-2.5 opacity-70 group-hover:opacity-100" />
+              </a>
+            </div>
+          </div>
+        </div>
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="h-16 flex items-center justify-between gap-4">
             {/* Brand Logo & Name */}
@@ -321,6 +366,38 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
               <span>Campus Events ({EVENTS_DATA.length})</span>
               <ChevronRight className="w-4 h-4 text-slate-400" />
             </button>
+
+            {/* Mobile Community Social Cards */}
+            <div className="pt-3 pb-1 border-t border-slate-100 space-y-2">
+              <div className="flex items-center justify-between px-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                  Official Student Networks
+                </span>
+                <span className="text-[10px] text-slate-400 font-medium">SPS Community</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <a
+                  href="https://www.linkedin.com/school/cuny-school-of-professional-studies/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1.5 px-3 py-2.5 bg-[#0A66C2] hover:bg-[#004182] text-white rounded-xl text-xs font-semibold shadow-xs transition-colors"
+                >
+                  <LinkedInIcon className="w-4 h-4 fill-white shrink-0" />
+                  <span>Student LinkedIn</span>
+                  <ExternalLink className="w-3 h-3 opacity-80" />
+                </a>
+                <a
+                  href="https://www.facebook.com/cunysps/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1.5 px-3 py-2.5 bg-[#1877F2] hover:bg-[#0d65d9] text-white rounded-xl text-xs font-semibold shadow-xs transition-colors"
+                >
+                  <FacebookIcon className="w-4 h-4 fill-white shrink-0" />
+                  <span>SPS Facebook</span>
+                  <ExternalLink className="w-3 h-3 opacity-80" />
+                </a>
+              </div>
+            </div>
 
             {onOpenPortal && (
               <div className="pt-3 border-t border-slate-100">
@@ -1261,6 +1338,27 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
           </div>
 
           <div className="flex items-center gap-4">
+            <a
+              href="https://www.linkedin.com/school/cuny-school-of-professional-studies/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-500 hover:text-[#0A66C2] flex items-center gap-1 transition-colors"
+              title="Connect on LinkedIn"
+            >
+              <LinkedInIcon className="w-3.5 h-3.5 fill-current" />
+              <span>LinkedIn</span>
+            </a>
+            <a
+              href="https://www.facebook.com/cunysps/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-500 hover:text-[#1877F2] flex items-center gap-1 transition-colors"
+              title="Follow on Facebook"
+            >
+              <FacebookIcon className="w-3.5 h-3.5 fill-current" />
+              <span>Facebook</span>
+            </a>
+            <span className="text-slate-300">·</span>
             <button
               type="button"
               onClick={() => navigateTo('home')}
