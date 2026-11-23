@@ -2,9 +2,9 @@ export const STUDENT_LIFE_LOGO_URL = '/assets/aistudio/concept_idea_2_final-01_a
 export const AI_CLUB_LOGO_URL = '/assets/aistudio/c40622e2-7fb5-4f17-b219-706c74628073_ba47136b.jpg';
 export const MSA_CLUB_LOGO_URL = '/assets/aistudio/CUNY_SPS_MSA_Crescent_Badge_afa3c1dd.png';
 export const HUB_LOGO_SHEET_URL = '/assets/aistudio/Club_Social_Hub_-_Logo_Sheet_352913ad.jpg';
-export const HUB_MARK_SVG_URL = '/club-social-hub-mark.svg';
-export const HUB_LOCKUP_DARK_SVG_URL = '/club-social-hub-lockup-dark.svg';
-export const HUB_LOCKUP_LIGHT_SVG_URL = '/club-social-hub-lockup-light.svg';
+export const HUB_MARK_SVG_URL = './club-social-hub-mark.svg';
+export const HUB_LOCKUP_DARK_SVG_URL = './club-social-hub-lockup-dark.svg';
+export const HUB_LOCKUP_LIGHT_SVG_URL = './club-social-hub-lockup-light.svg';
 
 export const HUB_BRAND_PALETTE = [
   { name: 'Ink', hex: '#0B0B0F', role: 'Primary Dark Surface & Wordmark' },

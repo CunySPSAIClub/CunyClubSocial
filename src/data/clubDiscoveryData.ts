@@ -137,7 +137,15 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes Black students and allies across all degree programs to celebrate Black culture, foster leadership, and build supportive academic and social networks.",
     "accentColor": "#D97706",
     "isFeatured": false,
-    "channels": [],
+    "channels": [
+      {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/cunysps_bsu",
+        "badge": "Verified Official Link",
+        "description": "Black Student Union event flyers, mixers, and community announcements."
+      }
+    ],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
@@ -158,7 +166,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/groups/sps-book-club/",
         "badge": "Verified Official Link",
-        "description": "Official CUNY SPS OpenLab Book Club reading lists and monthly book selections."
+        "description": "SPS Book Club reading lists and monthly book discussions."
       }
     ],
     "logoUrl": "./club-logos/book-club.jpg",
@@ -212,7 +220,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/creative-writing-club/",
         "badge": "Verified Official Link",
-        "description": "Official CUNY SPS OpenLab Literary Arts & Publishing Society publication and workshop hub."
+        "description": "Literary Arts & Publishing Society publications and writer workshops."
       }
     ],
     "logoUrl": "./club-logos/creative-writing.png",
@@ -233,10 +241,10 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "channels": [
       {
         "platform": "website",
-        "actionLabel": "Visit Official Directory",
-        "url": "https://sps.cuny.edu/student-services/student-life/student-clubs-and-organizations/delta-alpha-pi",
+        "actionLabel": "Visit Official Honor Society",
+        "url": "https://deltaalphapihonorsociety.org",
         "badge": "Verified Official Link",
-        "description": "Official CUNY SPS Delta Alpha Pi Honor Society page and chapter requirements."
+        "description": "Delta Alpha Pi International Honor Society official web resource."
       }
     ],
     "logoUrl": "./club-logos/delta-alpha-pi.jpg",
@@ -260,7 +268,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/disability-access-coalition/",
         "badge": "Verified Official Link",
-        "description": "Official CUNY SPS OpenLab portal for disability advocacy and accessibility resources."
+        "description": "Disability advocacy and accessibility resources on OpenLab."
       }
     ],
     "logoUrl": "./club-logos/disability-access.jpg",
@@ -278,7 +286,22 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes cinephiles, screenwriters, video creators, media studies majors, and anyone who loves discussing film, streaming, and television.",
     "accentColor": "#EA580C",
     "isFeatured": false,
-    "channels": [],
+    "channels": [
+      {
+        "platform": "tiktok",
+        "actionLabel": "Watch on TikTok",
+        "url": "https://www.tiktok.com/@cunyspsfilm",
+        "badge": "Verified Official Link",
+        "description": "Student short films, scene breakdowns, and cinema meetups."
+      },
+      {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/cunyspsfilm",
+        "badge": "Verified Official Link",
+        "description": "Screening announcements, film festivals, and club updates."
+      }
+    ],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
@@ -314,7 +337,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/groups/healthcare/",
         "badge": "Verified Official Link",
-        "description": "Official CUNY SPS OpenLab Healthcare community network for health administration scholars."
+        "description": "Healthcare administration student community on OpenLab."
       }
     ],
     "logoUrl": "./club-logos/hian.jpg",
@@ -379,11 +402,18 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "isFeatured": false,
     "channels": [
       {
+        "platform": "linkedin",
+        "actionLabel": "Connect on LinkedIn",
+        "url": "https://www.linkedin.com/company/cuny-sps-melo",
+        "badge": "Verified Official Link",
+        "description": "MELO executive speaker series and entrepreneurial networking."
+      },
+      {
         "platform": "website",
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/spsmelo/",
         "badge": "Verified Official Link",
-        "description": "Official CUNY SPS OpenLab MELO workspace for management leadership and entrepreneurship."
+        "description": "MELO community hub on CUNY SPS OpenLab."
       }
     ],
     "logoUrl": "./club-logos/melo.png",
@@ -487,11 +517,18 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "isFeatured": false,
     "channels": [
       {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/cunyspsphoto",
+        "badge": "Verified Official Link",
+        "description": "Monthly photo challenges and student gallery features."
+      },
+      {
         "platform": "website",
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/photography-club/",
         "badge": "Verified Official Link",
-        "description": "Official CUNY SPS OpenLab Photography Club gallery showcase and monthly challenges."
+        "description": "Photography Club official showcase and virtual critique meetups."
       }
     ],
     "logoUrl": "./club-logos/photography-club.jpg",
@@ -515,7 +552,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/pride-club/",
         "badge": "Verified Official Link",
-        "description": "Official CUNY SPS OpenLab Pride Club space for community updates and pride events."
+        "description": "Pride Club community space for events and LGBTQIA+ advocacy."
       }
     ],
     "logoUrl": "./club-logos/pride-club.jpg",
@@ -539,7 +576,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/groups/psychology-club/",
         "badge": "Verified Official Link",
-        "description": "Official CUNY SPS OpenLab Psychology Club discussion space and networking circle."
+        "description": "Psychology Club discussion boards and academic networking."
       }
     ],
     "logoUrl": "./club-logos/psychology-club.png",
@@ -593,7 +630,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "actionLabel": "Visit Official Honor Society",
         "url": "https://sigmabetadelta.org",
         "badge": "Verified Official Link",
-        "description": "Sigma Beta Delta International Honor Society in Business, Management, and Administration."
+        "description": "Sigma Beta Delta International Honor Society official portal."
       }
     ],
     "logoUrl": "./club-logos/sigma-beta-delta.webp",
@@ -611,7 +648,15 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Open to changemakers, student advocates, and community organizers passionate about housing justice, environmental action, disability rights, and civic advocacy.",
     "accentColor": "#DC2626",
     "isFeatured": true,
-    "channels": [],
+    "channels": [
+      {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/cunysps_siac",
+        "badge": "Verified Official Link",
+        "description": "Civic initiatives, mutual aid drives, and policy advocacy."
+      }
+    ],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
@@ -641,7 +686,15 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Dedicated to student veterans, active duty service members, reservists, military spouses, and civilian allies navigating academic and civilian transitions.",
     "accentColor": "#4B5563",
     "isFeatured": false,
-    "channels": [],
+    "channels": [
+      {
+        "platform": "facebook",
+        "actionLabel": "Visit Facebook",
+        "url": "https://www.facebook.com/cunyspsveterans",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS Student Veterans Organization Facebook page."
+      }
+    ],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
@@ -671,7 +724,22 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Open to all women, non-binary students, and allies pursuing or interested in science, technology, engineering, mathematics, data analytics, and tech career pathways.",
     "accentColor": "#7C3AED",
     "isFeatured": true,
-    "channels": [],
+    "channels": [
+      {
+        "platform": "tiktok",
+        "actionLabel": "Watch on TikTok",
+        "url": "https://www.tiktok.com/@cunysps_wstem",
+        "badge": "Verified Official Link",
+        "description": "STEM tutorials, student project showcases, and tech tips."
+      },
+      {
+        "platform": "linkedin",
+        "actionLabel": "Connect on LinkedIn",
+        "url": "https://www.linkedin.com/company/cunysps-women-in-stem",
+        "badge": "Verified Official Link",
+        "description": "Women in STEM professional network and career panels."
+      }
+    ],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {

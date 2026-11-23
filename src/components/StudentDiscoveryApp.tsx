@@ -195,23 +195,25 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
             <button
               type="button"
               onClick={() => navigateTo('home')}
-              className="flex items-center gap-3 text-left cursor-pointer group focus-visible:outline-2 focus-visible:outline-[#004B87] rounded-lg p-1"
-              aria-label="CUNY SPS Club Discovery Home"
+              className="flex items-center gap-2.5 sm:gap-3 text-left cursor-pointer group focus-visible:outline-2 focus-visible:outline-[#004B87] rounded-lg p-1"
+              aria-label="CUNY SPS Club Social Hub Home"
             >
-              <div className="w-10 h-10 rounded-xl bg-[#004B87] flex items-center justify-center text-white font-bold text-sm tracking-tight shadow-sm group-hover:bg-[#003865] transition-colors">
-                SPS
-              </div>
+              <img
+                src="./club-social-hub-mark.svg"
+                alt="Club Social Hub logo"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl shrink-0 shadow-sm transition-transform group-hover:scale-105"
+                width="40"
+                height="40"
+              />
               <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-slate-900 text-sm sm:text-base leading-tight tracking-tight">
-                    CUNY SPS
+                <div className="flex items-center gap-1.5">
+                  <span className="font-extrabold text-slate-900 text-sm sm:text-base leading-tight tracking-tight">
+                    Club Social Hub
                   </span>
-                  <span className="hidden sm:inline-flex px-1.5 py-0.5 text-[10px] font-semibold bg-sky-100 text-[#004B87] rounded">
-                    Club Hub
-                  </span>
+                  <span className="w-2 h-2 rounded-xs bg-[#B6EB00] shrink-0 inline-block" title="Official Hub"></span>
                 </div>
-                <p className="text-[11px] text-slate-500 truncate hidden xs:block">
-                  Student Life · AI Club Project
+                <p className="text-[11px] text-slate-500 truncate font-medium hidden xs:block">
+                  CUNY SPS · Student Life
                 </p>
               </div>
             </button>
@@ -498,22 +500,28 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
                         {club.description}
                       </p>
 
-                      {/* Channel Indicators */}
+                      {/* Direct Verified Channel Links */}
                       {club.channels.length > 0 && (
-                        <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-1.5">
-                          <span className="text-[10px] font-semibold text-slate-400">Channels:</span>
+                        <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-1.5">
                           {club.channels.map((ch, i) => (
-                            <span
+                            <a
                               key={i}
-                              title={ch.actionLabel}
-                              className="w-6 h-6 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center text-xs"
+                              href={ch.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              title={`${ch.actionLabel} (${ch.badge}) - Opens external link`}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors shadow-2xs"
                             >
                               {ch.platform === 'whatsapp' && <WhatsAppIcon className="w-3.5 h-3.5 text-emerald-600" />}
                               {ch.platform === 'tiktok' && <TikTokIcon className="w-3 h-3 text-slate-900" />}
                               {ch.platform === 'facebook' && <FacebookIcon className="w-3.5 h-3.5 text-blue-600" />}
                               {ch.platform === 'instagram' && <InstagramIcon className="w-3.5 h-3.5 text-pink-600" />}
                               {ch.platform === 'linkedin' && <LinkedInIcon className="w-3.5 h-3.5 text-sky-700" />}
-                            </span>
+                              {ch.platform === 'website' && <Globe className="w-3.5 h-3.5 text-slate-600" />}
+                              <span>{ch.actionLabel}</span>
+                              <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                            </a>
                           ))}
                         </div>
                       )}
@@ -722,33 +730,68 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
                         {club.description}
                       </p>
 
-                      {/* Available Channels Quick Preview */}
-                      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-1.5">
-                          {club.channels.length > 0 ? (
-                            club.channels.map((ch, idx) => (
-                              <span
-                                key={idx}
-                                title={`${ch.actionLabel} (${ch.badge})`}
-                                className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700"
-                              >
-                                {ch.platform === 'whatsapp' && <WhatsAppIcon className="w-4 h-4 text-emerald-600" />}
-                                {ch.platform === 'tiktok' && <TikTokIcon className="w-3.5 h-3.5 text-slate-900" />}
-                                {ch.platform === 'facebook' && <FacebookIcon className="w-4 h-4 text-blue-600" />}
-                                {ch.platform === 'instagram' && <InstagramIcon className="w-4 h-4 text-pink-600" />}
-                                {ch.platform === 'linkedin' && <LinkedInIcon className="w-4 h-4 text-sky-700" />}
-                                {ch.platform === 'website' && <Globe className="w-3.5 h-3.5 text-slate-600" />}
-                              </span>
-                            ))
-                          ) : (
-                            <span className="text-[11px] text-slate-400 italic">
-                              Direct contact via email
-                            </span>
-                          )}
+                      {/* Direct Verified Social & Group Channels */}
+                      <div className="mt-4 pt-3 border-t border-slate-100 space-y-2">
+                        <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                          <span className="font-semibold uppercase tracking-wider text-[10px] text-slate-400">
+                            {club.channels.length > 0 ? 'Verified Channels' : 'Social Channels'}
+                          </span>
+                          <span>{club.meetingSchedule.split('·')[0]}</span>
                         </div>
-                        <span className="text-[11px] font-medium text-slate-500">
-                          {club.meetingSchedule.split('·')[0]}
-                        </span>
+
+                        {club.channels.length > 0 ? (
+                          <div className="flex flex-wrap gap-1.5 pt-0.5">
+                            {club.channels.map((ch, idx) => {
+                              const isWhatsApp = ch.platform === 'whatsapp';
+                              const isTikTok = ch.platform === 'tiktok';
+                              const isFacebook = ch.platform === 'facebook';
+                              const isInstagram = ch.platform === 'instagram';
+                              const isLinkedIn = ch.platform === 'linkedin';
+
+                              const badgeStyle = isWhatsApp
+                                ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                                : isTikTok
+                                ? 'bg-slate-900 hover:bg-black text-white'
+                                : isFacebook
+                                ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                                : isInstagram
+                                ? 'bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:opacity-90 text-white'
+                                : isLinkedIn
+                                ? 'bg-sky-700 hover:bg-sky-800 text-white'
+                                : 'bg-slate-800 hover:bg-slate-900 text-white';
+
+                              return (
+                                <a
+                                  key={idx}
+                                  href={ch.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  title={`${ch.actionLabel} (${ch.badge}) - Opens external link`}
+                                  className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold shadow-xs transition-all hover:scale-102 focus-visible:outline-2 ${badgeStyle}`}
+                                >
+                                  {isWhatsApp && <WhatsAppIcon className="w-3.5 h-3.5" />}
+                                  {isTikTok && <TikTokIcon className="w-3 h-3" />}
+                                  {isFacebook && <FacebookIcon className="w-3.5 h-3.5" />}
+                                  {isInstagram && <InstagramIcon className="w-3.5 h-3.5" />}
+                                  {isLinkedIn && <LinkedInIcon className="w-3.5 h-3.5" />}
+                                  {!isWhatsApp && !isTikTok && !isFacebook && !isInstagram && !isLinkedIn && (
+                                    <Globe className="w-3.5 h-3.5" />
+                                  )}
+                                  <span>{ch.actionLabel}</span>
+                                  <ExternalLink className="w-3 h-3 opacity-70" />
+                                </a>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="pt-0.5">
+                            <span className="inline-flex items-center gap-1.5 text-xs text-slate-400 italic">
+                              <Lock className="w-3 h-3 text-slate-400" />
+                              <span>No public links verified yet</span>
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -1211,9 +1254,10 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
       <footer className="bg-white border-t border-slate-200 mt-16 py-8 px-4 sm:px-6 lg:px-8 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-900">CUNY SPS</span>
+            <img src="./club-social-hub-mark.svg" alt="Club Social Hub logo" className="w-5 h-5 rounded-md" width="20" height="20" />
+            <span className="font-bold text-slate-900">Club Social Hub</span>
             <span>·</span>
-            <span>Office of Student Life & Artificial Intelligence Club</span>
+            <span>CUNY SPS Office of Student Life & AI Club Project</span>
           </div>
 
           <div className="flex items-center gap-4">
