@@ -463,6 +463,20 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "isFeatured": true,
     "channels": [
       {
+        "platform": "whatsapp",
+        "actionLabel": "Join WhatsApp",
+        "url": "https://chat.whatsapp.com/F8DqIiNLEv27IY9vXE09UZ",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS MSA student community WhatsApp group."
+      },
+      {
+        "platform": "website",
+        "actionLabel": "Visit MSA Website",
+        "url": "https://cuny-msa-hub.pages.dev/",
+        "badge": "Verified Official Link",
+        "description": "CUNY SPS Muslim Student Association Centralized Community Hub."
+      },
+      {
         "platform": "instagram",
         "actionLabel": "Follow on Instagram",
         "url": "https://www.instagram.com/cunysps.msa",
