@@ -76,13 +76,6 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "description": "Active student community chat for build night alerts, Zoom links, and peer project collaborations."
       },
       {
-        "platform": "tiktok",
-        "actionLabel": "Watch on TikTok",
-        "url": "https://www.tiktok.com/@cunysps.ai",
-        "badge": "Sample Demo Link",
-        "description": "Watch short student project demos, AI tool highlights, and build night recaps."
-      },
-      {
         "platform": "facebook",
         "actionLabel": "Visit on Facebook",
         "url": "https://www.facebook.com/cunyspsaiclub",
@@ -97,11 +90,18 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "description": "Event announcements, student project spotlights, and campus AI news."
       },
       {
-        "platform": "website",
-        "actionLabel": "Explore Club Web Portal",
-        "url": "https://cuny-sps-club-social-hub.ai.studio",
+        "platform": "linkedin",
+        "actionLabel": "Connect on LinkedIn",
+        "url": "https://www.linkedin.com/company/cunysps-ai-club",
         "badge": "Verified Official Link",
-        "description": "Live student portal and centralized governance platform."
+        "description": "Professional networking, alumni connections, and career opportunities."
+      },
+      {
+        "platform": "website",
+        "actionLabel": "Visit OpenLab Community Hub",
+        "url": "https://openlab.sps.cuny.edu/ai-club/",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS OpenLab workspace for workshops, hackathons, and discussion forums."
       }
     ]
   },
@@ -131,15 +131,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes Black students and allies across all degree programs to celebrate Black culture, foster leadership, and build supportive academic and social networks.",
     "accentColor": "#D97706",
     "isFeatured": false,
-    "channels": [
-      {
-        "platform": "instagram",
-        "actionLabel": "Follow on Instagram",
-        "url": "https://www.instagram.com/cunysps_bsu",
-        "badge": "Sample Demo Link",
-        "description": "Black student mixer schedules, cultural celebration recaps, and leadership spotlights."
-      }
-    ]
+    "channels": []
   },
   {
     "clubId": "club-book",
@@ -245,22 +237,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes cinephiles, screenwriters, video creators, media studies majors, and anyone who loves discussing film, streaming, and television.",
     "accentColor": "#EA580C",
     "isFeatured": false,
-    "channels": [
-      {
-        "platform": "tiktok",
-        "actionLabel": "Watch on TikTok",
-        "url": "https://www.tiktok.com/@cunyspsfilm",
-        "badge": "Sample Demo Link",
-        "description": "Short student films, movie review roundups, and behind-the-scenes clips."
-      },
-      {
-        "platform": "instagram",
-        "actionLabel": "Follow on Instagram",
-        "url": "https://www.instagram.com/cunyspsfilm",
-        "badge": "Sample Demo Link",
-        "description": "Watch party schedules, film analysis prompts, and festival news."
-      }
-    ]
+    "channels": []
   },
   {
     "clubId": "club-green",
@@ -344,22 +321,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Open to students interested in leadership development, business administration, entrepreneurship, project management, and startup innovation.",
     "accentColor": "#2563EB",
     "isFeatured": false,
-    "channels": [
-      {
-        "platform": "linkedin",
-        "actionLabel": "Connect on LinkedIn",
-        "url": "https://www.linkedin.com/company/cuny-sps-melo",
-        "badge": "Sample Demo Link",
-        "description": "Management speaker series, startup workshops, and executive mentoring."
-      },
-      {
-        "platform": "whatsapp",
-        "actionLabel": "Join the WhatsApp group",
-        "url": "https://chat.whatsapp.com/CunySpsMelo",
-        "badge": "Sample Demo Link",
-        "description": "Entrepreneurial peer mastermind and pitch prep chat."
-      }
-    ]
+    "channels": []
   },
   {
     "clubId": "club-mental-health",
@@ -402,20 +364,6 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "accentColor": "#0D9488",
     "isFeatured": true,
     "channels": [
-      {
-        "platform": "whatsapp",
-        "actionLabel": "Join the WhatsApp group",
-        "url": "https://chat.whatsapp.com/CunySpsMsaCommunity",
-        "badge": "Verified Official Link",
-        "description": "Community Tea & Study circle updates, Friday prayer discussions, and campus fellowship."
-      },
-      {
-        "platform": "facebook",
-        "actionLabel": "Visit on Facebook",
-        "url": "https://www.facebook.com/cunysps.msa",
-        "badge": "Sample Demo Link",
-        "description": "Community posts, holiday observances, and joint campus events."
-      },
       {
         "platform": "instagram",
         "actionLabel": "Follow on Instagram",
@@ -465,15 +413,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Open to photographers of all skill levels\u2014from smartphone snappers to DSLR enthusiasts\u2014interested in visual storytelling and photo walks.",
     "accentColor": "#9333EA",
     "isFeatured": false,
-    "channels": [
-      {
-        "platform": "instagram",
-        "actionLabel": "Follow on Instagram",
-        "url": "https://www.instagram.com/cunyspsphoto",
-        "badge": "Sample Demo Link",
-        "description": "Monthly themed photo challenges and virtual student gallery showcases."
-      }
-    ]
+    "channels": []
   },
   {
     "clubId": "club-pride",
@@ -557,15 +497,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Open to changemakers, student advocates, and community organizers passionate about housing justice, environmental action, disability rights, and civic advocacy.",
     "accentColor": "#DC2626",
     "isFeatured": true,
-    "channels": [
-      {
-        "platform": "instagram",
-        "actionLabel": "Follow on Instagram",
-        "url": "https://www.instagram.com/cunysps_siac",
-        "badge": "Sample Demo Link",
-        "description": "Civic initiatives, mutual aid drives, and policy debate announcements."
-      }
-    ]
+    "channels": []
   },
   {
     "clubId": "club-sasu",
@@ -593,15 +525,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Dedicated to student veterans, active duty service members, reservists, military spouses, and civilian allies navigating academic and civilian transitions.",
     "accentColor": "#4B5563",
     "isFeatured": false,
-    "channels": [
-      {
-        "platform": "facebook",
-        "actionLabel": "Visit on Facebook",
-        "url": "https://www.facebook.com/cunyspsveterans",
-        "badge": "Sample Demo Link",
-        "description": "Veterans resource updates, VA benefits discussions, and peer check-ins."
-      }
-    ]
+    "channels": []
   },
   {
     "clubId": "club-study-lounge",
@@ -629,29 +553,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Open to all women, non-binary students, and allies pursuing or interested in science, technology, engineering, mathematics, data analytics, and tech career pathways.",
     "accentColor": "#7C3AED",
     "isFeatured": true,
-    "channels": [
-      {
-        "platform": "whatsapp",
-        "actionLabel": "Join the WhatsApp group",
-        "url": "https://chat.whatsapp.com/CunySpsWStem",
-        "badge": "Sample Demo Link",
-        "description": "Peer study sessions, internship leads, and women in tech discussions."
-      },
-      {
-        "platform": "tiktok",
-        "actionLabel": "Watch on TikTok",
-        "url": "https://www.tiktok.com/@cunysps_wstem",
-        "badge": "Sample Demo Link",
-        "description": "Day-in-the-life STEM student videos and quick coding tutorials."
-      },
-      {
-        "platform": "linkedin",
-        "actionLabel": "Connect on LinkedIn",
-        "url": "https://www.linkedin.com/company/cunysps-women-in-stem",
-        "badge": "Sample Demo Link",
-        "description": "Professional networking, alumni mentors, and STEM career panels."
-      }
-    ]
+    "channels": []
   },
   {
     "clubId": "club-youth-studies",

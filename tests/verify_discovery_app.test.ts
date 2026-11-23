@@ -32,7 +32,7 @@ test('Screen 2 (Directory Dataset) contains all 34 recognized clubs and metadata
   assert.ok(aiClub.channels.length >= 3, 'Must have at least WhatsApp, TikTok, Facebook/IG channels');
 });
 
-test('Screen 3 (Club Profile & Channels) includes verified direct action links', () => {
+test('Screen 3 (Club Profile & Channels) includes verified direct action links and omits unverified channels', () => {
   const aiClub = CLUBS_DATA.find((c) => c.clubId === 'club-ai');
   assert.ok(aiClub);
 
@@ -41,20 +41,26 @@ test('Screen 3 (Club Profile & Channels) includes verified direct action links',
   assert.equal(whatsapp.actionLabel, 'Join the WhatsApp group');
   assert.match(whatsapp.url, /^https:\/\/chat\.whatsapp\.com\//);
 
-  const tiktok = aiClub.channels.find((ch) => ch.platform === 'tiktok');
-  assert.ok(tiktok, 'TikTok channel must exist');
-  assert.equal(tiktok.actionLabel, 'Watch on TikTok');
-  assert.match(tiktok.url, /^https:\/\/www\.tiktok\.com\//);
-
   const facebook = aiClub.channels.find((ch) => ch.platform === 'facebook');
   assert.ok(facebook, 'Facebook channel must exist');
   assert.equal(facebook.actionLabel, 'Visit on Facebook');
   assert.match(facebook.url, /^https:\/\/www\.facebook\.com\//);
 
-  // Privacy verification: Sample links must be clearly labeled
-  const sampleChannels = aiClub.channels.filter((c) => c.badge === 'Sample Demo Link');
-  for (const sample of sampleChannels) {
-    assert.equal(sample.badge, 'Sample Demo Link');
+  const instagram = aiClub.channels.find((ch) => ch.platform === 'instagram');
+  assert.ok(instagram, 'Instagram channel must exist');
+  assert.match(instagram.url, /^https:\/\/www\.instagram\.com\//);
+
+  const linkedin = aiClub.channels.find((ch) => ch.platform === 'linkedin');
+  assert.ok(linkedin, 'LinkedIn channel must exist');
+  assert.match(linkedin.url, /^https:\/\/www\.linkedin\.com\//);
+
+  // TikTok is unverified on official sources and must be omitted per privacy guidelines
+  const tiktok = aiClub.channels.find((ch) => ch.platform === 'tiktok');
+  assert.equal(tiktok, undefined, 'Unverified TikTok link must be omitted from site');
+
+  // Verify all channels present on AI club have Verified badge
+  for (const ch of aiClub.channels) {
+    assert.equal(ch.badge, 'Verified Official Link');
   }
 });
 
