@@ -352,7 +352,7 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
                 </div>
 
                 <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                  Find your next club at <span className="text-[#FFB81C]">CUNY SPS</span>
+                  Find your next club at CUNY SPS
                 </h1>
 
                 <p className="text-sm sm:text-lg text-slate-200 max-w-2xl mx-auto leading-relaxed">
@@ -446,7 +446,7 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
                     <Star className="w-3.5 h-3.5 fill-[#FFB81C] text-[#FFB81C]" />
                     <span>Featured Organizations</span>
                   </div>
-                  <h2 className="text-2xl font-bold text-slate-900">Explore Highlighted Clubs</h2>
+                  <h2 className="text-2xl font-bold text-slate-900">Featured Student Clubs</h2>
                   <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
                     Active student organizations with verified communication channels and upcoming events.
                   </p>
@@ -529,7 +529,7 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
                     <span className="text-xs font-bold uppercase tracking-wider text-[#FFB81C]">
                       Calendar Highlights
                     </span>
-                    <h2 className="text-2xl font-bold text-white mt-1">Upcoming Events & Workshops</h2>
+                    <h2 className="text-2xl font-bold text-white mt-1">Upcoming Campus Events</h2>
                     <p className="text-xs sm:text-sm text-slate-300 mt-0.5">
                       Open to all enrolled students. Times shown in New York campus time (EST).
                     </p>
