@@ -126,3 +126,17 @@ test('Screen 7 (Event Accuracy) verifies RSVP counts are completely removed and 
   const openlabHub = psychClub.channels.find((ch) => ch.url === 'https://openlab.sps.cuny.edu/groups/psychology-club/');
   assert.ok(openlabHub, 'Psychology Club must link to OpenLab Hub');
 });
+
+test('Screen 8 (Prototype Removal) verifies prototype Faculty Advisors and Meeting Formats are completely removed', () => {
+  const html = renderToString(React.createElement(StudentDiscoveryApp));
+  assert.doesNotMatch(html, /Faculty Advisor:/i, 'Prototype Faculty Advisor label must not exist in public UI');
+  assert.doesNotMatch(html, /Prof\. Claire Bennett/i, 'Prototype advisor Prof. Claire Bennett must not exist');
+  assert.doesNotMatch(html, /Prof\. Jordan Reyes/i, 'Prototype advisor Prof. Jordan Reyes must not exist');
+  assert.doesNotMatch(html, /Meeting Format:/i, 'Prototype Meeting Format label must not exist in public UI');
+  assert.doesNotMatch(html, /Bi-Weekly Online Gatherings/i, 'Prototype Bi-Weekly Online Gatherings must not exist in public UI');
+
+  for (const club of CLUBS_DATA) {
+    assert.equal(club.facultyAdvisor, undefined, `Club ${club.name} must not contain prototype facultyAdvisor`);
+    assert.equal(club.meetingSchedule, undefined, `Club ${club.name} must not contain prototype meetingSchedule`);
+  }
+});

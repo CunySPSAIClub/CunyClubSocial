@@ -799,7 +799,7 @@ export function StudentDiscoveryApp() {
                             {club.name}
                           </h2>
                           <p className="text-[11px] text-slate-500 truncate">
-                            Advisor: {club.facultyAdvisor}
+                            {club.contactEmail}
                           </p>
                         </div>
                       </div>
@@ -815,7 +815,9 @@ export function StudentDiscoveryApp() {
                           <span className="font-semibold uppercase tracking-wider text-[10px] text-slate-400">
                             {club.channels.length > 0 ? 'Verified Channels' : 'Social Channels'}
                           </span>
-                          <span>{club.meetingSchedule.split('·')[0]}</span>
+                          <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full">
+                            Active Club
+                          </span>
                         </div>
 
                         {club.channels.length > 0 ? (
@@ -969,8 +971,10 @@ export function StudentDiscoveryApp() {
                   <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
                     {selectedClub.name}
                   </h1>
-                  <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                    Faculty Advisor: <span className="font-semibold text-slate-700">{selectedClub.facultyAdvisor}</span> · Meeting Format: {selectedClub.meetingSchedule}
+                  <p className="text-xs sm:text-sm text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                    <span>CUNY SPS Chartered Student Organization</span>
+                    <span>·</span>
+                    <a href="mailto:studentservices@sps.cuny.edu" className="text-[#004B87] hover:underline">Office of Student Life</a>
                   </p>
                 </div>
               </div>
