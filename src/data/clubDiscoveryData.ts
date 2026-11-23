@@ -25,6 +25,7 @@ export interface ClubDiscoveryItem {
   accentColor: string;
   isFeatured: boolean;
   channels: ClubChannel[];
+  joinUrl?: string;
   logoUrl?: string;
   logoSource?: string;
 }
@@ -54,6 +55,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "anime@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Anime Club activities and professional community.",
     "accentColor": "#DB2777",
+    "joinUrl": "https://forms.office.com/r/jz9viSud7J",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -69,6 +71,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "ai-club@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all undergraduate, graduate, online, and hybrid students interested in artificial intelligence, machine learning, data ethics, coding, or civic technology\u2014from absolute beginners to experienced engineers.",
     "accentColor": "#004B87",
+    "joinUrl": "https://forms.office.com/r/jSfyJUzCqG",
     "isFeatured": true,
     "channels": [
       {
@@ -107,6 +110,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "crafts@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Arts and Crafts Club activities and professional community.",
     "accentColor": "#F59E0B",
+    "joinUrl": "https://forms.office.com/r/Eg44DmcrwA",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -122,6 +126,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "bsu@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes Black students and allies across all degree programs to celebrate Black culture, foster leadership, and build supportive academic and social networks.",
     "accentColor": "#D97706",
+    "joinUrl": "https://forms.office.com/r/0Gsn6smjkk",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -137,6 +142,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "book@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Book Club activities and professional community.",
     "accentColor": "#059669",
+    "joinUrl": "https://forms.office.com/r/0Mn4RgzeLr",
     "isFeatured": false,
     "channels": [
       {
@@ -161,6 +167,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "cfc@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Christian Fellowship Club activities and professional community.",
     "accentColor": "#2563EB",
+    "joinUrl": "https://forms.office.com/r/yxcsdVYFcM",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -176,6 +183,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "cosplay@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Cosplay Club activities and professional community.",
     "accentColor": "#8B5CF6",
+    "joinUrl": "https://forms.office.com/r/PqEMUTSpbA",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -191,6 +199,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "cwc@spsmail.cuny.edu",
     "whoItWelcomes": "Open to poets, novelists, essayists, playwrights, and casual writers eager to share drafts, receive peer feedback, and attend open mics.",
     "accentColor": "#BE185D",
+    "joinUrl": "https://forms.office.com/r/P3CieH7HML",
     "isFeatured": false,
     "channels": [
       {
@@ -215,6 +224,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "dapi@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Delta Alpha Pi Honor Society activities and professional community.",
     "accentColor": "#B45309",
+    "joinUrl": "https://forms.office.com/r/28XzC0ZmQj",
     "isFeatured": false,
     "channels": [
       {
@@ -239,6 +249,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "dac@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Disability and Access Coalition activities and professional community.",
     "accentColor": "#0284C7",
+    "joinUrl": "https://forms.office.com/r/nsFmGQAeWB",
     "isFeatured": false,
     "channels": [
       {
@@ -263,6 +274,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "film@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes cinephiles, screenwriters, video creators, media studies majors, and anyone who loves discussing film, streaming, and television.",
     "accentColor": "#EA580C",
+    "joinUrl": "https://forms.cloud.microsoft/pages/responsepage.aspx?id=s_BgbwZfCU6XFZiduozH2OUWoTTGNHdIl-sDDEQRP3xUQldKSEFGVlg2TlBKR1pHUjJYRlM2RTFPVi4u&route=shorturl",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -278,6 +290,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "green@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes sustainability advocates, climate thinkers, urban agriculture enthusiasts, and students committed to environmental stewardship.",
     "accentColor": "#16A34A",
+    "joinUrl": "https://forms.office.com/r/uBPJvwXCGr",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -293,6 +306,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "hian@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Health Information and Administration Network (HIAN) Leadership activities and professional community.",
     "accentColor": "#0D9488",
+    "joinUrl": "https://forms.office.com/r/UiLqc7Xh0c",
     "isFeatured": false,
     "channels": [
       {
@@ -317,6 +331,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "hrsc@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Human Relations and Sociology Club activities and professional community.",
     "accentColor": "#D97706",
+    "joinUrl": "https://sps.cuny.edu/student-success/student-life/student-clubs-and-organizations",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -332,6 +347,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "lsu@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Latinx Student Union activities and professional community.",
     "accentColor": "#E11D48",
+    "joinUrl": "https://forms.office.com/r/ghQ1UyJjM5",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -347,6 +363,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "mbc@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Makeup and Beauty Club activities and professional community.",
     "accentColor": "#EC4899",
+    "joinUrl": "https://forms.office.com/r/trYh0JeWH3",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -362,6 +379,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "melo@spsmail.cuny.edu",
     "whoItWelcomes": "Open to students interested in leadership development, business administration, entrepreneurship, project management, and startup innovation.",
     "accentColor": "#2563EB",
+    "joinUrl": "https://forms.office.com/r/ww39E3D5qg",
     "isFeatured": false,
     "channels": [
       {
@@ -386,6 +404,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "mhc@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Mental Health Club activities and professional community.",
     "accentColor": "#10B981",
+    "joinUrl": "https://forms.office.com/r/ZpHXtjfseb",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -401,6 +420,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "msc@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Museum Studies Club activities and professional community.",
     "accentColor": "#78716C",
+    "joinUrl": "https://forms.office.com/r/kkBaWxfDUV",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -416,6 +436,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "msa@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes Muslim students, spiritual seekers, and allies of all academic disciplines across CUNY SPS for fellowship, mutual aid, cultural discussion, and community service.",
     "accentColor": "#0D9488",
+    "joinUrl": "https://sps.cuny.edu/student-success/student-life/student-clubs-and-organizations",
     "isFeatured": true,
     "channels": [
       {
@@ -447,6 +468,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "neuro@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Neurodiversity Club activities and professional community.",
     "accentColor": "#6366F1",
+    "joinUrl": "https://sps.cuny.edu/student-success/student-life/student-clubs-and-organizations",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -462,6 +484,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "parent@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Parent Club activities and professional community.",
     "accentColor": "#F97316",
+    "joinUrl": "https://forms.office.com/pages/responsepage.aspx?id=s_BgbwZfCU6XFZiduozH2OUWoTTGNHdIl-sDDEQRP3xUOEozT1lGUlM3RzdJQUVMWTY5T0xHTVdOOC4u",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -477,6 +500,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "photo@spsmail.cuny.edu",
     "whoItWelcomes": "Open to photographers of all skill levels\u2014from smartphone snappers to DSLR enthusiasts\u2014interested in visual storytelling and photo walks.",
     "accentColor": "#9333EA",
+    "joinUrl": "https://forms.office.com/r/dexbfyZRVD",
     "isFeatured": false,
     "channels": [
       {
@@ -501,6 +525,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "pride@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Pride Club activities and professional community.",
     "accentColor": "#A855F7",
+    "joinUrl": "https://forms.office.com/r/NbbPW6jLWQ",
     "isFeatured": false,
     "channels": [
       {
@@ -532,6 +557,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "psych@spsmail.cuny.edu",
     "whoItWelcomes": "Open to BA in Psychology students, graduate researchers, and anyone curious about human behavior, mental wellness, and research methodology.",
     "accentColor": "#4F46E5",
+    "joinUrl": "https://forms.office.com/Pages/ResponsePage.aspx?id=s_BgbwZfCU6XFZiduozH2OUWoTTGNHdIl-sDDEQRP3xUMUYxN1FKR01SQkZVSEZUMDJETDFWR1I1Si4u",
     "isFeatured": false,
     "channels": [
       {
@@ -556,6 +582,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "rtrc@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Retail Therapy Roundtable Club activities and professional community.",
     "accentColor": "#F43F5E",
+    "joinUrl": "https://sps.cuny.edu/student-success/student-life/student-clubs-and-organizations",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -571,6 +598,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "shrm@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in SHRM Student Chapter activities and professional community.",
     "accentColor": "#1D4ED8",
+    "joinUrl": "https://forms.cloud.microsoft/pages/responsepage.aspx?id=s_BgbwZfCU6XFZiduozH2OUWoTTGNHdIl-sDDEQRP3xUNVEwTTI3VU8wS0FVQVQwUlI2QTdDT1lBSSQlQCNjPTEu&route=shorturl",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -586,6 +614,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "sbd@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Sigma Beta Delta Honor Society activities and professional community.",
     "accentColor": "#CA8A04",
+    "joinUrl": "https://forms.office.com/r/qTfpA224du",
     "isFeatured": false,
     "channels": [
       {
@@ -610,6 +639,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "siac@spsmail.cuny.edu",
     "whoItWelcomes": "Open to changemakers, student advocates, and community organizers passionate about housing justice, environmental action, disability rights, and civic advocacy.",
     "accentColor": "#DC2626",
+    "joinUrl": "https://forms.office.com/r/PWFMnEazyw",
     "isFeatured": true,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -625,6 +655,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "sasu@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in South Asian Student Union activities and professional community.",
     "accentColor": "#EA580C",
+    "joinUrl": "https://forms.office.com/r/sJ04BVU3U5",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -640,6 +671,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "svo@spsmail.cuny.edu",
     "whoItWelcomes": "Dedicated to student veterans, active duty service members, reservists, military spouses, and civilian allies navigating academic and civilian transitions.",
     "accentColor": "#4B5563",
+    "joinUrl": "https://forms.office.com/r/4EeeUD7LX2",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -655,6 +687,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "lounge@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Study Lounge Club activities and professional community.",
     "accentColor": "#64748B",
+    "joinUrl": "https://sps.cuny.edu/student-success/student-life/student-clubs-and-organizations",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -670,6 +703,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "wstem@spsmail.cuny.edu",
     "whoItWelcomes": "Open to all women, non-binary students, and allies pursuing or interested in science, technology, engineering, mathematics, data analytics, and tech career pathways.",
     "accentColor": "#7C3AED",
+    "joinUrl": "https://forms.office.com/Pages/ResponsePage.aspx?id=s_BgbwZfCU6XFZiduozH2OUWoTTGNHdIl-sDDEQRP3xUQTgyMjQ3RVBJWEozUjZCMDI4TlVHVURLTSQlQCNjPTEu",
     "isFeatured": true,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
@@ -685,6 +719,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "contactEmail": "ysc@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Youth Studies Club activities and professional community.",
     "accentColor": "#0284C7",
+    "joinUrl": "https://forms.office.com/pages/responsepage.aspx?id=s_BgbwZfCU6XFZiduozH2OUWoTTGNHdIl-sDDEQRP3xUNDgwSTVMSkVKRVMwS0s1WTlSQkQ1M0E0NC4u",
     "isFeatured": false,
     "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"

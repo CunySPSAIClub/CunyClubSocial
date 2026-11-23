@@ -87,3 +87,19 @@ test('Screen 4 (Events) contains event schedule and club linkage with 12-hour fo
     assert.ok(matchedClub, `Event "${ev.title}" must link to an existing club`);
   }
 });
+
+test('Screen 5 (Official School Forms) maps all 34 clubs to official CUNY SPS join forms and directory', () => {
+  assert.equal(CLUBS_DATA.length, 34);
+  for (const club of CLUBS_DATA) {
+    assert.ok(club.joinUrl, `Club ${club.name} (${club.clubId}) must have an official joinUrl`);
+    assert.match(
+      club.joinUrl,
+      /^(https:\/\/(forms\.office\.com|forms\.cloud\.microsoft)\/|https:\/\/sps\.cuny\.edu\/student-success\/student-life\/student-clubs-and-organizations)/,
+      `Club ${club.name} joinUrl must point to Microsoft Forms or CUNY SPS directory`
+    );
+  }
+
+  const aiClub = CLUBS_DATA.find((c) => c.clubId === 'club-ai');
+  assert.ok(aiClub);
+  assert.equal(aiClub.joinUrl, 'https://forms.office.com/r/jSfyJUzCqG', 'AI Club must link directly to its official Microsoft Join Form');
+});

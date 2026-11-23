@@ -108,10 +108,6 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
   const [eventSearch, setEventSearch] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
 
-  // Join inquiry state
-  const [inquiryName, setInquiryName] = useState('');
-  const [inquiryEmail, setInquiryEmail] = useState('');
-  const [inquirySubmitted, setInquirySubmitted] = useState(false);
 
   // Sync hash routing on mount
   useEffect(() => {
@@ -1185,54 +1181,51 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
               )}
             </div>
 
-            {/* Quick Inquiry / Contact Officers Form */}
-            <div className="bg-slate-900 rounded-3xl p-6 sm:p-8 text-white space-y-4">
-              <div className="max-w-xl">
-                <h3 className="text-lg font-bold text-white">Have a question for {selectedClub.name}?</h3>
-                <p className="text-xs sm:text-sm text-slate-300 mt-1">
-                  Send a note to the student president and faculty advisor. They will get back to you via your CUNY email.
+            {/* Official School Join & Inquiry Form */}
+            <div className="bg-gradient-to-br from-slate-900 via-[#002D56] to-slate-900 rounded-3xl p-6 sm:p-8 text-white space-y-5 border border-white/10 shadow-lg relative overflow-hidden">
+              <div className="max-w-2xl space-y-2">
+                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-white/10 text-[#FFD100] text-[11px] font-bold tracking-wide uppercase">
+                  <Shield className="w-3.5 h-3.5 text-[#FFD100]" />
+                  <span>Official School Form</span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white">
+                  Have a question or want to join {selectedClub.name}?
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Submit your student inquiry or membership request directly through the official CUNY SPS Student Life form. Your submission is routed directly to the Office of Student Life and club leadership.
                 </p>
               </div>
 
-              {inquirySubmitted ? (
-                <div className="p-4 bg-emerald-900/60 border border-emerald-500 rounded-xl flex items-center gap-2.5 text-emerald-200 text-xs">
-                  <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />
-                  <span>Your note was sent to the officers of {selectedClub.name}. Check your student email for a reply.</span>
-                </div>
-              ) : (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    if (inquiryName.trim() && inquiryEmail.trim()) {
-                      setInquirySubmitted(true);
-                    }
-                  }}
-                  className="grid grid-cols-1 sm:grid-cols-3 gap-3"
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
+                <a
+                  href={selectedClub.joinUrl || "https://sps.cuny.edu/student-success/student-life/student-clubs-and-organizations"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-3.5 bg-[#FFB81C] hover:bg-[#e5a415] text-slate-950 font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 group cursor-pointer"
                 >
-                  <input
-                    type="text"
-                    required
-                    value={inquiryName}
-                    onChange={(e) => setInquiryName(e.target.value)}
-                    placeholder="Your Full Name"
-                    className="px-3.5 py-2.5 text-xs bg-white/10 border border-white/20 rounded-xl text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FFB81C]"
-                  />
-                  <input
-                    type="email"
-                    required
-                    value={inquiryEmail}
-                    onChange={(e) => setInquiryEmail(e.target.value)}
-                    placeholder="Your @spsmail.cuny.edu"
-                    className="px-3.5 py-2.5 text-xs bg-white/10 border border-white/20 rounded-xl text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FFB81C]"
-                  />
-                  <button
-                    type="submit"
-                    className="px-4 py-2.5 bg-[#FFB81C] hover:bg-[#e5a415] text-slate-950 font-bold text-xs rounded-xl transition-colors cursor-pointer min-h-[44px]"
-                  >
-                    Send message
-                  </button>
-                </form>
-              )}
+                  <span>Open Official {selectedClub.name} Form</span>
+                  <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </a>
+
+                <a
+                  href="https://sps.cuny.edu/student-success/student-life/student-clubs-and-organizations"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-5 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm rounded-xl border border-white/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Globe className="w-4 h-4 text-sky-300" />
+                  <span>CUNY SPS Clubs &amp; Organizations Directory</span>
+                  <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+                </a>
+              </div>
+
+              <div className="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-[11px] text-slate-400">
+                <div className="flex items-center gap-1.5">
+                  <Mail className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Club Email: <a href={`mailto:${selectedClub.contactEmail}`} className="text-sky-300 hover:underline">{selectedClub.contactEmail}</a></span>
+                </div>
+                <span>Office of Student Life · <a href="mailto:studentservices@sps.cuny.edu" className="text-sky-300 hover:underline">studentservices@sps.cuny.edu</a></span>
+              </div>
             </div>
           </div>
         )}
