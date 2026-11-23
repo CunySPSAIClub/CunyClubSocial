@@ -74,7 +74,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
       {
         "platform": "whatsapp",
         "actionLabel": "Join WhatsApp",
-        "url": "https://chat.whatsapp.com/LiEAv8DRlII7pMqN60PGj6?s=cl&p=a&iam=2",
+        "url": "https://chat.whatsapp.com/LiEAv8DRlII7pMqN60PGj6",
         "badge": "Verified Official Link",
         "description": "Active student community chat for build night alerts, Zoom links, and peer project collaborations."
       },
