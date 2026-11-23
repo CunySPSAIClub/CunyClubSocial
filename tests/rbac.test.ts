@@ -9,7 +9,7 @@ const membership = (role: RoleName, status = 'Active') => [{userId:user.userId, 
 
 test('role capabilities enforce draft, publishing, team and platform boundaries', () => {
   const allowed: Partial<Record<Capability, RoleName[]>> = {
-    CREATE_CONTENT_DRAFT:roles.slice(0,5),
+    CREATE_CONTENT_DRAFT:roles.slice(0,4),
     SCHEDULE_CONTENT:roles.slice(0,4),
     PUBLISH_CONTENT:roles.slice(0,4),
     VIEW_PRIVATE_MESSAGES:roles.slice(0,4),

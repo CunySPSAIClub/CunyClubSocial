@@ -110,8 +110,7 @@ export function ClubOverview({
   const canEditLinks =
     Boolean(session?.effectiveAdminRole) ||
     effectiveRole === 'CLUB_LEAD' ||
-    effectiveRole === 'EDITOR' ||
-    effectiveRole === 'CONTRIBUTOR';
+    effectiveRole === 'EDITOR';
   const canEditProfile =
     effectiveRole === 'CLUB_LEAD' ||
     effectiveRole === 'SL_ADMIN' ||

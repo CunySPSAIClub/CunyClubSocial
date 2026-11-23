@@ -568,7 +568,8 @@ export interface NotificationItem {
     | 'Resource Submission'
     | 'Peer Review'
     | 'Reshare Request'
-    | 'Advisor Sign-Off';
+    | 'Advisor Sign-Off'
+    | 'Member Question';
   title: string;
   message: string;
   read: boolean;
@@ -1111,3 +1112,19 @@ export interface ClubBlogPost {
 }
 
 
+
+export interface MemberQuestion {
+  questionId: string;
+  clubId: string;
+  memberUserId: string;
+  memberName: string;
+  topic: 'General' | 'Events' | 'Joining/Membership' | 'Other';
+  eventId?: string;
+  eventTitle?: string;
+  status: 'Waiting for reply' | 'Answered';
+  resolved: boolean;
+  messages: { messageId: string; authorUserId: string; authorName: string; body: string; createdAt: string; fromLeader: boolean }[];
+  unreadByUserIds: string[];
+  createdAt: string;
+  updatedAt: string;
+}

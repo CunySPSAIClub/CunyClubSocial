@@ -69,6 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       headers.set('Content-Type', 'application/json');
     }
     headers.set('X-Requested-With', 'XMLHttpRequest');
+    if (activeClubId) headers.set('X-Club-Id', activeClubId);
 
     const res = await fetch(url, {
       ...options,
@@ -80,7 +81,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw new Error((data as { error?: string }).error || `Request failed (${res.status})`);
     }
     return data as T;
-  }, []);
+  }, [activeClubId]);
 
   const applySession = useCallback((nextSession: SessionContext) => {
     setSession(nextSession);

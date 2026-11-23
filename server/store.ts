@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type {
+  MemberQuestion,
   AccountRequest,
   AuditLog,
   BudgetIncreaseRequest,
@@ -37,7 +38,7 @@ import {
   type SiteContent,
 } from '../src/data/siteContent.ts';
 import { createDefaultClubLinks, createSeedAiClubLinks, normalizeClubLinks } from '../src/utils/clubLinks.ts';
-import { splitFullName } from './authConfig.ts';
+import { isDemoModeEnabled, splitFullName } from './authConfig.ts';
 import type { StoredSiteEditorAuth } from './siteContentAuth.ts';
 
 export interface StoredSmtpConfig {
@@ -58,6 +59,7 @@ export interface StoredSmtpConfig {
 }
 
 export interface HubDatabase {
+  memberQuestions: MemberQuestion[];
   users: User[];
   clubs: Club[];
   memberships: ClubMembership[];
@@ -1381,7 +1383,7 @@ function createInitialDatabase(): HubDatabase {
       email: 'sofia.patel@spsmail.cuny.edu',
       identitySubject: 'cuny-sso|spatel-312',
       title: 'Communications Contributor',
-      departmentOrMajor: 'B.A. in Communication & Media',
+      departmentOrMajor: 'B.A. Communications',
       systemRole: 'STANDARD_USER',
       status: 'Active',
       lastLoginAt: '2026-11-13T14:30:00.000Z',
@@ -2551,6 +2553,7 @@ function createInitialDatabase(): HubDatabase {
   };
 
   return {
+    memberQuestions: isDemoModeEnabled() ? createDemoMemberQuestions() : [],
     users,
     clubs,
     memberships,
@@ -2644,6 +2647,12 @@ export function getDb(): HubDatabase {
       }
       if (!cachedDb.metaTokenSecrets || typeof cachedDb.metaTokenSecrets !== 'object') {
         cachedDb.metaTokenSecrets = {};
+        migrated = true;
+      }
+      if (!cachedDb.memberQuestions) {
+        cachedDb.memberQuestions = isDemoModeEnabled() ? createDemoMemberQuestions() : [];
+        const sofia = cachedDb.users.find(u => u.userId === 'usr-contrib-ai' && u.email === 'sofia.patel@spsmail.cuny.edu');
+        if (isDemoModeEnabled() && sofia) sofia.departmentOrMajor = 'B.A. Communications';
         migrated = true;
       }
       const seedDb = createInitialDatabase();
@@ -3152,4 +3161,14 @@ export function pushNotification(entry: Omit<NotificationItem, 'notificationId' 
     ...entry,
   });
   saveDb();
+}
+
+function createDemoMemberQuestions(): MemberQuestion[] {
+  return [true, false].map((answered, i) => ({
+    questionId: `question-sofia-demo-${i}`, clubId: 'club-ai', memberUserId: 'usr-contrib-ai', memberName: 'Sofia Patel',
+    topic: answered ? 'General' : 'Events', status: answered ? 'Answered' : 'Waiting for reply', resolved: false,
+    messages: [{ messageId: `demo-question-${i}`, authorUserId: 'usr-contrib-ai', authorName: 'Sofia Patel', body: answered ? 'Can beginners join the AI workshops?' : 'What should I bring to the next workshop?', createdAt: '2026-11-20T15:00:00.000Z', fromLeader: false },
+      ...(answered ? [{ messageId: 'demo-answer', authorUserId: 'usr-lead-ai', authorName: 'Aisha Rahman', body: 'Yes! All experience levels are welcome. We will help you get started.', createdAt: '2026-11-20T16:00:00.000Z', fromLeader: true }] : [])],
+    unreadByUserIds: answered ? ['usr-contrib-ai'] : ['usr-lead-ai', 'usr-editor-ai'], createdAt: '2026-11-20T15:00:00.000Z', updatedAt: '2026-11-20T16:00:00.000Z',
+  }));
 }

@@ -1,3 +1,4 @@
+import { AskQuestionButton, MemberQuestionsView } from './club/MemberQuestionsView';
 import { notificationText, searchWorkspacePages } from '../utils/workspacePresentation';
 import { requestDraftDiscard } from '../utils/draftProtection';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -448,7 +449,7 @@ export function UpcomingClubEvents({
   const postableClubs = clubs.filter((c) => {
     if (session?.effectiveAdminRole) return true;
     return session?.memberships.some(
-      (m) => m.clubId === c.clubId && m.status === 'Active' && m.role !== 'VIEWER'
+      (m) => m.clubId === c.clubId && m.status === 'Active' && !['VIEWER','CONTRIBUTOR'].includes(m.role)
     );
   });
 
@@ -1081,7 +1082,7 @@ export function UpcomingClubEvents({
                         )}
                         {isWaitlisted && <StatusText status="Waitlisted" />}
                       </div>
-                      <h3 className="text-sm font-semibold text-slate-900">{ev.title}</h3>
+                      <h3 className="text-sm font-semibold text-slate-900">{ev.title}</h3><AskQuestionButton event={ev} />
                       <p className="text-xs text-slate-600">{ev.description}</p>
                       <div className="text-[11px] text-slate-500 flex flex-wrap items-center gap-3 pt-0.5">
                         <span className="inline-flex items-center gap-1.5">
@@ -1193,7 +1194,7 @@ export function UpcomingClubEvents({
                       )}
                     </button>
 
-                    <button
+                    {(session?.effectiveAdminRole || !session?.memberships.some(m => m.clubId === activeClubId && m.status === 'Active' && m.role === 'CONTRIBUTOR')) && (<button
                       type="button"
                       onClick={() =>
                         setCheckInEventId((prev) =>
@@ -1210,7 +1211,7 @@ export function UpcomingClubEvents({
                       <span>
                         Check-In{(ev.checkedInCount ?? 0) > 0 ? ` (${ev.checkedInCount})` : ''}
                       </span>
-                    </button>
+                    </button>)}
 
                     <button
                       type="button"
@@ -1372,8 +1373,24 @@ export function AppShell() {
     apiFetch,
   } = useAuth();
 
+  const [clubData, setClubData] = useState<ClubWorkspacePayload | null>(null);
   const [adminTab, setAdminTab] = useState('dashboard');
-  const [clubTab, setClubTab] = useState('overview');
+  const [requestedClubTab, setClubTab] = useState('overview');
+  const currentMembershipRole = clubData?.club.clubId === activeClubId ? clubData.effectiveRole : session?.effectiveAdminRole || session?.memberships.find(m => m.clubId === activeClubId && m.status === 'Active')?.role;
+  const isContributor = currentMembershipRole === 'CONTRIBUTOR';
+  const contributorPages = ['overview','club-announcements','upcoming-events','event-calendar','club-blog','club-forums','ask-club'];
+  const clubTab = isContributor && !contributorPages.includes(requestedClubTab) ? 'overview' : requestedClubTab;
+  const [questionEvent, setQuestionEvent] = useState<ClubEvent | null>(null);
+  const [questionUnread, setQuestionUnread] = useState(0);
+  useEffect(() => {
+    const ask = (e: Event) => { const detail = (e as CustomEvent).detail; setActiveClubId(detail.clubId); setQuestionEvent(detail.event); setClubTab('ask-club'); };
+    window.addEventListener('ask-club', ask); return () => window.removeEventListener('ask-club', ask);
+  }, [setActiveClubId]);
+  const loadQuestionCount = useCallback(() => {
+    if (!activeClubId || !['CONTRIBUTOR','CLUB_LEAD','EDITOR'].includes(currentMembershipRole || '')) { setQuestionUnread(0); return; }
+    void apiFetch<{unreadCount:number}>(`/api/clubs/${activeClubId}/member-questions`).then(d => setQuestionUnread(d.unreadCount)).catch(() => setQuestionUnread(0));
+  }, [activeClubId, currentMembershipRole, apiFetch]);
+  useEffect(() => { loadQuestionCount(); const timer = setInterval(loadQuestionCount, 15000); return () => clearInterval(timer); }, [loadQuestionCount]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [pageSearch, setPageSearch] = useState('');
 
@@ -1381,7 +1398,6 @@ export function AppShell() {
   const [authorizedClubs, setAuthorizedClubs] = useState<Club[]>([]);
   const [upcomingEvents, setUpcomingEvents] = useState<ClubEvent[]>([]);
   const [announcements, setAnnouncements] = useState<ClubAnnouncement[]>([]);
-  const [clubData, setClubData] = useState<ClubWorkspacePayload | null>(null);
   const [globalNotifications, setGlobalNotifications] = useState<NotificationItem[]>([]);
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -1567,13 +1583,15 @@ export function AppShell() {
     ? configuredNav
     : configuredNav.filter((item) => item.visible);
 
-  const navItems = visibleConfiguredNav.map((item) => ({
+  const baseNavItems = visibleConfiguredNav.filter(item => portalMode !== 'CLUB' || !isContributor || contributorPages.includes(item.id)).map((item) => ({
     ...item,
     icon: iconById.get(item.id) ?? (item.customUrl ? ExternalLink : Link2),
   }));
 
+  const questionNav: (typeof baseNavItems)[number] = { id: isContributor ? 'ask-club' : 'member-questions', label: `${isContributor ? 'Ask the Club' : 'Member Questions'}${questionUnread ? ` (${questionUnread})` : ''}`, section: 'Club Community', icon: MessageSquare, visible: true };
+  const navItems = portalMode === 'CLUB' && ['CONTRIBUTOR','CLUB_LEAD','EDITOR'].includes(currentMembershipRole || '') ? [...baseNavItems.slice(0, baseNavItems.findIndex(n => n.id === 'club-forums') + 1), questionNav, ...baseNavItems.slice(baseNavItems.findIndex(n => n.id === 'club-forums') + 1)] : baseNavItems;
   const currentTabId = portalMode === 'ADMIN' ? adminTab : clubTab;
-  const activeCustomPage = activeCustomPageId
+  const activeCustomPage = !isContributor && activeCustomPageId
     ? content.customPages.find((p) => p.id === activeCustomPageId) ?? null
     : null;
   const currentTabLabel = activeCustomPage
@@ -1581,6 +1599,7 @@ export function AppShell() {
     : navItems.find((item) => item.id === currentTabId)?.label ?? 'Overview';
 
   const handleSelectNav = async (id: string) => {
+    if (id === 'ask-club') setQuestionEvent(null);
     const matched = navItems.find((n) => n.id === id);
     if (matched?.customUrl) {
       return;
@@ -2093,7 +2112,7 @@ export function AppShell() {
               <span>
                 {portalMode === 'ADMIN'
                   ? formatRoleLabel(session.effectiveAdminRole)
-                  : formatRoleLabel(clubData?.effectiveRole)}
+                  : `Your Role: ${formatRoleLabel(currentMembershipRole)}`}
               </span>
             </span>
           </div>
@@ -2192,7 +2211,7 @@ export function AppShell() {
                     onOpenClubWorkspace={handleOpenClubWorkspace}
                   />
                   <UpcomingClubEvents
-                    events={upcomingEvents}
+                    events={isContributor ? upcomingEvents.filter(e => e.clubId === activeClubId || e.coSponsorClubIds?.includes(activeClubId || '')) : upcomingEvents}
                     clubs={authorizedClubs}
                     activeClubId={activeClubId}
                     portalMode={portalMode}
@@ -2226,7 +2245,7 @@ export function AppShell() {
               )}
               {adminTab === 'upcoming-events' && (
                 <UpcomingClubEvents
-                  events={upcomingEvents}
+                  events={isContributor ? upcomingEvents.filter(e => e.clubId === activeClubId || e.coSponsorClubIds?.includes(activeClubId || '')) : upcomingEvents}
                   clubs={authorizedClubs}
                   activeClubId={activeClubId}
                   portalMode={portalMode}
@@ -2236,7 +2255,7 @@ export function AppShell() {
               )}
               {adminTab === 'event-calendar' && (
                 <ClubEventCalendar
-                  events={upcomingEvents}
+                  events={isContributor ? upcomingEvents.filter(e => e.clubId === activeClubId || e.coSponsorClubIds?.includes(activeClubId || '')) : upcomingEvents}
                   clubs={authorizedClubs}
                   activeClubId={activeClubId}
                   onRefresh={refreshAll}
@@ -2362,7 +2381,9 @@ export function AppShell() {
             </>
           ) : portalMode === 'CLUB' && clubData && clubData.club.clubId === activeClubId ? (
             <>
-              {clubTab === 'overview' && (
+              {isContributor && clubTab === 'overview' && <section className="bg-white border rounded-lg p-6 space-y-4"><h1 className="text-xl font-bold">{clubData.club.name}</h1><p>{clubData.club.description}</p><span className="inline-block rounded bg-sky-100 text-sky-900 px-3 py-1 text-sm">{session.user.name} · Contributor</span><p className="text-sm text-slate-600">View club news, events, blog stories and forums. RSVP to events or contact your club team privately.</p><button className="block px-4 py-2 bg-[#004B87] text-white rounded" onClick={() => { setQuestionEvent(null); setClubTab('ask-club'); }}>Ask a question</button></section>}
+              {(clubTab === 'ask-club' || clubTab === 'member-questions') && <MemberQuestionsView key={clubData.club.clubId} clubId={clubData.club.clubId} leader={!isContributor} event={isContributor && questionEvent && (questionEvent.clubId === activeClubId || questionEvent.coSponsorClubIds?.includes(activeClubId || '')) ? questionEvent : null} onChange={loadQuestionCount} />}
+              {clubTab === 'overview' && !isContributor && (
                 <div className="space-y-8">
                   <button type="button" onClick={() => setClubTab('club-announcements')} className="w-full text-left rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-[#004B87] hover:bg-sky-100">
                     <EditableText
@@ -2431,24 +2452,24 @@ export function AppShell() {
               )}
               {clubTab === 'upcoming-events' && (
                 <UpcomingClubEvents
-                  events={upcomingEvents}
+                  events={isContributor ? upcomingEvents.filter(e => e.clubId === activeClubId || e.coSponsorClubIds?.includes(activeClubId || '')) : upcomingEvents}
                   clubs={authorizedClubs}
                   activeClubId={activeClubId}
                   portalMode={portalMode}
                   onRefresh={refreshAll}
                   onDraftPostForEvent={
-                    clubData.effectiveRole !== 'VIEWER' ? handleDraftPostFromEvent : undefined
+                    !['VIEWER','CONTRIBUTOR'].includes(clubData.effectiveRole || '') ? handleDraftPostFromEvent : undefined
                   }
                 />
               )}
               {clubTab === 'event-calendar' && (
                 <ClubEventCalendar
-                  events={upcomingEvents}
+                  events={isContributor ? upcomingEvents.filter(e => e.clubId === activeClubId || e.coSponsorClubIds?.includes(activeClubId || '')) : upcomingEvents}
                   clubs={authorizedClubs}
                   activeClubId={activeClubId}
                   onRefresh={refreshAll}
                   onDraftPostForEvent={
-                    clubData.effectiveRole !== 'VIEWER' ? handleDraftPostFromEvent : undefined
+                    !['VIEWER','CONTRIBUTOR'].includes(clubData.effectiveRole || '') ? handleDraftPostFromEvent : undefined
                   }
                 />
               )}

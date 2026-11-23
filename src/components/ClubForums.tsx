@@ -134,6 +134,7 @@ export function ClubForums({ clubs, activeClubId, onRefreshParent }: ClubForumsP
 
   const selectedClub = clubs.find((c) => c.clubId === selectedClubId);
 
+  const readOnly = !session?.effectiveAdminRole && session?.memberships.some(m => m.clubId === selectedClubId && m.status === 'Active' && m.role === 'CONTRIBUTOR');
   const isModeratorForClub = Boolean(
     session?.effectiveAdminRole ||
       session?.memberships.some(
@@ -377,7 +378,7 @@ export function ClubForums({ clubs, activeClubId, onRefreshParent }: ClubForumsP
             />
           </div>
 
-          <button
+          {!readOnly && (<button
             type="button"
             onClick={() => {
               setError('');
@@ -387,7 +388,7 @@ export function ClubForums({ clubs, activeClubId, onRefreshParent }: ClubForumsP
           >
             <Plus className="w-3.5 h-3.5" />
             <span>{showNewForm ? 'Close Form' : 'Start Thread'}</span>
-          </button>
+          </button>)}
         </div>
       </div>
 
@@ -464,7 +465,7 @@ export function ClubForums({ clubs, activeClubId, onRefreshParent }: ClubForumsP
         </div>
       )}
 
-      {showNewForm && (
+      {showNewForm && !readOnly && (
         <form
           onSubmit={handleCreateThread}
           className="p-5 bg-slate-50/70 border-b border-slate-200 space-y-4"
@@ -540,13 +541,13 @@ export function ClubForums({ clubs, activeClubId, onRefreshParent }: ClubForumsP
           </div>
 
           <div className="flex items-center justify-end gap-2">
-            <button
+            {!readOnly && (<button
               type="button"
               onClick={() => setShowNewForm(false)}
               className="px-3.5 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-md whitespace-nowrap shrink-0 cursor-pointer"
             >
               Cancel
-            </button>
+            </button>)}
             <button
               type="submit"
               disabled={submittingThread}
@@ -664,7 +665,7 @@ export function ClubForums({ clubs, activeClubId, onRefreshParent }: ClubForumsP
                   </button>
 
                   <div className="flex items-center gap-2.5 shrink-0 self-end lg:self-center">
-                    <button
+                    {!readOnly && (<button
                       type="button"
                       disabled={isBusy}
                       onClick={() => void handleToggleSubscribe(thread)}
@@ -685,7 +686,7 @@ export function ClubForums({ clubs, activeClubId, onRefreshParent }: ClubForumsP
                           <span>Subscribe</span>
                         </>
                       )}
-                    </button>
+                    </button>)}
 
                     <button
                       type="button"
@@ -713,7 +714,7 @@ export function ClubForums({ clubs, activeClubId, onRefreshParent }: ClubForumsP
                         {renderBodyWithMentions(thread.body)}
                       </p>
 
-                      {(isModeratorForClub || isAuthor) && (
+                      {!readOnly && (isModeratorForClub || isAuthor) && (
                         <div className="flex flex-wrap items-center gap-2 shrink-0">
                           {isModeratorForClub && (
                             <>
@@ -845,7 +846,7 @@ export function ClubForums({ clubs, activeClubId, onRefreshParent }: ClubForumsP
                         </div>
                       )}
 
-                      <form
+                      {!readOnly && (<form
                         onSubmit={(e) => void handlePostReply(e, thread)}
                         className="flex flex-col sm:flex-row gap-2 pt-1"
                       >
@@ -873,7 +874,7 @@ export function ClubForums({ clubs, activeClubId, onRefreshParent }: ClubForumsP
                             {replyingId === thread.threadId ? 'Posting...' : 'Post Reply'}
                           </span>
                         </button>
-                      </form>
+                      </form>)}
                     </div>
                   </div>
                 )}

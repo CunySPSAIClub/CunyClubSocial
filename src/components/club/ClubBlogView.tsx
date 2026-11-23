@@ -309,8 +309,7 @@ export function ClubBlogView({
     effectiveRole === 'SL_SUPER_ADMIN' ||
     effectiveRole === 'SL_ADMIN' ||
     effectiveRole === 'CLUB_LEAD' ||
-    effectiveRole === 'EDITOR' ||
-    effectiveRole === 'CONTRIBUTOR';
+    effectiveRole === 'EDITOR';
 
   const canPublish =
     effectiveRole === 'SL_SUPER_ADMIN' ||
@@ -1751,7 +1750,7 @@ export function ClubBlogView({
             {/* Reactions & Actions Bar */}
             <div className="pt-5 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <button
+                {effectiveRole !== 'CONTRIBUTOR' && (<button
                   type="button"
                   onClick={() => void handleToggleLike(activePost)}
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border cursor-pointer transition-colors ${
@@ -1770,7 +1769,7 @@ export function ClubBlogView({
                   <span className="font-mono-tabular">
                     {activePost.likedByUserIds.length} Appreciate
                   </span>
-                </button>
+                </button>)}
                 <span className="inline-flex items-center gap-1.5 text-xs text-slate-500 font-mono-tabular">
                   <MessageSquare className="w-3.5 h-3.5" />
                   <span>
@@ -1799,7 +1798,7 @@ export function ClubBlogView({
                 Club Member Discussion ({activePost.comments.length})
               </h3>
 
-              <form
+              {effectiveRole !== 'CONTRIBUTOR' && (<form
                 onSubmit={(e) => void handleAddComment(e, activePost)}
                 className="flex flex-col sm:flex-row gap-2"
               >
@@ -1819,7 +1818,7 @@ export function ClubBlogView({
                   <Send className="w-3.5 h-3.5" />
                   <span>{commentBusy ? 'Posting...' : 'Post Comment'}</span>
                 </button>
-              </form>
+              </form>)}
 
               {activePost.comments.length === 0 ? (
                 <p className="text-xs text-slate-500">
@@ -2109,7 +2108,7 @@ export function ClubBlogView({
 
                     <div className="px-5 py-3 border-t border-slate-100 bg-slate-50/50 flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-3 text-xs text-slate-600">
-                        <button
+                        {effectiveRole !== 'CONTRIBUTOR' && (<button
                           type="button"
                           onClick={() => void handleToggleLike(post)}
                           className={`inline-flex items-center gap-1 font-mono-tabular cursor-pointer ${
@@ -2120,7 +2119,7 @@ export function ClubBlogView({
                             className={`w-3.5 h-3.5 ${userLiked ? 'fill-rose-600 text-rose-600' : ''}`}
                           />
                           <span>{post.likedByUserIds.length}</span>
-                        </button>
+                        </button>)}
                         <button
                           type="button"
                           onClick={() => setActivePostId(post.blogPostId)}

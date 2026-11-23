@@ -47,7 +47,7 @@ export function ClubTeamView({
   const { apiFetch } = useAuth();
   const [recipientEmail, setRecipientEmail] = useState('');
   const [recipientName, setRecipientName] = useState('');
-  const [role, setRole] = useState<ClubMembership['role']>('EDITOR');
+  const [role, setRole] = useState<ClubMembership['role']>('CONTRIBUTOR');
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
@@ -209,7 +209,7 @@ export function ClubTeamView({
                 onChange={(e) => setRole(e.target.value as ClubMembership['role'])}
                 className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white focus:outline-none focus:border-[#004B87]"
               >
-                {ASSIGNABLE_ROLES.map((r) => (
+                {ASSIGNABLE_ROLES.filter(r => r !== 'CLUB_LEAD' || effectiveRole === 'SL_ADMIN' || effectiveRole === 'SL_SUPER_ADMIN').map((r) => (
                   <option key={r} value={r}>
                     {formatRoleLabel(r)}
                   </option>
@@ -254,7 +254,7 @@ export function ClubTeamView({
             {members.map((m) => (
               <tr key={m.membershipId} className="hover:bg-slate-50/70">
                 <td className="py-3 px-4">
-                  <div className="font-medium text-slate-900">{m.name}</div>
+                  <div className="font-medium text-slate-900">{m.name} {m.role === 'CONTRIBUTOR' && <span className="ml-2 text-xs rounded bg-sky-100 text-sky-900 px-2 py-1">Contributor</span>}</div>
                   <div className="text-xs font-mono text-slate-500">{m.email}</div>
                 </td>
                 <td className="py-3 px-4 text-xs">
@@ -281,13 +281,14 @@ export function ClubTeamView({
                 <td className="py-3 px-4 text-xs">
                   {canManageTeam ? (
                     <select
+                      disabled={m.role === 'CLUB_LEAD' && effectiveRole === 'CLUB_LEAD'}
                       value={m.role}
                       onChange={(e) =>
                         void handleRoleChange(m.userId, e.target.value as ClubMembership['role'])
                       }
                       className="px-2.5 py-1 text-xs border border-slate-300 rounded bg-white"
                     >
-                      {ASSIGNABLE_ROLES.map((r) => (
+                      {ASSIGNABLE_ROLES.filter(r => r !== 'CLUB_LEAD' || effectiveRole === 'SL_ADMIN' || effectiveRole === 'SL_SUPER_ADMIN').map((r) => (
                         <option key={r} value={r}>
                           {formatRoleLabel(r)}
                         </option>

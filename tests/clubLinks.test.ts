@@ -101,7 +101,7 @@ test('validation enforces https://, domain rules, field lengths, and max 10 addi
   assert.ok(tooManyRes.formError);
 });
 
-test('permissions allow active CLUB_LEAD, EDITOR, CONTRIBUTOR, and Student Life admins, and reject VIEWER and non-members', () => {
+test('permissions allow active CLUB_LEAD, EDITOR, and Student Life admins, and reject CONTRIBUTOR, VIEWER and non-members', () => {
   const member = { userId: 'u-1', status: 'Active', systemRole: 'STANDARD_USER' } as User;
   const superAdmin = { userId: 'u-sa', status: 'Active', systemRole: 'SL_SUPER_ADMIN' } as User;
   const scopedAdmin = {
@@ -116,7 +116,7 @@ test('permissions allow active CLUB_LEAD, EDITOR, CONTRIBUTOR, and Student Life 
 
   assert.equal(canEditClubLinks(member, 'club-ai', makeMembership('CLUB_LEAD')), true);
   assert.equal(canEditClubLinks(member, 'club-ai', makeMembership('EDITOR')), true);
-  assert.equal(canEditClubLinks(member, 'club-ai', makeMembership('CONTRIBUTOR')), true);
+  assert.equal(canEditClubLinks(member, 'club-ai', makeMembership('CONTRIBUTOR')), false);
   assert.equal(canEditClubLinks(member, 'club-ai', makeMembership('VIEWER')), false);
   assert.equal(canEditClubLinks(member, 'club-other', makeMembership('CLUB_LEAD')), false);
   assert.equal(canEditClubLinks(member, 'club-ai', makeMembership('CLUB_LEAD', 'Revoked')), false);

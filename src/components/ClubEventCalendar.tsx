@@ -1,3 +1,4 @@
+import { AskQuestionButton } from './club/MemberQuestionsView';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ArrowRight,
@@ -100,7 +101,7 @@ export function ClubEventCalendar({
       clubs.filter((c) => {
         if (session?.effectiveAdminRole) return true;
         return session?.memberships.some(
-          (m) => m.clubId === c.clubId && m.status === 'Active' && m.role !== 'VIEWER'
+          (m) => m.clubId === c.clubId && m.status === 'Active' && !['VIEWER','CONTRIBUTOR'].includes(m.role)
         );
       }),
     [clubs, session]
@@ -1112,7 +1113,7 @@ export function ClubEventCalendar({
                             )}
                           </button>
 
-                          <button
+                          {(session?.effectiveAdminRole || !session?.memberships.some(m => m.clubId === activeClubId && m.status === 'Active' && m.role === 'CONTRIBUTOR')) && (<button
                             type="button"
                             onClick={() =>
                               setCheckInEventId((prev) =>
@@ -1129,9 +1130,9 @@ export function ClubEventCalendar({
                             <span>
                               Check-In{(ev.checkedInCount ?? 0) > 0 ? ` (${ev.checkedInCount})` : ''}
                             </span>
-                          </button>
+                          </button>)}
 
-                          <button
+                          <AskQuestionButton event={ev} /><button
                             type="button"
                             onClick={() => downloadEventIcs(ev)}
                             className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-md whitespace-nowrap shrink-0 cursor-pointer"
@@ -1376,7 +1377,7 @@ export function ClubEventCalendar({
                           )}
                         </button>
 
-                        <button
+                        {(session?.effectiveAdminRole || !session?.memberships.some(m => m.clubId === activeClubId && m.status === 'Active' && m.role === 'CONTRIBUTOR')) && (<button
                           type="button"
                           onClick={() =>
                             setCheckInEventId((prev) =>
@@ -1393,9 +1394,9 @@ export function ClubEventCalendar({
                           <span>
                             Check-In{(ev.checkedInCount ?? 0) > 0 ? ` (${ev.checkedInCount})` : ''}
                           </span>
-                        </button>
+                        </button>)}
 
-                        <button
+                        <AskQuestionButton event={ev} /><button
                           type="button"
                           onClick={() => downloadEventIcs(ev)}
                           className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-md whitespace-nowrap shrink-0 cursor-pointer"

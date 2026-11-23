@@ -1,3 +1,4 @@
+import { registerMemberQuestions } from './server/memberQuestions.ts';
 import 'dotenv/config';
 import { DraftUpdateError, updateDraft } from './server/draftUpdates.ts';
 import express, { type NextFunction, type Request, type Response } from 'express';
@@ -82,6 +83,7 @@ import {
 } from './server/sessionAuth.ts';
 import { createDefaultClubLinks } from './src/utils/clubLinks.ts';
 import type {
+  AccountRequestType,
   AccountRequestStatus,
   AnnouncementPriority,
   BlogPostCategory,
@@ -837,6 +839,32 @@ async function startServer() {
   }, 15000);
   reminderInterval.unref();
 
+  // Deny Contributor writes centrally, including routes with their own editor/public auth.
+  app.use('/api', (req: AuthedRequest, res: Response, next: NextFunction) => {
+    const verified = verifyUserSessionToken(extractSessionCookie(req));
+    const user = verified && getDb().users.find(u => u.userId === verified.userId && u.status === 'Active');
+    if (!user) return next();
+    let apiPath: string;
+    try { apiPath = decodeURIComponent(req.path).replace(/\/$/, ''); } catch { res.status(400).json({ error: 'Invalid request path.' }); return; }
+    const pathClubId = apiPath.match(/^\/clubs\/([^/]+)/i)?.[1];
+    const clubId = pathClubId || (typeof req.headers['x-club-id'] === 'string' ? req.headers['x-club-id'] : undefined);
+    const role = clubId ? getUserEffectiveClubRole(user, clubId) : null;
+    const contributor = role === 'CONTRIBUTOR' || (!role && !isAdminUser(user) && getDb().memberships.some(m => m.userId === user.userId && m.status === 'Active' && m.role === 'CONTRIBUTOR'));
+    if (!contributor) return next();
+    const lifecycle = /^\/auth\/(login|google|logout)$/.test(apiPath);
+    const ownMemberWrite = req.method === 'POST' && /^\/clubs\/[^/]+\/(events\/[^/]+\/rsvp|member-questions(?:\/[^/]+\/(messages|read))?)$/i.test(apiPath);
+    if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method) && !lifecycle && !ownMemberWrite) {
+      res.status(403).json({ error: 'Not allowed for your role' }); return;
+    }
+    if (pathClubId && role === 'CONTRIBUTOR' && ['GET', 'HEAD'].includes(req.method)) {
+      const tail = apiPath.replace(/^\/clubs\/[^/]+/i, '').toLowerCase();
+      if (!['', '/calendar.ics', '/forum', '/blog-posts', '/member-questions'].includes(tail) && !/^\/member-questions\/[^/]+$/.test(tail)) {
+        res.status(403).json({ error: 'Not allowed for your role' }); return;
+      }
+    }
+    next();
+  });
+
   // Auth middleware verifying signed httpOnly session cookie (never trusts x-cuny-user-id header)
   app.use('/api', (req: AuthedRequest, res: Response, next: NextFunction) => {
     if (
@@ -880,6 +908,8 @@ async function startServer() {
     req.currentUser = user;
     next();
   });
+
+  registerMemberQuestions(app);
 
   app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok', service: 'cuny-sps-club-social-hub' });
@@ -1811,7 +1841,7 @@ async function startServer() {
         id: `ann-preview-${ann.announcementId}`,
         category: 'Announcement',
         title: ann.title,
-        body: ann.body.slice(0, 120),
+        body: ann.message.slice(0, 120),
         timeLabel: 'Club update',
       });
     }
@@ -1826,11 +1856,7 @@ async function startServer() {
         ).length
       : 0;
 
-    const newAnnouncements = primaryClubId
-      ? (db.announcements ?? []).filter(
-          (a) => !a.clubId || a.clubId === primaryClubId
-        ).length
-      : (db.announcements ?? []).length;
+    const newAnnouncements = (db.announcements ?? []).length;
 
     const newMembers = primaryClubId
       ? db.memberships.filter((m) => m.clubId === primaryClubId && m.status === 'Active').length
@@ -2396,7 +2422,7 @@ async function startServer() {
       ? db.inboxMessages.filter((msg) => msg.clubId === clubId)
       : [];
     const notifications = db.notifications.filter(
-      (n) => n.userId === user.userId || n.clubId === clubId
+      (n) => n.userId === user.userId || (n.clubId === clubId && n.type !== 'Member Question')
     );
     const auditLogs = hasClubCapability(user, clubId, 'VIEW_SECURITY_AUDIT_LOGS')
       ? db.auditLogs.filter((l) => l.clubId === clubId)
@@ -2415,6 +2441,12 @@ async function startServer() {
       (db.clubBroadcasts ?? []).filter((b) => b.clubId === clubId)
     );
 
+    if (effectiveRole === 'CONTRIBUTOR') {
+      res.json({ club: { ...club, semesterBudgetAllocatedUsd: undefined, budgetSummary: undefined }, effectiveRole,
+        events, notifications: notifications.filter(n => n.userId === user.userId),
+        socialAccounts: [], posts: [], accountRequests: [], analytics: [], invitations: [], members: [], inboxMessages: [], auditLogs: [], whatsappGroups: [], whatsappMessages: [], budgetIncreaseRequests: [], clubBroadcasts: [] });
+      return;
+    }
     res.json({
       club: {
         ...club,
@@ -9042,7 +9074,7 @@ async function startServer() {
         .filter((bp) => bp.clubId === clubId)
         .filter(
           (bp) =>
-            bp.status === 'Published' || canManageDrafts || bp.authorUserId === user.userId
+            bp.status === 'Published' || (getUserEffectiveClubRole(user, clubId) !== 'CONTRIBUTOR' && (canManageDrafts || bp.authorUserId === user.userId))
         )
         .map(enrichBlogPost)
     );
@@ -9727,7 +9759,7 @@ async function startServer() {
       .filter(
         (n) =>
           n.userId === user.userId ||
-          (Boolean(n.clubId) && accessibleClubIds.has(n.clubId!) && isAdminUser(user))
+          (Boolean(n.clubId) && accessibleClubIds.has(n.clubId!) && isAdminUser(user) && n.type !== 'Member Question')
       )
       .map((n) => ({
         ...n,
@@ -9750,7 +9782,7 @@ async function startServer() {
       if (
         !n.read &&
         (n.userId === user.userId ||
-          (Boolean(n.clubId) && accessibleClubIds.has(n.clubId!) && isAdminUser(user)))
+          (Boolean(n.clubId) && accessibleClubIds.has(n.clubId!) && isAdminUser(user) && n.type !== 'Member Question'))
       ) {
         n.read = true;
         updated += 1;

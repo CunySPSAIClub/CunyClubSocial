@@ -1,3 +1,4 @@
+import { useAuth } from '../../context/AuthContext';
 import React, { useState } from 'react';
 import {
   ArrowLeft,
@@ -18,6 +19,8 @@ interface SiteFooterProps {
 }
 
 export function SiteFooter({ compact = false }: SiteFooterProps) {
+  const { session, activeClubId } = useAuth();
+  const contributor = !session?.effectiveAdminRole && session?.memberships.some(m => m.clubId === activeClubId && m.role === 'CONTRIBUTOR' && m.status === 'Active');
   const {
     content,
     isAdminLoggedIn,
@@ -234,7 +237,7 @@ export function SiteFooter({ compact = false }: SiteFooterProps) {
               |
             </span>
 
-            <button
+            {!contributor && (<button
               type="button"
               onClick={() => {
                 if (isAdminLoggedIn) {
@@ -247,7 +250,7 @@ export function SiteFooter({ compact = false }: SiteFooterProps) {
             >
               <Lock className="w-3 h-3" />
               <span>Admin</span>
-            </button>
+            </button>)}
           </div>
         </div>
       </div>

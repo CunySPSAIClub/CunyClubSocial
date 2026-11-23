@@ -575,3 +575,20 @@ export async function dispatchEventUpdateEmails(input: {
 }
 
 
+
+// Share the existing SMTP settings and opt-in preferences for private question alerts.
+export async function sendMemberQuestionEmail(recipient: User, clubId: string, subject: string): Promise<void> {
+  if (recipient.emailRemindersEnabled === false || recipient.notificationsEnabled === false) return;
+  const db = getDb(), club = db.clubs.find(c => c.clubId === clubId);
+  const settings = getEffectiveSmtpSettings();
+  const body = `${subject} for ${club?.name || 'your club'}. Sign in to CUNY SPS Club Social Hub to read your private conversation: ${settings.appUrl}`;
+  const record: EmailReminderRecord = { reminderId: `question-email-${Date.now()}-${Math.random().toString(36).slice(2)}`, eventId: '', eventTitle: 'Private member question', eventDate: '', eventTime: '', eventLocation: '', clubId, clubName: club?.name || '', clubShortCode: club?.shortCode || '', recipientUserId: recipient.userId, recipientName: recipient.name, recipientEmail: recipient.email, subject, body, triggerMode: 'Manual Early Dispatch', deliveryStatus: 'Queued (Hub Outbox)', sentAt: new Date().toISOString() };
+  db.emailReminders.unshift(record); saveDb();
+  const transport = getSmtpTransporter();
+  if (!transport) return;
+  try {
+    const result = await transport.sendMail({ from: settings.fromAddress, to: recipient.email, subject, text: body });
+    record.deliveryStatus = 'Sent (SMTP)'; record.providerMessageId = result.messageId;
+  } catch (error) { record.deliveryStatus = 'Failed'; record.errorMessage = error instanceof Error ? error.message : 'Email delivery failed.'; }
+  saveDb();
+}
