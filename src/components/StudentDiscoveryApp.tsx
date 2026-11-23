@@ -73,6 +73,25 @@ function LinkedInIcon({ className = 'w-5 h-5' }: { className?: string }) {
   );
 }
 
+function getGoogleCalendarUrl(ev: DiscoveryEvent): string {
+  let hh = 18;
+  let mm = 0;
+  const match = (ev.time || "").match(/(\d+):(\d+)\s*(AM|PM)?/i);
+  if (match) {
+    hh = parseInt(match[1], 10);
+    mm = parseInt(match[2], 10);
+    const meridiem = match[3] ? match[3].toUpperCase() : null;
+    if (meridiem === "PM" && hh < 12) hh += 12;
+    if (meridiem === "AM" && hh === 12) hh = 0;
+  }
+  const utcHh = (hh + 5) % 24;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const dClean = ev.date.replace(/-/g, "");
+  const startCode = `${dClean}T${pad(utcHh)}${pad(mm)}00Z`;
+  const endCode = `${dClean}T${pad((utcHh + 1) % 24)}${pad(mm)}00Z`;
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(ev.title)}&dates=${startCode}/${endCode}&details=${encodeURIComponent(ev.description)}&location=${encodeURIComponent(ev.location)}`;
+}
+
 interface StudentDiscoveryAppProps {
   onOpenPortal?: () => void;
 }
@@ -1147,7 +1166,7 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
                       <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between">
                         <span className="text-[11px] text-slate-500">{ev.rsvps} RSVPs registered</span>
                         <a
-                          href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(ev.title)}&dates=${ev.date.replace(/-/g, '')}T${ev.time.replace(':', '')}00Z/${ev.date.replace(/-/g, '')}T${ev.time.replace(':', '')}00Z&details=${encodeURIComponent(ev.description)}`}
+                          href={getGoogleCalendarUrl(ev)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-xs font-semibold text-[#004B87] hover:underline flex items-center gap-1 cursor-pointer"
@@ -1311,7 +1330,7 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                     <a
-                      href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(ev.title)}&dates=${ev.date.replace(/-/g, '')}T${ev.time.replace(':', '')}00Z/${ev.date.replace(/-/g, '')}T${ev.time.replace(':', '')}00Z&details=${encodeURIComponent(ev.description)}`}
+                      href={getGoogleCalendarUrl(ev)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 md:flex-none px-4 py-2.5 bg-[#004B87] hover:bg-[#003865] text-white text-xs font-bold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5"

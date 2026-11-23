@@ -10,7 +10,16 @@ function escapeIcsText(value: string): string {
 
 function formatIcsDateTimeLocal(dateStr: string, timeStr: string, addHours = 0): string {
   const [y, m, d] = dateStr.split('-').map((n) => Number(n));
-  const [hh, mm] = (timeStr || '12:00').split(':').map((n) => Number(n));
+  let hh = 12;
+  let mm = 0;
+  const match = (timeStr || '12:00').match(/(\d+):(\d+)\s*(AM|PM)?/i);
+  if (match) {
+    hh = parseInt(match[1], 10);
+    mm = parseInt(match[2], 10);
+    const meridiem = match[3] ? match[3].toUpperCase() : null;
+    if (meridiem === 'PM' && hh < 12) hh += 12;
+    if (meridiem === 'AM' && hh === 12) hh = 0;
+  }
   const base = new Date(
     Date.UTC(
       Number.isFinite(y) ? y : 2026,

@@ -47,11 +47,6 @@ test('Screen 3 (Club Profile & Channels) includes verified direct action links a
   assert.equal(whatsapp.actionLabel, 'Join WhatsApp');
   assert.match(whatsapp.url, /^https:\/\/chat\.whatsapp\.com\//);
 
-  const facebook = aiClub.channels.find((ch) => ch.platform === 'facebook');
-  assert.ok(facebook, 'Facebook channel must exist');
-  assert.equal(facebook.actionLabel, 'Visit Facebook');
-  assert.match(facebook.url, /^https:\/\/www\.facebook\.com\//);
-
   assert.ok(aiClub.logoUrl, 'AI club must have verified logoUrl');
   assert.equal(aiClub.logoUrl, './club-logos/ai-club.jpg');
 
@@ -59,9 +54,16 @@ test('Screen 3 (Club Profile & Channels) includes verified direct action links a
   assert.ok(instagram, 'Instagram channel must exist');
   assert.match(instagram.url, /^https:\/\/www\.instagram\.com\//);
 
+  const website = aiClub.channels.find((ch) => ch.platform === 'website');
+  assert.ok(website, 'OpenLab website channel must exist');
+  assert.match(website.url, /^https:\/\/openlab\.sps\.cuny\.edu\//);
+
+  // Facebook and LinkedIn are institutional CUNY SPS channels not affiliated directly to AI club and are omitted
+  const facebook = aiClub.channels.find((ch) => ch.platform === 'facebook');
+  assert.equal(facebook, undefined, 'Institutional Facebook must be omitted from AI club profile');
+
   const linkedin = aiClub.channels.find((ch) => ch.platform === 'linkedin');
-  assert.ok(linkedin, 'LinkedIn channel must exist');
-  assert.match(linkedin.url, /^https:\/\/www\.linkedin\.com\//);
+  assert.equal(linkedin, undefined, 'Institutional LinkedIn must be omitted from AI club profile');
 
   // TikTok is unverified on official sources and must be omitted per privacy guidelines
   const tiktok = aiClub.channels.find((ch) => ch.platform === 'tiktok');
@@ -73,12 +75,14 @@ test('Screen 3 (Club Profile & Channels) includes verified direct action links a
   }
 });
 
-test('Screen 4 (Events) contains event schedule and club linkage', () => {
-  assert.ok(EVENTS_DATA.length >= 5, 'Must catalog upcoming campus events');
+test('Screen 4 (Events) contains event schedule and club linkage with 12-hour formatted times', () => {
+  assert.ok(EVENTS_DATA.length >= 10, 'Must catalog upcoming campus events from student life and clubs');
   for (const ev of EVENTS_DATA) {
     assert.ok(ev.clubId, 'Every event must link to a valid clubId');
     assert.ok(ev.title, 'Every event must have a title');
     assert.ok(ev.date, 'Every event must have a date');
+    // Ensure time is in 12-hour format with AM or PM, not military 24 hours
+    assert.match(ev.time, /^(0?[1-9]|1[0-2]):[0-5][0-9]\s*(AM|PM)$/i, `Event "${ev.title}" time must be in 12-hour format (e.g. 7:00 PM), got: ${ev.time}`);
     const matchedClub = CLUBS_DATA.find((c) => c.clubId === ev.clubId);
     assert.ok(matchedClub, `Event "${ev.title}" must link to an existing club`);
   }
