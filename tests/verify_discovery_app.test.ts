@@ -77,6 +77,21 @@ test('Screen 3 (Club Profile & Channels) includes verified direct action links a
 
 test('Screen 4 (Events) contains event schedule and club linkage with 12-hour formatted times', () => {
   assert.ok(EVENTS_DATA.length >= 10, 'Must catalog upcoming campus events from student life and clubs');
+
+  // Verify prototype event titles are completely removed
+  const autonomousMeeting = EVENTS_DATA.find(e => e.title.includes('Autonomous ML Agents'));
+  assert.equal(autonomousMeeting, undefined, 'Prototype meeting "Autonomous ML Agents" must not exist');
+
+  const buildNight = EVENTS_DATA.find(e => e.title.includes('Civic Tech Build Night'));
+  assert.equal(buildNight, undefined, 'Prototype meeting "Civic Tech Build Night" must not exist');
+
+  // Verify authentic AI club meetings from OpenLab exist
+  const aiMeetings = EVENTS_DATA.filter(e => e.clubId === 'club-ai');
+  assert.ok(aiMeetings.length >= 3, 'Must catalog authentic AI club meetings from calendar');
+  for (const aim of aiMeetings) {
+    assert.match(aim.title, /(AI Club Meeting|Artificial Intelligence Club Meeting)/i);
+  }
+  assert.ok(EVENTS_DATA.length >= 10, 'Must catalog upcoming campus events from student life and clubs');
   for (const ev of EVENTS_DATA) {
     assert.ok(ev.clubId, 'Every event must link to a valid clubId');
     assert.ok(ev.title, 'Every event must have a title');

@@ -1162,7 +1162,7 @@ export function StudentDiscoveryApp() {
 
                       <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between gap-2">
                         <a
-                          href="https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"
+                          href={ev.url || "https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-[11px] font-medium text-slate-500 hover:text-[#004B87] flex items-center gap-1 cursor-pointer"
@@ -1344,6 +1344,18 @@ export function StudentDiscoveryApp() {
                       <span>View Club Profile</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
+                    {ev.url && (
+                      <a
+                        href={ev.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 md:flex-none px-4 py-2.5 bg-sky-50 hover:bg-sky-100 text-[#004B87] text-xs font-semibold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5 border border-sky-100"
+                      >
+                        <Calendar className="w-3.5 h-3.5 text-[#004B87]" />
+                        <span>Calendar Listing</span>
+                        <ExternalLink className="w-3 h-3 opacity-60" />
+                      </a>
+                    )}
                     <a
                       href={getGoogleCalendarUrl(ev)}
                       target="_blank"
