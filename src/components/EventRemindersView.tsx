@@ -135,7 +135,7 @@ export function EventRemindersView({ onRefreshParent }: EventRemindersViewProps)
       setFeedback(
         res.dispatchedCount > 0
           ? `24-hour reminder sweep recorded ${res.dispatchedCount} email reminder(s) across ${res.checkedEvents} scheduled events.`
-          : `Checked ${res.checkedEvents} events — all reminders currently inside the 24-hour window have already been delivered.`
+          : `Checked ${res.checkedEvents} events — all reminders currently inside the 24-hour window have already been queued / recorded in the outbox.`
       );
       await loadReminders();
       if (onRefreshParent) await onRefreshParent();

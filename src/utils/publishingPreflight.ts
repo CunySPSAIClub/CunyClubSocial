@@ -1,5 +1,5 @@
-import type { MediaAsset, SocialAccount } from '../types';
-import { integrationStatus } from './integrationStatus';
+import type { MediaAsset, SocialAccount } from '../types.ts';
+import { integrationStatus } from './integrationStatus.ts';
 
 export function publishingPreflight(input: { title: string; caption: string; targetAccountIds: string[]; mediaAsset?: MediaAsset }, accounts: SocialAccount[]) {
   const errors: string[] = [];
