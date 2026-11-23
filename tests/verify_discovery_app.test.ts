@@ -38,13 +38,16 @@ test('Screen 3 (Club Profile & Channels) includes verified direct action links a
 
   const whatsapp = aiClub.channels.find((ch) => ch.platform === 'whatsapp');
   assert.ok(whatsapp, 'WhatsApp channel must exist');
-  assert.equal(whatsapp.actionLabel, 'Join the WhatsApp group');
+  assert.equal(whatsapp.actionLabel, 'Join WhatsApp');
   assert.match(whatsapp.url, /^https:\/\/chat\.whatsapp\.com\//);
 
   const facebook = aiClub.channels.find((ch) => ch.platform === 'facebook');
   assert.ok(facebook, 'Facebook channel must exist');
-  assert.equal(facebook.actionLabel, 'Visit on Facebook');
+  assert.equal(facebook.actionLabel, 'Visit Facebook');
   assert.match(facebook.url, /^https:\/\/www\.facebook\.com\//);
+
+  assert.ok(aiClub.logoUrl, 'AI club must have verified logoUrl');
+  assert.equal(aiClub.logoUrl, './club-logos/ai-club.jpg');
 
   const instagram = aiClub.channels.find((ch) => ch.platform === 'instagram');
   assert.ok(instagram, 'Instagram channel must exist');

@@ -469,12 +469,23 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
                   >
                     <div>
                       <div className="flex items-center justify-between gap-3 mb-3">
-                        <div
-                          className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm"
-                          style={{ backgroundColor: club.accentColor }}
-                        >
-                          {club.shortCode}
-                        </div>
+                        {club.logoUrl ? (
+                          <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
+                            <img
+                              src={club.logoUrl}
+                              alt={`${club.name} logo`}
+                              className="w-full h-full object-contain"
+                              loading="lazy"
+                            />
+                          </div>
+                        ) : (
+                          <div
+                            className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm shrink-0"
+                            style={{ backgroundColor: club.accentColor }}
+                          >
+                            {club.shortCode}
+                          </div>
+                        )}
                         <span className="text-[10px] font-semibold px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full truncate max-w-[140px]">
                           {club.category}
                         </span>
@@ -672,14 +683,25 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
                     className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
                   >
                     <div>
-                      {/* Top Header: Monogram, Name, ShortCode */}
+                      {/* Top Header: Monogram/Logo, Name, ShortCode */}
                       <div className="flex items-start gap-3.5 mb-3">
-                        <div
-                          className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-sm shrink-0 shadow-sm"
-                          style={{ backgroundColor: club.accentColor }}
-                        >
-                          {club.shortCode}
-                        </div>
+                        {club.logoUrl ? (
+                          <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
+                            <img
+                              src={club.logoUrl}
+                              alt={`${club.name} logo`}
+                              className="w-full h-full object-contain"
+                              loading="lazy"
+                            />
+                          </div>
+                        ) : (
+                          <div
+                            className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-sm shrink-0 shadow-sm"
+                            style={{ backgroundColor: club.accentColor }}
+                          >
+                            {club.shortCode}
+                          </div>
+                        )}
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-[10px] font-bold px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md">
@@ -795,12 +817,23 @@ export function StudentDiscoveryApp({ onOpenPortal }: StudentDiscoveryAppProps) 
             {/* Club Hero Card */}
             <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-                <div
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl sm:text-2xl shrink-0 shadow-md"
-                  style={{ backgroundColor: selectedClub.accentColor }}
-                >
-                  {selectedClub.shortCode}
-                </div>
+                {selectedClub.logoUrl ? (
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white border border-slate-200 p-1.5 flex items-center justify-center shrink-0 shadow-md overflow-hidden">
+                    <img
+                      src={selectedClub.logoUrl}
+                      alt={`${selectedClub.name} logo`}
+                      className="w-full h-full object-contain"
+                      loading="eager"
+                    />
+                  </div>
+                ) : (
+                  <div
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl sm:text-2xl shrink-0 shadow-md"
+                    style={{ backgroundColor: selectedClub.accentColor }}
+                  >
+                    {selectedClub.shortCode}
+                  </div>
+                )}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap mb-1.5">
                     <span className="px-2.5 py-0.5 text-xs font-bold rounded-md bg-sky-100 text-[#004B87]">

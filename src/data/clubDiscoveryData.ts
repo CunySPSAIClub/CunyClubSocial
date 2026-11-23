@@ -25,6 +25,8 @@ export interface ClubDiscoveryItem {
   accentColor: string;
   isFeatured: boolean;
   channels: ClubChannel[];
+  logoUrl?: string;
+  logoSource?: string;
 }
 
 export interface DiscoveryEvent {
@@ -53,7 +55,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Anime Club activities and professional community.",
     "accentColor": "#DB2777",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-ai",
@@ -70,14 +73,14 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "channels": [
       {
         "platform": "whatsapp",
-        "actionLabel": "Join the WhatsApp group",
+        "actionLabel": "Join WhatsApp",
         "url": "https://chat.whatsapp.com/LiEAv8DRlII7pMqN60PGj6?s=cl&p=a&iam=2",
         "badge": "Verified Official Link",
         "description": "Active student community chat for build night alerts, Zoom links, and peer project collaborations."
       },
       {
         "platform": "facebook",
-        "actionLabel": "Visit on Facebook",
+        "actionLabel": "Visit Facebook",
         "url": "https://www.facebook.com/cunyspsaiclub",
         "badge": "Verified Official Link",
         "description": "Official CUNY SPS Artificial Intelligence Club Facebook page for announcements and recaps."
@@ -98,12 +101,14 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
       },
       {
         "platform": "website",
-        "actionLabel": "Visit OpenLab Community Hub",
+        "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/ai-club/",
         "badge": "Verified Official Link",
         "description": "Official CUNY SPS OpenLab workspace for workshops, hackathons, and discussion forums."
       }
-    ]
+    ],
+    "logoUrl": "./club-logos/ai-club.jpg",
+    "logoSource": "Official CUNY SPS OpenLab AI Club avatar & team repository asset"
   },
   {
     "clubId": "club-arts-crafts",
@@ -117,7 +122,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Arts and Crafts Club activities and professional community.",
     "accentColor": "#F59E0B",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-bsu",
@@ -131,7 +137,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes Black students and allies across all degree programs to celebrate Black culture, foster leadership, and build supportive academic and social networks.",
     "accentColor": "#D97706",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-book",
@@ -145,7 +152,17 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Book Club activities and professional community.",
     "accentColor": "#059669",
     "isFeatured": false,
-    "channels": []
+    "channels": [
+      {
+        "platform": "website",
+        "actionLabel": "Visit OpenLab Hub",
+        "url": "https://openlab.sps.cuny.edu/groups/sps-book-club/",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS OpenLab Book Club reading lists and monthly book selections."
+      }
+    ],
+    "logoUrl": "./club-logos/book-club.jpg",
+    "logoSource": "Official CUNY SPS OpenLab SPS Book Club group avatar"
   },
   {
     "clubId": "club-christian-fellowship",
@@ -159,7 +176,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Christian Fellowship Club activities and professional community.",
     "accentColor": "#2563EB",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-cosplay",
@@ -173,7 +191,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Cosplay Club activities and professional community.",
     "accentColor": "#8B5CF6",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-creative-writing",
@@ -187,7 +206,17 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Open to poets, novelists, essayists, playwrights, and casual writers eager to share drafts, receive peer feedback, and attend open mics.",
     "accentColor": "#BE185D",
     "isFeatured": false,
-    "channels": []
+    "channels": [
+      {
+        "platform": "website",
+        "actionLabel": "Visit OpenLab Hub",
+        "url": "https://openlab.sps.cuny.edu/creative-writing-club/",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS OpenLab Literary Arts & Publishing Society publication and workshop hub."
+      }
+    ],
+    "logoUrl": "./club-logos/creative-writing.png",
+    "logoSource": "Official CUNY SPS OpenLab Literary Arts & Publishing Society group avatar"
   },
   {
     "clubId": "club-delta-alpha-pi",
@@ -204,12 +233,14 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "channels": [
       {
         "platform": "website",
-        "actionLabel": "Visit Official Society Page",
+        "actionLabel": "Visit Official Directory",
         "url": "https://sps.cuny.edu/student-services/student-life/student-clubs-and-organizations/delta-alpha-pi",
         "badge": "Verified Official Link",
-        "description": "Official CUNY SPS Delta Alpha Pi Honor Society page and induction criteria."
+        "description": "Official CUNY SPS Delta Alpha Pi Honor Society page and chapter requirements."
       }
-    ]
+    ],
+    "logoUrl": "./club-logos/delta-alpha-pi.jpg",
+    "logoSource": "Delta Alpha Pi International Honor Society official insignia"
   },
   {
     "clubId": "club-disability-access",
@@ -223,7 +254,17 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Disability and Access Coalition activities and professional community.",
     "accentColor": "#0284C7",
     "isFeatured": false,
-    "channels": []
+    "channels": [
+      {
+        "platform": "website",
+        "actionLabel": "Visit OpenLab Hub",
+        "url": "https://openlab.sps.cuny.edu/disability-access-coalition/",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS OpenLab portal for disability advocacy and accessibility resources."
+      }
+    ],
+    "logoUrl": "./club-logos/disability-access.jpg",
+    "logoSource": "Official CUNY SPS OpenLab Disability & Access Coalition group avatar"
   },
   {
     "clubId": "club-film-tv",
@@ -237,7 +278,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes cinephiles, screenwriters, video creators, media studies majors, and anyone who loves discussing film, streaming, and television.",
     "accentColor": "#EA580C",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-green",
@@ -251,7 +293,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes sustainability advocates, climate thinkers, urban agriculture enthusiasts, and students committed to environmental stewardship.",
     "accentColor": "#16A34A",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-hian",
@@ -265,7 +308,17 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Health Information and Administration Network (HIAN) Leadership activities and professional community.",
     "accentColor": "#0D9488",
     "isFeatured": false,
-    "channels": []
+    "channels": [
+      {
+        "platform": "website",
+        "actionLabel": "Visit OpenLab Hub",
+        "url": "https://openlab.sps.cuny.edu/groups/healthcare/",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS OpenLab Healthcare community network for health administration scholars."
+      }
+    ],
+    "logoUrl": "./club-logos/hian.jpg",
+    "logoSource": "Official CUNY SPS OpenLab Healthcare community group avatar"
   },
   {
     "clubId": "club-human-relations-soc",
@@ -279,7 +332,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Human Relations and Sociology Club activities and professional community.",
     "accentColor": "#D97706",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-latinx",
@@ -293,7 +347,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Latinx Student Union activities and professional community.",
     "accentColor": "#E11D48",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-makeup-beauty",
@@ -307,7 +362,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Makeup and Beauty Club activities and professional community.",
     "accentColor": "#EC4899",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-melo",
@@ -321,7 +377,17 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Open to students interested in leadership development, business administration, entrepreneurship, project management, and startup innovation.",
     "accentColor": "#2563EB",
     "isFeatured": false,
-    "channels": []
+    "channels": [
+      {
+        "platform": "website",
+        "actionLabel": "Visit OpenLab Hub",
+        "url": "https://openlab.sps.cuny.edu/spsmelo/",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS OpenLab MELO workspace for management leadership and entrepreneurship."
+      }
+    ],
+    "logoUrl": "./club-logos/melo.png",
+    "logoSource": "Official CUNY SPS OpenLab MELO group avatar"
   },
   {
     "clubId": "club-mental-health",
@@ -335,7 +401,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Mental Health Club activities and professional community.",
     "accentColor": "#10B981",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-museum-studies",
@@ -349,7 +416,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Museum Studies Club activities and professional community.",
     "accentColor": "#78716C",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-msa",
@@ -371,7 +439,9 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "badge": "Verified Official Link",
         "description": "Follow for event flyers, meeting schedules, and club stories."
       }
-    ]
+    ],
+    "logoUrl": "./club-logos/msa-club.png",
+    "logoSource": "Official CUNY SPS MSA Crescent Badge team repository asset"
   },
   {
     "clubId": "club-neurodiversity",
@@ -385,7 +455,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Neurodiversity Club activities and professional community.",
     "accentColor": "#6366F1",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-parent",
@@ -399,7 +470,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Parent Club activities and professional community.",
     "accentColor": "#F97316",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-photography",
@@ -413,7 +485,17 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Open to photographers of all skill levels\u2014from smartphone snappers to DSLR enthusiasts\u2014interested in visual storytelling and photo walks.",
     "accentColor": "#9333EA",
     "isFeatured": false,
-    "channels": []
+    "channels": [
+      {
+        "platform": "website",
+        "actionLabel": "Visit OpenLab Hub",
+        "url": "https://openlab.sps.cuny.edu/photography-club/",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS OpenLab Photography Club gallery showcase and monthly challenges."
+      }
+    ],
+    "logoUrl": "./club-logos/photography-club.jpg",
+    "logoSource": "Official CUNY SPS OpenLab Photography Club group avatar"
   },
   {
     "clubId": "club-pride",
@@ -427,7 +509,17 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Pride Club activities and professional community.",
     "accentColor": "#A855F7",
     "isFeatured": false,
-    "channels": []
+    "channels": [
+      {
+        "platform": "website",
+        "actionLabel": "Visit OpenLab Hub",
+        "url": "https://openlab.sps.cuny.edu/pride-club/",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS OpenLab Pride Club space for community updates and pride events."
+      }
+    ],
+    "logoUrl": "./club-logos/pride-club.jpg",
+    "logoSource": "Official CUNY SPS OpenLab Pride Club group avatar"
   },
   {
     "clubId": "club-psychology",
@@ -441,7 +533,17 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Open to BA in Psychology students, graduate researchers, and anyone curious about human behavior, mental wellness, and research methodology.",
     "accentColor": "#4F46E5",
     "isFeatured": false,
-    "channels": []
+    "channels": [
+      {
+        "platform": "website",
+        "actionLabel": "Visit OpenLab Hub",
+        "url": "https://openlab.sps.cuny.edu/groups/psychology-club/",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS OpenLab Psychology Club discussion space and networking circle."
+      }
+    ],
+    "logoUrl": "./club-logos/psychology-club.png",
+    "logoSource": "Official CUNY SPS OpenLab Psychology Club group avatar"
   },
   {
     "clubId": "club-retail-therapy",
@@ -455,7 +557,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Retail Therapy Roundtable Club activities and professional community.",
     "accentColor": "#F43F5E",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-shrm",
@@ -469,7 +572,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in SHRM Student Chapter activities and professional community.",
     "accentColor": "#1D4ED8",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-sigma-beta-delta",
@@ -483,7 +587,17 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Sigma Beta Delta Honor Society activities and professional community.",
     "accentColor": "#CA8A04",
     "isFeatured": false,
-    "channels": []
+    "channels": [
+      {
+        "platform": "website",
+        "actionLabel": "Visit Official Honor Society",
+        "url": "https://sigmabetadelta.org",
+        "badge": "Verified Official Link",
+        "description": "Sigma Beta Delta International Honor Society in Business, Management, and Administration."
+      }
+    ],
+    "logoUrl": "./club-logos/sigma-beta-delta.webp",
+    "logoSource": "Sigma Beta Delta International Honor Society official key emblem"
   },
   {
     "clubId": "club-social-impact",
@@ -497,7 +611,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Open to changemakers, student advocates, and community organizers passionate about housing justice, environmental action, disability rights, and civic advocacy.",
     "accentColor": "#DC2626",
     "isFeatured": true,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-sasu",
@@ -511,7 +626,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in South Asian Student Union activities and professional community.",
     "accentColor": "#EA580C",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-svo",
@@ -525,7 +641,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Dedicated to student veterans, active duty service members, reservists, military spouses, and civilian allies navigating academic and civilian transitions.",
     "accentColor": "#4B5563",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-study-lounge",
@@ -539,7 +656,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Study Lounge Club activities and professional community.",
     "accentColor": "#64748B",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-women-stem",
@@ -553,7 +671,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Open to all women, non-binary students, and allies pursuing or interested in science, technology, engineering, mathematics, data analytics, and tech career pathways.",
     "accentColor": "#7C3AED",
     "isFeatured": true,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
     "clubId": "club-youth-studies",
@@ -567,7 +686,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes all CUNY SPS undergraduate and graduate students, alumni, and community members interested in Youth Studies Club activities and professional community.",
     "accentColor": "#0284C7",
     "isFeatured": false,
-    "channels": []
+    "channels": [],
+    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   }
 ];
 
