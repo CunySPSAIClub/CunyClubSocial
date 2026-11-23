@@ -887,6 +887,11 @@ export function ClubMemberDirectory({
                             <td className="py-3.5 px-4">
                               <div className="text-sm font-semibold text-slate-900">
                                 {member.name}
+                                {member.role === 'CONTRIBUTOR' && (
+                                  <span className="ml-2 inline-block rounded bg-sky-100 px-2 py-0.5 text-xs text-sky-900">
+                                    Contributor
+                                  </span>
+                                )}
                               </div>
                               <div className="font-mono text-[11px] text-slate-500">
                                 {member.email}

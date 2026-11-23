@@ -1397,6 +1397,9 @@ export function AppShell() {
 
   const [adminData, setAdminData] = useState<AdminOverviewData | null>(null);
   const [authorizedClubs, setAuthorizedClubs] = useState<Club[]>([]);
+  const communityClubs = isContributor
+    ? authorizedClubs.filter((club) => club.clubId === activeClubId)
+    : authorizedClubs;
   const [upcomingEvents, setUpcomingEvents] = useState<ClubEvent[]>([]);
   const [announcements, setAnnouncements] = useState<ClubAnnouncement[]>([]);
   const [globalNotifications, setGlobalNotifications] = useState<NotificationItem[]>([]);
@@ -1504,14 +1507,20 @@ export function AppShell() {
 
   const handleNotificationSelect = async (n: NotificationItem) => {
     if (!(await requestDraftDiscard())) return;
-    if (!n.read) {
+    if (!n.read && !isContributor) {
       await handleMarkNotificationRead(n.notificationId);
     }
     setNotificationsOpen(false);
     if (n.clubId && authorizedClubs.some((c) => c.clubId === n.clubId)) {
       setActiveClubId(n.clubId);
       setPortalMode('CLUB');
-      if (
+      if (n.type === 'Member Question') {
+        const role = session?.memberships.find(
+          (m) => m.clubId === n.clubId && m.status === 'Active'
+        )?.role;
+        setQuestionEvent(null);
+        setClubTab(role === 'CONTRIBUTOR' ? 'ask-club' : 'member-questions');
+      } else if (
         n.title.includes('Broadcast:') ||
         n.message.includes('Messaging Center')
       ) {
@@ -2081,7 +2090,7 @@ export function AppShell() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    {unreadNotificationsCount > 0 && (
+                    {!isContributor && unreadNotificationsCount > 0 && (
                       <button
                         type="button"
                         onClick={() => void handleMarkAllNotificationsRead()}
@@ -2137,7 +2146,7 @@ export function AppShell() {
                           {n.title}
                         </button>
                         <p className="text-[11px] text-slate-600">{notificationText(n.message)}</p>
-                        {!n.read && (
+                        {!isContributor && !n.read && (
                           <button
                             type="button"
                             onClick={() => void handleMarkNotificationRead(n.notificationId)}
@@ -2499,7 +2508,7 @@ export function AppShell() {
               {clubTab === 'upcoming-events' && (
                 <UpcomingClubEvents
                   events={isContributor ? upcomingEvents.filter(e => e.clubId === activeClubId || e.coSponsorClubIds?.includes(activeClubId || '')) : upcomingEvents}
-                  clubs={authorizedClubs}
+                  clubs={communityClubs}
                   activeClubId={activeClubId}
                   portalMode={portalMode}
                   onRefresh={refreshAll}
@@ -2511,7 +2520,7 @@ export function AppShell() {
               {clubTab === 'event-calendar' && (
                 <ClubEventCalendar
                   events={isContributor ? upcomingEvents.filter(e => e.clubId === activeClubId || e.coSponsorClubIds?.includes(activeClubId || '')) : upcomingEvents}
-                  clubs={authorizedClubs}
+                  clubs={communityClubs}
                   activeClubId={activeClubId}
                   onRefresh={refreshAll}
                   onDraftPostForEvent={
@@ -2532,7 +2541,8 @@ export function AppShell() {
               )}
               {clubTab === 'club-forums' && (
                 <ClubForums
-                  clubs={authorizedClubs}
+                  key={isContributor ? activeClubId : 'club-forums'}
+                  clubs={communityClubs}
                   activeClubId={activeClubId}
                   effectiveRole={clubData.effectiveRole}
                   onRefreshParent={refreshAll}
