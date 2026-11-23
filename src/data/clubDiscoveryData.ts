@@ -67,7 +67,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "category": "Academic & Technology",
     "contactEmail": "ai-club@spsmail.cuny.edu",
     "whoItWelcomes": "Welcomes all undergraduate, graduate, online, and hybrid students interested in artificial intelligence, machine learning, data ethics, coding, or civic technology\u2014from absolute beginners to experienced engineers.",
-    "accentColor": "#004B87",
+    "accentColor": "#7C3AED",
     "joinUrl": "https://forms.office.com/r/jSfyJUzCqG",
     "isFeatured": true,
     "channels": [

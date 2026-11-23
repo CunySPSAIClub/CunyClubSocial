@@ -201,11 +201,11 @@ export function StudentDiscoveryApp() {
       {/* Top Banner & Main Header */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200">
         {/* Top Community Utility Bar: Student & Alumni Social Networks */}
-        <div className="bg-gradient-to-r from-[#00284d] via-[#004B87] to-[#00284d] text-white border-b border-white/10 shadow-xs relative z-50">
+        <div className="bg-gradient-to-r from-[#12072B] via-[#1E0B3C] to-[#12072B] text-white border-b border-violet-900/30 shadow-xs relative z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between gap-3 text-xs">
             {/* Left Tagline & Badge */}
             <div className="flex items-center gap-2 min-w-0">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-[#FFD100] text-[10px] sm:text-[11px] font-bold tracking-wide uppercase shadow-2xs shrink-0 border border-white/15">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-violet-950/60 text-[#FFD100] text-[10px] sm:text-[11px] font-bold tracking-wide uppercase shadow-2xs shrink-0 border border-violet-500/30">
                 <Sparkles className="w-3 h-3 text-[#FFD100] animate-pulse" />
                 <span>SPS Networks</span>
               </span>
@@ -251,7 +251,7 @@ export function StudentDiscoveryApp() {
             <button
               type="button"
               onClick={() => navigateTo('home')}
-              className="flex items-center gap-2.5 sm:gap-3 text-left cursor-pointer group focus-visible:outline-2 focus-visible:outline-[#004B87] rounded-lg p-1"
+              className="flex items-center gap-2.5 sm:gap-3 text-left cursor-pointer group focus-visible:outline-2 focus-visible:outline-[#7c3aed] rounded-lg p-1"
               aria-label="CUNY SPS Club Social Hub Home"
             >
               <img
@@ -281,7 +281,7 @@ export function StudentDiscoveryApp() {
                 onClick={() => navigateTo('home')}
                 className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                   currentTab === 'home'
-                    ? 'bg-white text-[#004B87] shadow-sm'
+                    ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-sm shadow-violet-500/25'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -292,7 +292,7 @@ export function StudentDiscoveryApp() {
                 onClick={() => navigateTo('clubs')}
                 className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                   currentTab === 'clubs' || currentTab === 'club-profile'
-                    ? 'bg-white text-[#004B87] shadow-sm'
+                    ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-sm shadow-violet-500/25'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -303,7 +303,7 @@ export function StudentDiscoveryApp() {
                 onClick={() => navigateTo('events')}
                 className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                   currentTab === 'events'
-                    ? 'bg-white text-[#004B87] shadow-sm'
+                    ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-sm shadow-violet-500/25'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -336,7 +336,7 @@ export function StudentDiscoveryApp() {
               onClick={() => navigateTo('home')}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold cursor-pointer ${
                 currentTab === 'home'
-                  ? 'bg-sky-50 text-[#004B87]'
+                  ? 'bg-violet-50 text-violet-700 font-bold border-l-4 border-violet-600'
                   : 'text-slate-700 hover:bg-slate-50'
               }`}
             >
@@ -348,7 +348,7 @@ export function StudentDiscoveryApp() {
               onClick={() => navigateTo('clubs')}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold cursor-pointer ${
                 currentTab === 'clubs' || currentTab === 'club-profile'
-                  ? 'bg-sky-50 text-[#004B87]'
+                  ? 'bg-violet-50 text-violet-700 font-bold border-l-4 border-violet-600'
                   : 'text-slate-700 hover:bg-slate-50'
               }`}
             >
@@ -360,7 +360,7 @@ export function StudentDiscoveryApp() {
               onClick={() => navigateTo('events')}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold cursor-pointer ${
                 currentTab === 'events'
-                  ? 'bg-sky-50 text-[#004B87]'
+                  ? 'bg-violet-50 text-violet-700 font-bold border-l-4 border-violet-600'
                   : 'text-slate-700 hover:bg-slate-50'
               }`}
             >
@@ -413,27 +413,31 @@ export function StudentDiscoveryApp() {
         {currentTab === 'home' && (
           <div className="space-y-12 pb-16">
             {/* Hero Section */}
-            <section className="bg-gradient-to-b from-[#004B87] via-[#003865] to-[#0A2540] text-white pt-12 pb-16 px-4 sm:px-6 lg:px-8">
-              <div className="max-w-4xl mx-auto text-center space-y-6">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 border border-white/20 rounded-full text-xs font-semibold text-sky-200 backdrop-blur-sm">
-                  <Sparkles className="w-3.5 h-3.5 text-[#FFB81C]" />
-                  <span>CUNY SPS Office of Student Life & AI Club</span>
+            <section className="relative bg-gradient-to-b from-[#0F0728] via-[#1B0A33] to-[#080314] text-white pt-14 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+              {/* Ambient Radiant Glow Orbs */}
+              <div className="absolute top-0 left-1/4 w-96 h-96 bg-violet-600/15 rounded-full blur-3xl pointer-events-none -translate-y-1/2" />
+              <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-fuchsia-600/15 rounded-full blur-3xl pointer-events-none translate-y-1/3" />
+
+              <div className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-violet-500/10 border border-violet-400/25 rounded-full text-xs font-semibold text-violet-200 backdrop-blur-md shadow-sm">
+                  <Sparkles className="w-3.5 h-3.5 text-[#FFB81C] animate-pulse" />
+                  <span>CUNY SPS Office of Student Life &amp; AI Club</span>
                 </div>
 
-                <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-violet-200">
                   Find your next club at CUNY SPS
                 </h1>
 
-                <p className="text-sm sm:text-lg text-slate-200 max-w-2xl mx-auto leading-relaxed">
+                <p className="text-sm sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed font-normal">
                   Connect with fellow online and hybrid students, join active WhatsApp groups, participate in civic tech builds, and find your community across 30+ recognized organizations.
                 </p>
 
-                {/* Primary Action Button */}
-                <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                {/* Primary Action Buttons */}
+                <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3.5">
                   <button
                     type="button"
                     onClick={() => navigateTo('clubs')}
-                    className="w-full sm:w-auto px-7 py-3.5 min-h-[48px] bg-[#FFB81C] hover:bg-[#e5a415] text-slate-950 font-bold text-base rounded-xl shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 group"
+                    className="w-full sm:w-auto px-7 py-3.5 min-h-[48px] bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-600 hover:from-violet-500 hover:via-indigo-500 hover:to-violet-500 text-white font-bold text-base rounded-xl shadow-lg shadow-violet-900/40 hover:shadow-violet-900/60 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2 group border border-violet-400/30"
                   >
                     <span>Explore clubs</span>
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -441,26 +445,26 @@ export function StudentDiscoveryApp() {
                   <button
                     type="button"
                     onClick={() => navigateTo('events')}
-                    className="w-full sm:w-auto px-6 py-3.5 min-h-[48px] bg-white/10 hover:bg-white/20 text-white font-semibold text-sm rounded-xl border border-white/20 transition-all cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full sm:w-auto px-6 py-3.5 min-h-[48px] bg-white/10 hover:bg-white/15 text-white font-semibold text-sm rounded-xl border border-white/20 hover:border-white/30 backdrop-blur-sm transition-all cursor-pointer flex items-center justify-center gap-2"
                   >
-                    <Calendar className="w-4 h-4 text-sky-300" />
+                    <Calendar className="w-4 h-4 text-violet-300" />
                     <span>View upcoming events</span>
                   </button>
                 </div>
 
                 {/* Trust & Engagement Stats */}
-                <div className="pt-6 grid grid-cols-3 gap-2 border-t border-white/10 max-w-lg mx-auto text-center">
+                <div className="pt-8 grid grid-cols-3 gap-2 border-t border-white/10 max-w-lg mx-auto text-center">
                   <div>
-                    <div className="text-xl sm:text-2xl font-extrabold text-white">34</div>
-                    <div className="text-[11px] sm:text-xs text-sky-200">Active Clubs</div>
+                    <div className="text-2xl sm:text-3xl font-extrabold text-white">34</div>
+                    <div className="text-[11px] sm:text-xs text-violet-200/80 font-medium">Active Clubs</div>
                   </div>
                   <div>
-                    <div className="text-xl sm:text-2xl font-extrabold text-white">10</div>
-                    <div className="text-[11px] sm:text-xs text-sky-200">Upcoming Events</div>
+                    <div className="text-2xl sm:text-3xl font-extrabold text-white">10</div>
+                    <div className="text-[11px] sm:text-xs text-violet-200/80 font-medium">Upcoming Events</div>
                   </div>
                   <div>
-                    <div className="text-xl sm:text-2xl font-extrabold text-[#FFB81C]">100%</div>
-                    <div className="text-[11px] sm:text-xs text-sky-200">Online Friendly</div>
+                    <div className="text-2xl sm:text-3xl font-extrabold text-[#FFD100]">100%</div>
+                    <div className="text-[11px] sm:text-xs text-violet-200/80 font-medium">Online Friendly</div>
                   </div>
                 </div>
               </div>
@@ -482,7 +486,7 @@ export function StudentDiscoveryApp() {
                 </div>
 
                 <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-sky-100 text-[#004B87] flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center shrink-0">
                     <Clock className="w-5 h-5" />
                   </div>
                   <div>
@@ -511,7 +515,7 @@ export function StudentDiscoveryApp() {
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
                 <div>
-                  <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#004B87] mb-1">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-violet-700 mb-1">
                     <Star className="w-3.5 h-3.5 fill-[#FFB81C] text-[#FFB81C]" />
                     <span>Featured Organizations</span>
                   </div>
@@ -523,7 +527,7 @@ export function StudentDiscoveryApp() {
                 <button
                   type="button"
                   onClick={() => navigateTo('clubs')}
-                  className="text-xs sm:text-sm font-semibold text-[#004B87] hover:text-[#003865] flex items-center gap-1 self-start sm:self-auto cursor-pointer"
+                  className="text-xs sm:text-sm font-semibold text-violet-600 hover:text-violet-700 flex items-center gap-1 self-start sm:self-auto cursor-pointer"
                 >
                   <span>View all 34 clubs</span>
                   <ArrowRight className="w-4 h-4" />
@@ -534,7 +538,7 @@ export function StudentDiscoveryApp() {
                 {featuredClubs.map((club) => (
                   <div
                     key={club.clubId}
-                    className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+                    className="bg-white rounded-2xl border border-slate-200/80 hover:border-violet-300 p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between group"
                   >
                     <div>
                       <div className="flex items-center justify-between gap-3 mb-3">
@@ -597,7 +601,7 @@ export function StudentDiscoveryApp() {
                     <button
                       type="button"
                       onClick={() => navigateTo('club-profile', club.clubId)}
-                      className="mt-5 w-full min-h-[44px] py-2 px-3 bg-slate-50 hover:bg-sky-50 text-[#004B87] font-semibold text-xs rounded-xl border border-slate-200 hover:border-sky-300 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="mt-5 w-full min-h-[44px] py-2 px-3 bg-slate-50 hover:bg-violet-50/80 text-violet-700 font-semibold text-xs rounded-xl border border-slate-200 hover:border-violet-300 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <span>View club</span>
                       <ChevronRight className="w-4 h-4" />
@@ -609,7 +613,7 @@ export function StudentDiscoveryApp() {
 
             {/* Upcoming Events Preview */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="bg-slate-900 rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-xl">
+              <div className="bg-gradient-to-br from-[#0F0728] via-[#1B0A33] to-[#080314] rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-xl border border-violet-900/30">
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
                   <div>
                     <span className="text-xs font-bold uppercase tracking-wider text-[#FFB81C]">
@@ -686,7 +690,7 @@ export function StudentDiscoveryApp() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
             {/* Page Header */}
             <div>
-              <div className="inline-flex items-center gap-2 text-xs font-semibold px-2.5 py-1 bg-sky-100 text-[#004B87] rounded-full mb-2">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold px-2.5 py-1 bg-violet-100 text-violet-800 rounded-full mb-2">
                 <span>Student Directory</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -707,7 +711,7 @@ export function StudentDiscoveryApp() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search clubs by name, category, topic, or keyword..."
-                  className="w-full pl-11 pr-10 py-3 text-sm bg-white border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#004B87] focus:border-transparent min-h-[44px]"
+                  className="w-full pl-11 pr-10 py-3 text-sm bg-white border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent min-h-[44px]"
                   aria-label="Search clubs by name or keyword"
                 />
                 {searchQuery && (
@@ -731,8 +735,8 @@ export function StudentDiscoveryApp() {
                     onClick={() => setSelectedCategory(cat)}
                     className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer min-h-[36px] flex items-center gap-1 ${
                       selectedCategory === cat
-                        ? 'bg-[#004B87] text-white shadow-sm'
-                        : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:text-slate-900'
+                        ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-sm shadow-violet-500/25'
+                        : 'bg-white text-slate-600 border border-slate-200 hover:border-violet-300 hover:text-violet-700'
                     }`}
                   >
                     {cat}
@@ -754,7 +758,7 @@ export function StudentDiscoveryApp() {
                     setSearchQuery('');
                     setSelectedCategory('All');
                   }}
-                  className="text-xs font-semibold text-[#004B87] hover:underline cursor-pointer"
+                  className="text-xs font-semibold text-violet-600 hover:text-violet-700 hover:underline cursor-pointer"
                 >
                   Reset filters
                 </button>
@@ -767,7 +771,7 @@ export function StudentDiscoveryApp() {
                 {filteredClubs.map((club) => (
                   <article
                     key={club.clubId}
-                    className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+                    className="bg-white rounded-2xl border border-slate-200/80 hover:border-violet-300 p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between group"
                   >
                     <div>
                       {/* Top Header: Monogram/Logo, Name, ShortCode */}
@@ -881,7 +885,7 @@ export function StudentDiscoveryApp() {
                       <button
                         type="button"
                         onClick={() => navigateTo('club-profile', club.clubId)}
-                        className="w-full min-h-[44px] py-2.5 px-4 bg-[#004B87] hover:bg-[#003865] text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer group"
+                        className="w-full min-h-[44px] py-2.5 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-sm shadow-violet-500/25 flex items-center justify-center gap-2 cursor-pointer group"
                       >
                         <span>View club</span>
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -922,7 +926,7 @@ export function StudentDiscoveryApp() {
               <button
                 type="button"
                 onClick={() => navigateTo('clubs')}
-                className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#004B87] hover:text-[#003865] px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer min-h-[44px]"
+                className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-violet-600 hover:text-violet-700 px-3 py-2 rounded-lg hover:bg-violet-50 transition-colors cursor-pointer min-h-[44px]"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back to club directory</span>
@@ -960,7 +964,7 @@ export function StudentDiscoveryApp() {
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap mb-1.5">
-                    <span className="px-2.5 py-0.5 text-xs font-bold rounded-md bg-sky-100 text-[#004B87]">
+                    <span className="px-2.5 py-0.5 text-xs font-bold rounded-md bg-emerald-100 text-emerald-800">
                       {selectedClub.category}
                     </span>
                     <span className="px-2 py-0.5 text-[11px] font-semibold rounded-md bg-emerald-100 text-emerald-800 flex items-center gap-1">
@@ -974,15 +978,15 @@ export function StudentDiscoveryApp() {
                   <p className="text-xs sm:text-sm text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
                     <span>CUNY SPS Chartered Student Organization</span>
                     <span>·</span>
-                    <a href="mailto:studentservices@sps.cuny.edu" className="text-[#004B87] hover:underline">Office of Student Life</a>
+                    <a href="mailto:studentservices@sps.cuny.edu" className="text-violet-600 hover:underline">Office of Student Life</a>
                   </p>
                 </div>
               </div>
 
               {/* Who It Welcomes Callout (Required in Build Specs) */}
-              <div className="bg-gradient-to-r from-sky-50 to-indigo-50 border border-sky-100 rounded-2xl p-5">
+              <div className="bg-gradient-to-r from-violet-50 via-purple-50 to-indigo-50 border border-violet-100 rounded-2xl p-5">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#004B87] text-white flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                     <Users className="w-4 h-4" />
                   </div>
                   <div>
@@ -1041,7 +1045,7 @@ export function StudentDiscoveryApp() {
                       ? 'bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-95 text-white shadow-pink-200'
                       : isLinkedIn
                       ? 'bg-[#0A66C2] hover:bg-[#095196] text-white shadow-sky-200'
-                      : 'bg-[#004B87] hover:bg-[#003865] text-white shadow-sky-200';
+                      : 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-violet-200';
 
                     return (
                       <div
@@ -1132,9 +1136,9 @@ export function StudentDiscoveryApp() {
                   href="https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#004B87] hover:text-[#003865] bg-sky-50 hover:bg-sky-100 rounded-lg border border-sky-100 transition-colors self-start sm:self-auto cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-violet-700 hover:text-violet-800 bg-violet-50 hover:bg-violet-100 rounded-lg border border-violet-100 transition-colors self-start sm:self-auto cursor-pointer"
                 >
-                  <Calendar className="w-3.5 h-3.5 text-[#004B87]" />
+                  <Calendar className="w-3.5 h-3.5 text-violet-600" />
                   <span>CUNY SPS Student Life Calendar</span>
                   <ExternalLink className="w-3 h-3 opacity-70" />
                 </a>
@@ -1148,7 +1152,7 @@ export function StudentDiscoveryApp() {
                       className="border border-slate-200 rounded-2xl p-4 bg-slate-50 flex flex-col justify-between"
                     >
                       <div>
-                        <div className="flex items-center justify-between text-xs font-mono text-[#004B87] mb-1.5">
+                        <div className="flex items-center justify-between text-xs font-mono text-violet-700 mb-1.5">
                           <span className="font-bold">{ev.date}</span>
                           <span>{ev.time} EST</span>
                         </div>
@@ -1165,7 +1169,7 @@ export function StudentDiscoveryApp() {
                           href={ev.url || "https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[11px] font-medium text-slate-500 hover:text-[#004B87] flex items-center gap-1 cursor-pointer"
+                          className="text-[11px] font-medium text-slate-500 hover:text-violet-600 flex items-center gap-1 cursor-pointer"
                         >
                           <Calendar className="w-3.5 h-3.5 text-slate-400" />
                           <span>Student Life Calendar</span>
@@ -1175,7 +1179,7 @@ export function StudentDiscoveryApp() {
                           href={getGoogleCalendarUrl(ev)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs font-semibold text-[#004B87] hover:underline flex items-center gap-1 cursor-pointer"
+                          className="text-xs font-semibold text-violet-600 hover:text-violet-700 hover:underline flex items-center gap-1 cursor-pointer"
                         >
                           <span>Add to Calendar</span>
                           <ExternalLink className="w-3 h-3" />
@@ -1192,7 +1196,7 @@ export function StudentDiscoveryApp() {
             </div>
 
             {/* Official School Join & Inquiry Form */}
-            <div className="bg-gradient-to-br from-slate-900 via-[#002D56] to-slate-900 rounded-3xl p-6 sm:p-8 text-white space-y-5 border border-white/10 shadow-lg relative overflow-hidden">
+            <div className="bg-gradient-to-br from-[#0F0728] via-[#1E0B36] to-[#090414] rounded-3xl p-6 sm:p-8 text-white space-y-5 border border-violet-500/20 shadow-xl shadow-purple-950/20 relative overflow-hidden">
               <div className="max-w-2xl space-y-2">
                 <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-white/10 text-[#FFD100] text-[11px] font-bold tracking-wide uppercase">
                   <Shield className="w-3.5 h-3.5 text-[#FFD100]" />
@@ -1264,7 +1268,7 @@ export function StudentDiscoveryApp() {
                 href="https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#004B87] hover:bg-[#003865] text-white text-xs sm:text-sm font-bold rounded-xl shadow-sm hover:shadow transition-all cursor-pointer shrink-0 self-start sm:self-auto"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs sm:text-sm font-bold rounded-xl shadow-md shadow-violet-500/25 hover:shadow-lg transition-all cursor-pointer shrink-0 self-start sm:self-auto"
               >
                 <Calendar className="w-4 h-4 text-[#FFB81C]" />
                 <span>Open Student Life Calendar</span>
@@ -1280,7 +1284,7 @@ export function StudentDiscoveryApp() {
                 value={eventSearch}
                 onChange={(e) => setEventSearch(e.target.value)}
                 placeholder="Search events by topic, club, or format..."
-                className="w-full pl-11 pr-4 py-2.5 text-sm bg-white border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#004B87] min-h-[44px]"
+                className="w-full pl-11 pr-4 py-2.5 text-sm bg-white border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 min-h-[44px]"
                 aria-label="Search events"
               />
             </div>
@@ -1290,15 +1294,15 @@ export function StudentDiscoveryApp() {
               {filteredEvents.map((ev) => (
                 <div
                   key={ev.eventId}
-                  className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-5"
+                  className="bg-white rounded-2xl border border-slate-200/80 hover:border-violet-300 p-5 sm:p-6 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-5 group"
                 >
                   <div className="flex items-start gap-4">
                     {/* Date Block */}
-                    <div className="w-16 h-16 rounded-2xl bg-sky-50 border border-sky-100 flex flex-col items-center justify-center text-center shrink-0">
-                      <span className="text-[10px] font-bold text-sky-700 uppercase">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-b from-violet-50 to-purple-50 border border-violet-100 flex flex-col items-center justify-center text-center shrink-0">
+                      <span className="text-[10px] font-bold text-violet-700 uppercase">
                         {new Date(ev.date + 'T12:00:00Z').toLocaleString('en-US', { month: 'short' })}
                       </span>
-                      <span className="text-xl font-extrabold text-[#004B87] leading-none mt-0.5">
+                      <span className="text-xl font-extrabold text-violet-950 leading-none mt-0.5">
                         {ev.date.split('-')[2]}
                       </span>
                     </div>
@@ -1309,7 +1313,7 @@ export function StudentDiscoveryApp() {
                         <button
                           type="button"
                           onClick={() => navigateTo('club-profile', ev.clubId)}
-                          className="text-xs font-bold text-[#004B87] hover:underline cursor-pointer"
+                          className="text-xs font-bold text-violet-700 hover:text-violet-800 hover:underline cursor-pointer"
                         >
                           {ev.clubName}
                         </button>
@@ -1349,9 +1353,9 @@ export function StudentDiscoveryApp() {
                         href={ev.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 md:flex-none px-4 py-2.5 bg-sky-50 hover:bg-sky-100 text-[#004B87] text-xs font-semibold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5 border border-sky-100"
+                        className="flex-1 md:flex-none px-4 py-2.5 bg-violet-50 hover:bg-violet-100 text-violet-700 text-xs font-semibold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5 border border-violet-100"
                       >
-                        <Calendar className="w-3.5 h-3.5 text-[#004B87]" />
+                        <Calendar className="w-3.5 h-3.5 text-violet-600" />
                         <span>Calendar Listing</span>
                         <ExternalLink className="w-3 h-3 opacity-60" />
                       </a>
@@ -1360,7 +1364,7 @@ export function StudentDiscoveryApp() {
                       href={getGoogleCalendarUrl(ev)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 md:flex-none px-4 py-2.5 bg-[#004B87] hover:bg-[#003865] text-white text-xs font-bold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5"
+                      className="flex-1 md:flex-none px-4 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm shadow-violet-500/25 transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5"
                     >
                       <Calendar className="w-3.5 h-3.5 text-[#FFB81C]" />
                       <span>Add to Calendar</span>
