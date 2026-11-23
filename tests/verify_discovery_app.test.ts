@@ -110,3 +110,19 @@ test('Screen 6 (Public Safety) verifies Officer Portal and Officer Login are com
   assert.doesNotMatch(html, /Officer Login/i, 'Officer Login button must not exist in public UI');
   assert.doesNotMatch(html, /Club Officer & Management Portal/i, 'Management Portal button must not exist in public UI');
 });
+
+test('Screen 7 (Event Accuracy) verifies RSVP counts are completely removed and Student Life Calendar is linked', () => {
+  const html = renderToString(React.createElement(StudentDiscoveryApp));
+  assert.doesNotMatch(html, /RSVPs registered/i, 'Inaccurate RSVP registered counts must not exist in UI');
+  assert.doesNotMatch(html, /Students Registered/i, 'Students Registered counts must not exist in UI');
+  assert.match(
+    html,
+    /https:\/\/openlab\.sps\.cuny\.edu\/groups\/cuny-sps-student-life\/events\//i,
+    'Must provide direct link to official Student Life Calendar'
+  );
+
+  const psychClub = CLUBS_DATA.find((c) => c.clubId === 'club-psychology');
+  assert.ok(psychClub);
+  const openlabHub = psychClub.channels.find((ch) => ch.url === 'https://openlab.sps.cuny.edu/groups/psychology-club/');
+  assert.ok(openlabHub, 'Psychology Club must link to OpenLab Hub');
+});

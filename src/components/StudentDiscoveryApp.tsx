@@ -620,14 +620,26 @@ export function StudentDiscoveryApp() {
                       Open to all enrolled students. Times shown in New York campus time (EST).
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => navigateTo('events')}
-                    className="text-xs sm:text-sm font-semibold text-[#FFB81C] hover:underline flex items-center gap-1 self-start sm:self-auto cursor-pointer"
-                  >
-                    <span>View all events ({EVENTS_DATA.length})</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-3 flex-wrap self-start sm:self-auto">
+                    <button
+                      type="button"
+                      onClick={() => navigateTo('events')}
+                      className="text-xs sm:text-sm font-semibold text-[#FFB81C] hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>View all events ({EVENTS_DATA.length})</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                    <a
+                      href="https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/20 transition-all cursor-pointer"
+                    >
+                      <Calendar className="w-3.5 h-3.5 text-[#FFB81C]" />
+                      <span>Student Life Calendar</span>
+                      <ExternalLink className="w-3 h-3 opacity-80" />
+                    </a>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1103,7 +1115,7 @@ export function StudentDiscoveryApp() {
 
             {/* Upcoming Events for This Club */}
             <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-5">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                   <h3 className="text-lg font-bold text-slate-900">
                     Upcoming Events ({clubEvents.length})
@@ -1112,6 +1124,16 @@ export function StudentDiscoveryApp() {
                     Events organized by {selectedClub.name}
                   </p>
                 </div>
+                <a
+                  href="https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#004B87] hover:text-[#003865] bg-sky-50 hover:bg-sky-100 rounded-lg border border-sky-100 transition-colors self-start sm:self-auto cursor-pointer"
+                >
+                  <Calendar className="w-3.5 h-3.5 text-[#004B87]" />
+                  <span>CUNY SPS Student Life Calendar</span>
+                  <ExternalLink className="w-3 h-3 opacity-70" />
+                </a>
               </div>
 
               {clubEvents.length > 0 ? (
@@ -1134,8 +1156,17 @@ export function StudentDiscoveryApp() {
                         </div>
                       </div>
 
-                      <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between">
-                        <span className="text-[11px] text-slate-500">{ev.rsvps} RSVPs registered</span>
+                      <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between gap-2">
+                        <a
+                          href="https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[11px] font-medium text-slate-500 hover:text-[#004B87] flex items-center gap-1 cursor-pointer"
+                        >
+                          <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                          <span>Student Life Calendar</span>
+                          <ExternalLink className="w-3 h-3 opacity-60" />
+                        </a>
                         <a
                           href={getGoogleCalendarUrl(ev)}
                           target="_blank"
@@ -1211,16 +1242,30 @@ export function StudentDiscoveryApp() {
         {currentTab === 'events' && (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
             {/* Header */}
-            <div>
-              <div className="inline-flex items-center gap-2 text-xs font-semibold px-2.5 py-1 bg-amber-100 text-amber-900 rounded-full mb-2">
-                <span>Campus Calendar</span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <div className="inline-flex items-center gap-2 text-xs font-semibold px-2.5 py-1 bg-amber-100 text-amber-900 rounded-full mb-2">
+                  <Calendar className="w-3.5 h-3.5" />
+                  <span>Campus Calendar</span>
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                  Upcoming Club Events &amp; Workshops
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl">
+                  All club events are open to enrolled CUNY SPS students. Scan dates, add meetings to your calendar, and explore official Student Life activities.
+                </p>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                Upcoming Club Events & Workshops
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl">
-                All club events are open to enrolled CUNY SPS students. Scan dates, register for Zoom workshops, and click through to any club's profile.
-              </p>
+
+              <a
+                href="https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#004B87] hover:bg-[#003865] text-white text-xs sm:text-sm font-bold rounded-xl shadow-sm hover:shadow transition-all cursor-pointer shrink-0 self-start sm:self-auto"
+              >
+                <Calendar className="w-4 h-4 text-[#FFB81C]" />
+                <span>Open Student Life Calendar</span>
+                <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+              </a>
             </div>
 
             {/* Event Search */}
@@ -1281,8 +1326,6 @@ export function StudentDiscoveryApp() {
                           <MapPin className="w-3.5 h-3.5 text-slate-400" />
                           {ev.format} ({ev.location})
                         </span>
-                        <span>·</span>
-                        <span>{ev.rsvps} Students Registered</span>
                       </div>
                     </div>
                   </div>
@@ -1304,7 +1347,7 @@ export function StudentDiscoveryApp() {
                       className="flex-1 md:flex-none px-4 py-2.5 bg-[#004B87] hover:bg-[#003865] text-white text-xs font-bold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5"
                     >
                       <Calendar className="w-3.5 h-3.5 text-[#FFB81C]" />
-                      <span>RSVP</span>
+                      <span>Add to Calendar</span>
                     </a>
                   </div>
                 </div>

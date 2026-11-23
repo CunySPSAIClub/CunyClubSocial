@@ -40,7 +40,7 @@ export interface DiscoveryEvent {
   time: string;
   format: string;
   location: string;
-  rsvps: number;
+  rsvps?: number;
 }
 
 export const CLUBS_DATA: ClubDiscoveryItem[] = [
@@ -565,7 +565,14 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/groups/psychology-club/",
         "badge": "Verified Official Link",
-        "description": "Psychology Club discussion boards and academic networking."
+        "description": "Psychology Club community hub, meeting agendas, and discussion boards on OpenLab."
+      },
+      {
+        "platform": "website",
+        "actionLabel": "Visit Club Site",
+        "url": "https://openlab.sps.cuny.edu/psychologyclub/",
+        "badge": "Verified Official Link",
+        "description": "Official Psychology Club site for academic announcements and resources."
       }
     ],
     "logoUrl": "./club-logos/psychology-club.png",
@@ -736,8 +743,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-11-24",
     "time": "7:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 32
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-ai-2",
@@ -748,8 +754,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-12-03",
     "time": "6:30 PM",
     "format": "Hybrid",
-    "location": "Hybrid \u00b7 119 W 31st St Room 402 + Zoom",
-    "rsvps": 28
+    "location": "Hybrid \u00b7 119 W 31st St Room 402 + Zoom"
   },
   {
     "eventId": "evt-ai-3",
@@ -760,8 +765,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-12-08",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Virtual Study Lounge via Zoom",
-    "rsvps": 26
+    "location": "Virtual Study Lounge via Zoom"
   },
   {
     "eventId": "evt-ai-4",
@@ -772,8 +776,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-03-02",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 35
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-msa-1",
@@ -784,8 +787,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-12-12",
     "time": "1:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 40
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-msa-2",
@@ -796,8 +798,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-12-16",
     "time": "7:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 34
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-msa-3",
@@ -808,8 +809,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-02-05",
     "time": "6:00 PM",
     "format": "Hybrid",
-    "location": "Hybrid \u00b7 119 W 31st St Room 402 + Zoom",
-    "rsvps": 48
+    "location": "Hybrid \u00b7 119 W 31st St Room 402 + Zoom"
   },
   {
     "eventId": "evt-msa-4",
@@ -820,8 +820,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-04-03",
     "time": "1:00 PM",
     "format": "In-Person",
-    "location": "Washington Square Park, NYC",
-    "rsvps": 65
+    "location": "Washington Square Park, NYC"
   },
   {
     "eventId": "evt-film-1",
@@ -832,8 +831,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-11-23",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 22
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-film-2",
@@ -844,8 +842,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-12-07",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 25
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-film-3",
@@ -856,8 +853,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-12-09",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 19
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-melo-1",
@@ -868,8 +864,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-12-17",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 27
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-melo-2",
@@ -880,8 +875,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-02-25",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 38
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-melo-3",
@@ -892,8 +886,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-03-25",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 42
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-wstem-1",
@@ -904,8 +897,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-11-23",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom / CUNY SPS Virtual Commons",
-    "rsvps": 30
+    "location": "Zoom / CUNY SPS Virtual Commons"
   },
   {
     "eventId": "evt-wstem-2",
@@ -916,8 +908,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-02-02",
     "time": "5:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 29
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-psych-1",
@@ -928,8 +919,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-11-26",
     "time": "5:30 PM",
     "format": "Hybrid",
-    "location": "Hybrid \u00b7 119 W 31st St Room 305 + Zoom",
-    "rsvps": 31
+    "location": "Hybrid \u00b7 119 W 31st St Room 305 + Zoom"
   },
   {
     "eventId": "evt-psych-2",
@@ -940,8 +930,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-02-25",
     "time": "5:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 27
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-pride-1",
@@ -952,8 +941,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-02-24",
     "time": "5:30 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 23
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-pride-2",
@@ -964,8 +952,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-05-06",
     "time": "6:00 PM",
     "format": "Hybrid",
-    "location": "119 W 31st St Student Lounge + Zoom",
-    "rsvps": 39
+    "location": "119 W 31st St Student Lounge + Zoom"
   },
   {
     "eventId": "evt-bsu-1",
@@ -976,8 +963,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-11-30",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 33
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-bsu-2",
@@ -988,8 +974,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-02-03",
     "time": "5:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 28
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-book-1",
@@ -1000,8 +985,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-12-10",
     "time": "6:30 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 20
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-writing-1",
@@ -1012,8 +996,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-02-18",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 18
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-dac-1",
@@ -1024,8 +1007,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-12-03",
     "time": "5:30 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 22
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-dac-2",
@@ -1036,8 +1018,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-02-23",
     "time": "5:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 26
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-sasu-1",
@@ -1048,8 +1029,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-02-18",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 24
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-sasu-2",
@@ -1060,8 +1040,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-03-05",
     "time": "5:00 PM",
     "format": "Hybrid",
-    "location": "119 W 31st St Room 402 + Zoom",
-    "rsvps": 45
+    "location": "119 W 31st St Room 402 + Zoom"
   },
   {
     "eventId": "evt-photo-1",
@@ -1072,8 +1051,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-12-05",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 21
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-sbd-1",
@@ -1084,8 +1062,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-12-22",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 25
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-dap-1",
@@ -1096,8 +1073,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-04-23",
     "time": "3:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 36
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-svo-1",
@@ -1108,8 +1084,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-12-11",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 20
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-siac-1",
@@ -1120,8 +1095,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-12-02",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 27
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-hian-1",
@@ -1132,8 +1106,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-02-26",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 26
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-anime-1",
@@ -1144,8 +1117,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-12-04",
     "time": "6:30 PM",
     "format": "Virtual",
-    "location": "Discord / Zoom",
-    "rsvps": 22
+    "location": "Discord / Zoom"
   },
   {
     "eventId": "evt-crafts-1",
@@ -1156,8 +1128,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2026-12-09",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 21
+    "location": "Zoom (Virtual)"
   },
   {
     "eventId": "evt-mental-1",
@@ -1168,8 +1139,7 @@ export const EVENTS_DATA: DiscoveryEvent[] = [
     "date": "2027-02-04",
     "time": "6:00 PM",
     "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "rsvps": 25
+    "location": "Zoom (Virtual)"
   }
 ];
 
