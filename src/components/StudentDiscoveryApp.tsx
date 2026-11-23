@@ -459,7 +459,7 @@ export function StudentDiscoveryApp() {
                     <div className="text-[11px] sm:text-xs text-violet-200/80 font-medium">Active Clubs</div>
                   </div>
                   <div>
-                    <div className="text-2xl sm:text-3xl font-extrabold text-white">10</div>
+                    <div className="text-2xl sm:text-3xl font-extrabold text-white">{EVENTS_DATA.length}</div>
                     <div className="text-[11px] sm:text-xs text-violet-200/80 font-medium">Upcoming Events</div>
                   </div>
                   <div>
