@@ -90,7 +90,7 @@ export function AiAssistantView({
   // AI-005 Accessibility state
   const [a11yCaption, setA11yCaption] = useState('');
   const [visualDescription, setVisualDescription] = useState(
-    'Blue and white event flyer showing Artificial Intelligence Club Fall Build Night title, Thursday Nov 19 at 6:30 PM ET on Zoom.'
+    'Event flyer showing Artificial Intelligence Club Meeting, CUNY SPS Student Life on Zoom.'
   );
   const [a11yResult, setA11yResult] = useState<{
     altTextSuggestion: string;

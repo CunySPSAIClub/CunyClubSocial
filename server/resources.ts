@@ -256,8 +256,8 @@ T+2 Days,Post event recap & thank-you message to attendees,Social Media Chair,Co
     publishedBy: 'Office of Student Life',
     audienceNote: 'Attach alongside itemized vendor receipts',
     content: `Receipt_Date,Event_Title,Vendor,Expense_Category,Payment_Method,Pre_Approval_Ref,Tax_Excluded_Amount_USD,Status
-2026-11-19,Fall AI & Civic Tech Build Night,Campus Print Shop,Event Flyers & Signage,Club Officer Card,EVT-2026-041,48.50,Pending Review
-2026-11-24,November General Body Meeting,Zoom Add-On,Accessibility Captioning,Student Life Direct,EVT-2026-044,0.00,Approved
+2026-11-19,AI Club Meeting,Campus Print Shop,Event Flyers & Signage,Club Officer Card,EVT-2026-041,48.50,Pending Review
+2026-11-24,AI Club Meeting,Zoom Add-On,Accessibility Captioning,Student Life Direct,EVT-2026-044,0.00,Approved
 `,
   },
   {

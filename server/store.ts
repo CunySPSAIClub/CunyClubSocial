@@ -92,7 +92,7 @@ function createInitialClubTasks(): ClubProjectTask[] {
     {
       taskId: 'tsk-101',
       clubId: 'club-ai',
-      title: 'Finalize Civic Tech Build Night Slide Deck & Demo Order',
+      title: 'Finalize AI Club Meeting Slide Deck & Demo Order',
       description:
         'Confirm 5 student project lightning demos, collect GitHub repo links, and upload captioned slides to the shared club drive.',
       category: 'Event Operations',
@@ -106,9 +106,9 @@ function createInitialClubTasks(): ClubProjectTask[] {
       dueDate: '2026-11-18',
       progressPct: 75,
       linkedEventId: 'evt-1',
-      linkedEventTitle: 'Fall AI & Civic Tech Build Night',
+      linkedEventTitle: 'AI Club Meeting',
       linkedPostId: 'post-ai-101',
-      linkedPostTitle: 'Fall AI & Civic Tech Build Night',
+      linkedPostTitle: 'AI Club Meeting',
       createdAt: '2026-11-10T14:00:00.000Z',
       updatedAt: '2026-11-13T11:30:00.000Z',
     },
@@ -129,7 +129,7 @@ function createInitialClubTasks(): ClubProjectTask[] {
       dueDate: '2026-11-21',
       progressPct: 25,
       linkedEventId: 'evt-3',
-      linkedEventTitle: 'Finals Week Study Jam',
+      linkedEventTitle: 'AI Club General Meeting',
       linkedPostId: 'post-ai-103',
       linkedPostTitle: 'Finals Week Study & Prompt Workshop Draft',
       createdAt: '2026-11-11T16:15:00.000Z',
@@ -157,7 +157,7 @@ function createInitialClubTasks(): ClubProjectTask[] {
     {
       taskId: 'tsk-104',
       clubId: 'club-ai',
-      title: 'Approve December Finals Study Jam Faculty Room Request',
+      title: 'Approve December AI Club Meeting Faculty Room Request',
       description:
         'Sign off on the Student Life event proposal form and confirm faculty sponsor coverage for Dec 8 study lounge session.',
       category: 'Governance & Finance',
@@ -191,7 +191,7 @@ function createInitialClubTasks(): ClubProjectTask[] {
       dueDate: '2026-11-15',
       progressPct: 100,
       linkedEventId: 'evt-4',
-      linkedEventTitle: 'Muslim Student Association (MSA) Community Tea & Study Circle',
+      linkedEventTitle: 'Islamic Studies Club – New Club (Club Fair)',
       createdAt: '2026-11-09T12:00:00.000Z',
       updatedAt: '2026-11-13T10:00:00.000Z',
       completedAt: '2026-11-13T10:00:00.000Z',
@@ -435,7 +435,7 @@ function createInitialForumThreads(): ForumThread[] {
       threadId: 'thr-1',
       clubId: 'club-ai',
       category: 'Question',
-      title: 'Will Thursday’s Civic Tech Build Night slides & recording be shared for online students?',
+      title: 'Will Thursday’s AI Club Meeting slides & recording be shared for online students?',
       body: 'Several B.S. in Information Systems students have overlapping evening courses on Thursday. Can we share a summary deck and recording link in our Zoom recap after the session?',
       authorId: 'usr-viewer-ai',
       authorName: 'Prof. Jordan Reyes',
@@ -497,7 +497,7 @@ function createInitialForumThreads(): ForumThread[] {
       clubId: 'club-ai',
       category: 'Event Ideas',
       title: 'Topic Requests for the Dec 8 Finals Week Study & Project Showcase Jam',
-      body: 'Reply below if there are specific coursework topics, Git workflows, or portfolio walkthroughs you would like mentors to cover during Study Jam. @Devon Brooks can we feature 2 student demos?',
+      body: 'Reply below if there are specific coursework topics, Git workflows, or portfolio walkthroughs you would like mentors to cover during the meeting. @Devon Brooks can we feature 2 student demos?',
       authorId: 'usr-editor-ai',
       authorName: 'Devon Brooks',
       authorRoleLabel: 'Social Media Chair',
@@ -629,7 +629,7 @@ function createInitialResourceSubmissions(): ResourceSubmission[] {
       clubName: 'Artificial Intelligence Club',
       clubShortCode: 'AI-CLUB',
       type: 'Event Proposal',
-      title: 'Fall AI & Civic Tech Build Night — Venue & Hybrid Captioning Packet',
+      title: 'AI Club Meeting — Venue & Hybrid Captioning Packet',
       summary: 'Co-sponsored Hybrid (Zoom + 119 W 31st St) · 2026-11-19 at 18:30 ET · Est. $95.00 (60% AI-CLUB / 40% WSTEM)',
       amountUsd: 95,
       eventDate: '2026-11-19',
@@ -717,9 +717,9 @@ function createInitialReshareRequests(): CrossClubReshareRequest[] {
       targetClubName: 'Muslim Student Association (MSA)',
       targetClubShortCode: 'MSA',
       sourcePostId: 'post-ai-101',
-      sourcePostTitle: 'Fall AI & Civic Tech Build Night',
+      sourcePostTitle: 'AI Club Meeting',
       sourceCaption:
-        'Join the Artificial Intelligence Club this Thursday at 6:30 PM ET for our Fall AI & Civic Tech Build Night. Collaborate with fellow students on responsible AI prototypes, governance workflows, and full-stack demos.',
+        'Join the Artificial Intelligence Club this Thursday at 6:30 PM ET for our AI Club Meeting. Collaborate with fellow students on responsible AI prototypes, governance workflows, and full-stack demos.',
       requestedByUserId: 'usr-editor-ai',
       requestedByName: 'Devon Brooks',
       note: 'Open campus tech night—would Muslim Student Association (MSA) like to cross-post to your student community?',
@@ -827,7 +827,7 @@ function createInitialBudgetIncreaseRequests(): BudgetIncreaseRequest[] {
 function createInitialClubBroadcasts(): ClubBroadcastMessage[] {
   const aiInvite = 'https://chat.whatsapp.com/LiEAv8DRlII7pMqN60PGj6';
   const aiShareText =
-    '[Artificial Intelligence Club — Broadcast]\n*Fall AI & Civic Tech Build Night — Logistics & Project Teams*\n\nHi everyone! Join us Thursday, Nov 19 at 6:30 PM ET (119 W 31st St Room 402 + Zoom). Reply right here in our workspace if you need a demo slot or team match!';
+    '[Artificial Intelligence Club — Broadcast]\n*AI Club Meeting — Logistics & Project Teams*\n\nHi everyone! Join us Thursday, Nov 19 at 6:30 PM ET (119 W 31st St Room 402 + Zoom). Reply right here in our workspace if you need a demo slot or team match!';
   const msaInvite = 'https://chat.whatsapp.com/F8DqIiNLEv27IY9vXE09UZ';
   const msaShareText =
     '[Muslim Student Association (MSA) — Broadcast]\n*MSA Community Tea & Study Circle — Room & Dietary Notes*\n\nAs-salamu alaykum! Our Wed Nov 18 tea & study circle starts at 5:30 PM ET in the Student Lounge + Zoom. Reply here with tea/snack preferences or study topics!';
@@ -838,7 +838,7 @@ function createInitialClubBroadcasts(): ClubBroadcastMessage[] {
       clubId: 'club-ai',
       clubName: 'Artificial Intelligence Club',
       clubShortCode: 'AI-CLUB',
-      title: 'Fall AI & Civic Tech Build Night — Logistics & Project Teams',
+      title: 'AI Club Meeting — Logistics & Project Teams',
       body: 'Hi everyone! We are excited for Thursday, Nov 19 at 6:30 PM ET (119 W 31st St Room 402 + Zoom). Bring your laptop for lightning demos, and reply directly below in our AI Club workspace if you want to present a 5-minute prototype or join a team!',
       channel: 'both',
       priority: 'Important',
@@ -1632,18 +1632,18 @@ function createInitialDatabase(): HubDatabase {
     {
       postId: 'post-ai-101',
       clubId: 'club-ai',
-      title: 'Fall AI & Civic Tech Build Night',
+      title: 'AI Club Meeting',
       caption:
-        'Join the Artificial Intelligence Club this Thursday at 6:30 PM ET for our Fall AI & Civic Tech Build Night. Collaborate with fellow students on responsible AI prototypes, governance workflows, and full-stack demos.',
+        'Join the Artificial Intelligence Club this Thursday at 6:30 PM ET for our AI Club Meeting. Collaborate with fellow students on responsible AI prototypes, governance workflows, and full-stack demos.',
       platformAdaptations: {
         'Facebook Pages':
-          'Join the Artificial Intelligence Club this Thursday, Nov 19 at 6:30 PM ET for our Fall AI & Civic Tech Build Night! Open to all CUNY SPS students interested in software engineering, AI governance, and hands-on product design. RSVP through the Student Life portal.',
+          'Join the Artificial Intelligence Club this Thursday, Nov 19 at 6:30 PM ET for our AI Club Meeting! Open to all CUNY SPS students interested in software engineering, AI governance, and hands-on product design. RSVP through the Student Life portal.',
         'Instagram Professional':
-          'Build with us this Thursday at 6:30 PM ET. The Artificial Intelligence Club is hosting our Fall AI & Civic Tech Build Night—bring your ideas, meet collaborators, and explore responsible university tech. Link in bio via Student Life.',
+          'Build with us this Thursday at 6:30 PM ET. The Artificial Intelligence Club is hosting our AI Club Meeting—bring your ideas, meet collaborators, and explore responsible university tech. Link in bio via Student Life.',
       },
       hashtags: ['#CUNYSPS', '#AIClub', '#ResponsibleAI', '#StudentInnovation'],
       callToAction: 'Register in the Student Life Events Hub',
-      relatedEvent: 'Fall AI & Civic Tech Build Night',
+      relatedEvent: 'AI Club Meeting',
       eventDate: '2026-11-19',
       authorId: 'usr-editor-ai',
       authorName: 'Devon Brooks',
@@ -1664,7 +1664,7 @@ function createInitialDatabase(): HubDatabase {
         'We are proud to pilot the CUNY SPS Club Social Hub—giving student leaders centralized scheduling, institutional continuity, and collaborative publishing tools.',
       hashtags: ['#CUNYSPS', '#StudentLife', '#EdTech'],
       callToAction: 'Learn more at our next general body meeting',
-      relatedEvent: 'November General Body Meeting',
+      relatedEvent: 'AI Club Meeting',
       eventDate: '2026-11-24',
       authorId: 'usr-lead-ai',
       authorName: 'Aisha Rahman',
@@ -1705,7 +1705,7 @@ function createInitialDatabase(): HubDatabase {
       caption:
         'Drafting a collaborative study session announcement for Finals Week. Editors: please attach the approved event flyer and verify date before scheduling.',
       hashtags: ['#CUNYSPS', '#FinalsPrep'],
-      relatedEvent: 'Finals Week Study Jam',
+      relatedEvent: 'AI Club General Meeting',
       eventDate: '2026-12-08',
       authorId: 'usr-contrib-ai',
       authorName: 'Sofia Patel',
@@ -1724,7 +1724,7 @@ function createInitialDatabase(): HubDatabase {
       caption:
         'Join Muslim Student Association (MSA) this Wednesday at 5:30 PM ET for warm tea, community reflection, and peer finals study tables.',
       hashtags: ['#CUNYSPS', '#CUNYSPSMSA', '#CommunityCare'],
-      relatedEvent: 'Muslim Student Association (MSA) Community Tea & Study Circle',
+      relatedEvent: 'Islamic Studies Club – New Club (Club Fair)',
       eventDate: '2026-11-18',
       authorId: 'usr-lead-msa',
       authorName: 'Zainab Siddiqui',
@@ -1743,7 +1743,7 @@ function createInitialDatabase(): HubDatabase {
     {
       eventId: 'evt-1',
       clubId: 'club-ai',
-      title: 'Fall AI & Civic Tech Build Night',
+      title: 'AI Club Meeting',
       date: '2026-11-19',
       time: '18:30',
       location: 'Hybrid · 119 W 31st St Room 402 + Zoom',
@@ -1787,7 +1787,7 @@ function createInitialDatabase(): HubDatabase {
     {
       eventId: 'evt-2',
       clubId: 'club-ai',
-      title: 'November General Body Meeting',
+      title: 'AI Club Meeting',
       date: '2026-11-24',
       time: '19:00',
       location: 'Zoom',
@@ -1802,7 +1802,7 @@ function createInitialDatabase(): HubDatabase {
     {
       eventId: 'evt-3',
       clubId: 'club-ai',
-      title: 'Finals Week Study Jam',
+      title: 'AI Club General Meeting',
       date: '2026-12-08',
       time: '18:00',
       location: 'Virtual Study Lounge',
@@ -1817,7 +1817,7 @@ function createInitialDatabase(): HubDatabase {
     {
       eventId: 'evt-4',
       clubId: 'club-msa',
-      title: 'Muslim Student Association (MSA) Community Tea & Study Circle',
+      title: 'Islamic Studies Club – New Club (Club Fair)',
       date: '2026-11-18',
       time: '17:30',
       location: 'Hybrid · 119 W 31st St Student Lounge + Zoom',
@@ -1832,7 +1832,7 @@ function createInitialDatabase(): HubDatabase {
     {
       eventId: 'evt-5',
       clubId: 'club-social-impact',
-      title: 'Civic Advocacy & Campus Housing Roundtable',
+      title: 'Social Impact and Activism Club – NEW! (Club Fair)',
       date: '2026-11-21',
       time: '17:00',
       location: 'Zoom',
@@ -1852,7 +1852,7 @@ function createInitialDatabase(): HubDatabase {
       return {
         eventId: 'evt-6',
         clubId: 'club-ai',
-        title: 'AI Club Pre-Submission Office Hours',
+        title: 'AI Club Meeting',
         date: dStr,
         time: tStr,
         location: 'Zoom / CUNY SPS Virtual Commons',
@@ -1870,7 +1870,7 @@ function createInitialDatabase(): HubDatabase {
     {
       eventId: 'evt-7',
       clubId: 'club-women-stem',
-      title: 'Women in Tech & Research Career Panel',
+      title: 'Women in STEM Club Meeting',
       date: '2026-11-23',
       time: '18:00',
       location: 'Zoom / CUNY SPS Virtual Commons',
@@ -1887,7 +1887,7 @@ function createInitialDatabase(): HubDatabase {
     {
       eventId: 'evt-8',
       clubId: 'club-psychology',
-      title: 'Applied Psychology & Workplace Well-Being Workshop',
+      title: 'Psychology Club Meeting',
       date: '2026-11-26',
       time: '17:30',
       location: 'Hybrid · 119 W 31st St Room 305 + Zoom',
@@ -1904,7 +1904,7 @@ function createInitialDatabase(): HubDatabase {
     {
       eventId: 'evt-9',
       clubId: 'club-bsu',
-      title: 'BSU Cultural Heritage & Leadership Mixer',
+      title: 'Black Student Union Meeting (Club Fair)',
       date: '2026-12-02',
       time: '18:30',
       location: '119 W 31st St Student Lounge',
@@ -1921,7 +1921,7 @@ function createInitialDatabase(): HubDatabase {
     {
       eventId: 'evt-10',
       clubId: 'club-creative-writing',
-      title: 'Winter Zine & Open Mic Showcase',
+      title: 'Creative Writing Club Meeting',
       date: '2026-12-05',
       time: '19:00',
       location: 'Zoom / Live Literary Salon',
@@ -2114,7 +2114,7 @@ function createInitialDatabase(): HubDatabase {
       clubId: 'club-ai',
       type: 'Publishing',
       title: 'Scheduled post queued for Nov 16',
-      message: 'Fall AI & Civic Tech Build Night is scheduled for @cunyspsaiclub and @cunysps.ai.',
+      message: 'AI Club Meeting is scheduled for @cunyspsaiclub and @cunysps.ai.',
       read: false,
       createdAt: '2026-11-12T16:20:00.000Z',
     },
@@ -2139,7 +2139,7 @@ function createInitialDatabase(): HubDatabase {
       senderName: 'Elena M.',
       senderHandle: '@elena_sps26',
       channel: 'Comment',
-      body: 'Will the AI & Civic Tech Build Night recording be posted for asynchronous online students?',
+      body: 'Will the AI & AI Club Meeting recording be posted for asynchronous online students?',
       receivedAt: '2026-11-13T15:10:00.000Z',
       flagged: false,
       replied: false,
@@ -2230,11 +2230,11 @@ function createInitialDatabase(): HubDatabase {
       groupId: 'wa-grp-ai-community',
       groupName: 'AI Club General Community',
       category: 'Event Reminder',
-      title: 'Fall AI & Civic Tech Build Night — Hybrid Room & Zoom Ready',
+      title: 'AI Club Meeting — Hybrid Room & Zoom Ready',
       messageBody:
         'Hi Artificial Intelligence Club members! Join us Thursday, Nov 19 at 6:30 PM ET (119 W 31st St Room 402 + Zoom) for lightning civic tech demos and hands-on prototyping. Bring your laptop and questions!',
       linkedEventId: 'evt-1',
-      linkedEventTitle: 'Fall AI & Civic Tech Build Night',
+      linkedEventTitle: 'AI Club Meeting',
       deliveryMode: 'Interactive Share + Hub Outbox',
       deliveryStatus: 'Ready for WhatsApp Share',
       deliveryDetails: 'Logged in Club WhatsApp Outbox with 1-click WhatsApp share dispatch.',
@@ -2255,7 +2255,7 @@ function createInitialDatabase(): HubDatabase {
       messageBody:
         'As-salamu alaykum! Join Muslim Student Association (MSA) this Wednesday at 5:30 PM ET in the 119 W 31st St Student Lounge or on Zoom for warm tea, community reflection, and finals prep tables.',
       linkedEventId: 'evt-4',
-      linkedEventTitle: 'Muslim Student Association (MSA) Community Tea & Study Circle',
+      linkedEventTitle: 'Islamic Studies Club – New Club (Club Fair)',
       deliveryMode: 'Interactive Share + Hub Outbox',
       deliveryStatus: 'Ready for WhatsApp Share',
       deliveryDetails: 'Logged in Club WhatsApp Outbox with 1-click WhatsApp share dispatch.',
@@ -2276,12 +2276,12 @@ function createInitialDatabase(): HubDatabase {
       clubShortCode: 'AI-CLUB',
       title: 'How CUNY SPS Students Built Five Civic Tech Prototypes in One Evening',
       slug: 'how-cuny-sps-students-built-five-civic-tech-prototypes',
-      subtitle: 'Inside our Fall AI & Civic Tech Build Night with accessible Transit, 311, and Study Aids',
+      subtitle: 'Inside our AI Club Meeting with accessible Transit, 311, and Study Aids',
       category: 'Event Recap',
       excerpt:
         'Over 45 undergraduate and graduate students teamed up across time zones to ship five open-source civic prototypes addressing NYC transit accessibility, multilingual city resources, and study navigation.',
       bodyMarkdown: [
-        'Last Thursday evening, members of the Artificial Intelligence Club and co-sponsors from the Women in STEM Club gathered virtually and at 119 W 31st Street for our Fall AI & Civic Tech Build Night.',
+        'Last Thursday evening, members of the Artificial Intelligence Club and co-sponsors from the Women in STEM Club gathered virtually and at 119 W 31st Street for our AI Club Meeting.',
         '## What Student Teams Built',
         'Rather than focusing on toy chatbots, every team tackled a real public-interest challenge faced by working adults and NYC commuters:',
         '- **Subway Access Checker**: A lightweight accessibility companion mapping elevator outage alerts to step-free transfer routes.',
@@ -2289,15 +2289,15 @@ function createInitialDatabase(): HubDatabase {
         '- **Asynchronous Study Group Matcher**: Built by first-year Information Systems students to pair evening learners by course schedule.',
         '> "Building alongside peers who work full-time jobs during the day showed how practical, community-centered engineering can thrive at CUNY SPS." — Aisha Rahman, Club President',
         '## Next Steps & Open Repositories',
-        'Project walkthrough slides and accessibility checklists are pinned in the Club Forums. Join our upcoming Pre-Submission Office Hours if you want help packaging a demo for the Spring AI Gala.',
+        'Project walkthrough slides and accessibility checklists are pinned in the Club Forums. Join our upcoming AI Club Meeting if you want help packaging a demo for the Spring AI Gala.',
       ].join('\n\n'),
-      tags: ['Civic Tech', 'Build Night', 'Accessibility', 'Student Projects'],
+      tags: ['Civic Tech', 'AI Club', 'Accessibility', 'Student Projects'],
       readingTimeMinutes: 3,
       status: 'Published',
       featured: true,
       visibility: 'Public Campus',
       linkedEventId: 'evt-1',
-      linkedEventTitle: 'Fall AI & Civic Tech Build Night',
+      linkedEventTitle: 'AI Club Meeting',
       authorUserId: 'usr-lead-ai',
       authorName: 'Aisha Rahman',
       authorRoleLabel: 'President',
@@ -2352,7 +2352,7 @@ function createInitialDatabase(): HubDatabase {
       featured: false,
       visibility: 'Public Campus',
       linkedEventId: 'evt-3',
-      linkedEventTitle: 'Finals Week Study Jam',
+      linkedEventTitle: 'AI Club General Meeting',
       authorUserId: 'usr-contrib-ai',
       authorName: 'Sofia Patel',
       authorRoleLabel: 'Secretary',
@@ -2386,7 +2386,7 @@ function createInitialDatabase(): HubDatabase {
       featured: true,
       visibility: 'Public Campus',
       linkedEventId: 'evt-4',
-      linkedEventTitle: 'Muslim Student Association (MSA) Community Tea & Study Circle',
+      linkedEventTitle: 'Islamic Studies Club – New Club (Club Fair)',
       authorUserId: 'usr-lead-msa',
       authorName: 'Zainab Siddiqui',
       authorRoleLabel: 'President',
@@ -2470,7 +2470,7 @@ function createInitialDatabase(): HubDatabase {
       categories: ['News', 'Event Recap', 'Member Spotlight', 'Tutorial & Guide', 'Research & Projects'],
       curatedTags: [
         'Civic Tech',
-        'Build Night',
+        'AI Club',
         'Accessibility',
         'Student Projects',
         'AI Ethics',
@@ -2942,7 +2942,7 @@ export function getDb(): HubDatabase {
         cachedDb.events.push({
           eventId: 'evt-6',
           clubId: 'club-ai',
-          title: 'AI Club Pre-Submission Office Hours',
+          title: 'AI Club Meeting',
           date: `${target.getFullYear()}-${pad(target.getMonth() + 1)}-${pad(target.getDate())}`,
           time: `${pad(target.getHours())}:00`,
           location: 'Zoom / CUNY SPS Virtual Commons',

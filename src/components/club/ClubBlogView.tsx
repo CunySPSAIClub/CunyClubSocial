@@ -1291,7 +1291,7 @@ export function ClubBlogView({
                     required
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="e.g., Highlights from Our Fall Civic Tech Build Night"
+                    placeholder="e.g., Highlights from Our Fall AI Club Meeting"
                     className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md focus:outline-none focus:border-[#004B87]"
                   />
                 </div>

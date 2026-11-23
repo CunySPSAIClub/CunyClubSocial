@@ -909,7 +909,7 @@ export function ContentStudio({
                 disabled={!canDraft}
                 value={relatedEvent}
                 onChange={(e) => setRelatedEvent(e.target.value)}
-                placeholder="e.g., Fall AI & Civic Tech Build Night"
+                placeholder="e.g., AI Club Meeting"
                 className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md focus:outline-none focus:border-[#004B87] disabled:bg-slate-50"
               />
             </div>
