@@ -11,6 +11,7 @@ import {
   Download,
   ExternalLink,
   MapPin,
+  Plus,
   RotateCcw,
   Rss,
   Search,
@@ -21,11 +22,19 @@ import {
   X,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useSiteContent } from '../context/SiteContentContext';
 import type { ClubBlogPost, ClubEvent, ClubJoinRequest, PublicClubSummary } from '../types';
 import { buildGoogleCalendarUrl, downloadEventIcs } from '../utils/calendarExport';
 import { ClubLogoMark, HubLogoMark, StudentLifeLogo } from './BrandMarks';
 import { StatusText } from './StatusText';
 import { BlogMarkdownBody } from './club/ClubBlogView';
+import { PublicClubLinksList } from './club/ClubLinksSection';
+import {
+  EditableImage,
+  EditableRepeatingItemBar,
+  EditableText,
+} from './cms/EditablePrimitives';
+import { CustomSectionsList, EditableSectionShell } from './cms/SectionBuilder';
 
 interface PublicCampusDirectoryProps {
   mode: 'public' | 'portal';
@@ -49,6 +58,11 @@ export function PublicCampusDirectory({
   onRequestLogin,
 }: PublicCampusDirectoryProps) {
   const { session, apiFetch } = useAuth();
+  const { content, isEditActive, updateContent, mutateEntity } = useSiteContent();
+  const pd = content.pages.publicDirectory;
+  const [draggingEventId, setDraggingEventId] = useState<string | null>(null);
+  const [draggingBlogId, setDraggingBlogId] = useState<string | null>(null);
+  const [draggingClubId, setDraggingClubId] = useState<string | null>(null);
   const [clubs, setClubs] = useState<PublicClubSummary[]>([]);
   const [publicEvents, setPublicEvents] = useState<ClubEvent[]>([]);
   const [publicBlogPosts, setPublicBlogPosts] = useState<ClubBlogPost[]>([]);
@@ -366,8 +380,51 @@ export function PublicCampusDirectory({
 
   const requestingClub = requestingClubId ? clubsById.get(requestingClubId) ?? null : null;
 
-  return (
-    <div className="space-y-6">
+  const handleEntityAction = async (
+    kind: 'clubs' | 'events' | 'blogPosts',
+    payload: Record<string, unknown>
+  ) => {
+    setError('');
+    try {
+      await mutateEntity(kind, payload);
+      await loadDirectoryData();
+      if (onRefreshParent) await onRefreshParent();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to update item.');
+    }
+  };
+
+  const moveDirectorySection = (
+    key: 'hero' | 'events' | 'blog' | 'clubs',
+    delta: -1 | 1
+  ) => {
+    updateContent((d) => {
+      const order = [...d.pages.publicDirectory.sectionOrder];
+      const idx = order.indexOf(key);
+      const target = idx + delta;
+      if (idx < 0 || target < 0 || target >= order.length) return;
+      const [m] = order.splice(idx, 1);
+      order.splice(target, 0, m);
+      d.pages.publicDirectory.sectionOrder = order;
+    });
+  };
+
+  const heroSectionEl = (
+    <EditableSectionShell
+      key="hero"
+      title="Directory Hero & Filters"
+      visible={pd.sectionVisibility.hero}
+      canMoveUp={pd.sectionOrder.indexOf('hero') > 0}
+      canMoveDown={pd.sectionOrder.indexOf('hero') < pd.sectionOrder.length - 1}
+      onToggleVisible={() =>
+        updateContent((d) => {
+          d.pages.publicDirectory.sectionVisibility.hero =
+            !d.pages.publicDirectory.sectionVisibility.hero;
+        })
+      }
+      onMoveUp={() => moveDirectorySection('hero', -1)}
+      onMoveDown={() => moveDirectorySection('hero', 1)}
+    >
       {/* Public Portal Hero & Search Toolbar */}
       <section className="bg-white border border-slate-200 rounded-lg p-5 space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -379,12 +436,27 @@ export function PublicCampusDirectory({
             <div>
               <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                 <CalendarDays className="w-5 h-5 text-[#004B87] shrink-0" />
-                <span>Approved Campus Club Events &amp; Membership Directory</span>
+                <EditableText
+                  as="span"
+                  value={pd.heroTitle}
+                  onChange={(next) =>
+                    updateContent((d) => {
+                      d.pages.publicDirectory.heroTitle = next;
+                    })
+                  }
+                />
               </h1>
-              <p className="text-xs text-slate-600 mt-1">
-                Browse officially approved CUNY SPS student club events and activities, export
-                dates to your calendar, and submit a Request to Join application for any club.
-              </p>
+              <EditableText
+                as="p"
+                multiline
+                value={pd.heroDescription}
+                onChange={(next) =>
+                  updateContent((d) => {
+                    d.pages.publicDirectory.heroDescription = next;
+                  })
+                }
+                className="text-xs text-slate-600 mt-1"
+              />
             </div>
           </div>
 
@@ -401,7 +473,15 @@ export function PublicCampusDirectory({
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-white bg-[#004B87] hover:bg-[#003865] rounded-md whitespace-nowrap shrink-0 cursor-pointer"
               >
                 <Send className="w-3.5 h-3.5" />
-                <span>Request to Join a Club</span>
+                <EditableText
+                  as="span"
+                  value={pd.requestJoinCtaLabel}
+                  onChange={(next) =>
+                    updateContent((d) => {
+                      d.pages.publicDirectory.requestJoinCtaLabel = next;
+                    })
+                  }
+                />
               </button>
             )}
             {mode === 'public' && !session && onRequestLogin && (
@@ -411,7 +491,15 @@ export function PublicCampusDirectory({
                 className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#004B87] bg-white border border-[#004B87] hover:bg-sky-50 rounded-md whitespace-nowrap shrink-0 cursor-pointer"
               >
                 <UserCheck className="w-3.5 h-3.5" />
-                <span>Member Sign-In</span>
+                <EditableText
+                  as="span"
+                  value={pd.memberSignInLabel}
+                  onChange={(next) =>
+                    updateContent((d) => {
+                      d.pages.publicDirectory.memberSignInLabel = next;
+                    })
+                  }
+                />
               </button>
             )}
           </div>
@@ -514,6 +602,347 @@ export function PublicCampusDirectory({
           </div>
         </div>
       </section>
+    </EditableSectionShell>
+  );
+
+  const eventsSectionEl = (viewSection === 'all' || viewSection === 'events') ? (
+    <EditableSectionShell
+      key="events"
+      title="Approved Club Events"
+      visible={pd.sectionVisibility.events}
+      canMoveUp={pd.sectionOrder.indexOf('events') > 0}
+      canMoveDown={pd.sectionOrder.indexOf('events') < pd.sectionOrder.length - 1}
+      onToggleVisible={() =>
+        updateContent((d) => {
+          d.pages.publicDirectory.sectionVisibility.events =
+            !d.pages.publicDirectory.sectionVisibility.events;
+        })
+      }
+      onMoveUp={() => moveDirectorySection('events', -1)}
+      onMoveDown={() => moveDirectorySection('events', 1)}
+    >
+      <section
+        ref={eventsSectionRef}
+        aria-label="Approved Club Events and Activities"
+        className="bg-white border border-slate-200 rounded-lg overflow-hidden"
+      >
+        <div className="px-5 py-3.5 border-b border-slate-200 bg-slate-50/70 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <CalendarDays className="w-4 h-4 text-[#004B87] shrink-0" />
+            <EditableText
+              as="h2"
+              value={pd.eventsSectionTitle}
+              onChange={(next) =>
+                updateContent((d) => {
+                  d.pages.publicDirectory.eventsSectionTitle = next;
+                })
+              }
+              className="text-sm font-bold text-slate-900"
+            />
+            <span className="text-xs font-mono-tabular text-slate-500">
+              ({filteredEvents.length} approved)
+            </span>
+            {isEditActive && (
+              <button
+                type="button"
+                onClick={() =>
+                  void handleEntityAction('events', {
+                    action: 'add',
+                    clubId: clubFilter !== 'ALL' ? clubFilter : clubs[0]?.clubId,
+                    title: 'New Campus Event',
+                    description: 'Click to edit event details while Edit Mode is ON.',
+                    location: 'Zoom / CUNY SPS Virtual Commons',
+                  })
+                }
+                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-white bg-[#004B87] hover:bg-[#003865] rounded cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add new event</span>
+              </button>
+            )}
+          </div>
+
+          {(() => {
+            const feedUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/api/public/campus.ics`;
+            return (
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <span className="inline-flex items-center gap-1 font-medium text-slate-700">
+                  <Rss className="w-3.5 h-3.5 text-[#004B87]" />
+                  <span>Live .ics Feed:</span>
+                </span>
+                <code className="font-mono text-[11px] text-slate-600 bg-white border border-slate-200 px-2 py-0.5 rounded max-w-[230px] truncate">
+                  {feedUrl}
+                </code>
+                <button
+                  type="button"
+                  onClick={() => {
+                    void navigator.clipboard?.writeText(feedUrl);
+                    setFeedCopied(true);
+                    setTimeout(() => setFeedCopied(false), 2500);
+                  }}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#004B87] bg-white border border-slate-300 hover:border-[#004B87] rounded-md whitespace-nowrap cursor-pointer"
+                >
+                  <Copy className="w-3 h-3" />
+                  <span>{feedCopied ? 'Feed URL Copied' : 'Copy Feed URL'}</span>
+                </button>
+                <a
+                  href="/api/public/campus.ics"
+                  download="cuny-sps-campus.ics"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-md whitespace-nowrap"
+                >
+                  <Download className="w-3 h-3" />
+                  <span>All .ics</span>
+                </a>
+              </div>
+            );
+          })()}
+        </div>
+
+        {loading ? (
+          <div className="p-5 space-y-3">
+            <div className="h-24 bg-slate-100 rounded-md animate-pulse" />
+            <div className="h-24 bg-slate-100 rounded-md animate-pulse" />
+          </div>
+        ) : filteredEvents.length === 0 ? (
+          <div className="p-8 text-center space-y-3">
+            <p className="text-xs text-slate-500">
+              No approved club events match your current search or filter criteria.
+            </p>
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#004B87] bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-md cursor-pointer"
+              >
+                <RotateCcw className="w-3 h-3" />
+                <span>Show All Approved Events</span>
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="divide-y divide-slate-200">
+            {filteredEvents.map((ev, evIdx) => {
+              const isMember = activeMembershipClubIds.has(ev.clubId);
+              const existingRequest = myRequestsByClubId.get(ev.clubId);
+              const isPending = existingRequest?.status === 'Pending';
+
+              return (
+                <div
+                  key={ev.eventId}
+                  draggable={isEditActive}
+                  onDragStart={() => setDraggingEventId(ev.eventId)}
+                  onDragOver={(e) => {
+                    if (isEditActive) e.preventDefault();
+                  }}
+                  onDrop={() => {
+                    if (!draggingEventId || draggingEventId === ev.eventId) return;
+                    const ids = publicEvents.map((item) => item.eventId);
+                    const from = ids.indexOf(draggingEventId);
+                    const to = ids.indexOf(ev.eventId);
+                    if (from >= 0 && to >= 0) {
+                      const [m] = ids.splice(from, 1);
+                      ids.splice(to, 0, m);
+                      void handleEntityAction('events', { action: 'reorder', orderedIds: ids });
+                    }
+                    setDraggingEventId(null);
+                  }}
+                  className="px-5 py-4 hover:bg-slate-50/70"
+                >
+                  <EditableRepeatingItemBar
+                    itemLabel={`Event #${evIdx + 1}`}
+                    canMoveUp={evIdx > 0}
+                    canMoveDown={evIdx < filteredEvents.length - 1}
+                    onMoveUp={() => {
+                      const ids = publicEvents.map((item) => item.eventId);
+                      const from = ids.indexOf(ev.eventId);
+                      if (from > 0) {
+                        const [m] = ids.splice(from, 1);
+                        ids.splice(from - 1, 0, m);
+                        void handleEntityAction('events', { action: 'reorder', orderedIds: ids });
+                      }
+                    }}
+                    onMoveDown={() => {
+                      const ids = publicEvents.map((item) => item.eventId);
+                      const from = ids.indexOf(ev.eventId);
+                      if (from >= 0 && from < ids.length - 1) {
+                        const [m] = ids.splice(from, 1);
+                        ids.splice(from + 1, 0, m);
+                        void handleEntityAction('events', { action: 'reorder', orderedIds: ids });
+                      }
+                    }}
+                    onDuplicate={() =>
+                      void handleEntityAction('events', { action: 'duplicate', id: ev.eventId })
+                    }
+                    onDelete={() =>
+                      void handleEntityAction('events', { action: 'delete', id: ev.eventId })
+                    }
+                  />
+
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div className="flex items-start gap-4 min-w-0">
+                      <div className="w-24 shrink-0 border border-slate-200 rounded-md bg-slate-50 px-2.5 py-2 text-center">
+                        <div className="text-xs font-mono-tabular font-bold text-slate-900">
+                          {ev.date}
+                        </div>
+                        <div className="text-[11px] font-mono-tabular text-slate-500 mt-0.5 flex items-center justify-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          <span>{ev.time}</span>
+                        </div>
+                      </div>
+                      <div className="min-w-0 space-y-1">
+                        <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
+                          <ClubLogoMark
+                            clubId={ev.clubId}
+                            clubShortCode={ev.clubShortCode}
+                            clubName={ev.clubName}
+                            logoUrl={ev.clubLogoUrl}
+                            accentColor={ev.clubAccentColor}
+                            size="xs"
+                          />
+                          <span className="font-semibold text-[#004B87]">
+                            {ev.clubShortCode} · {ev.clubName}
+                          </span>
+                          <span aria-hidden="true">·</span>
+                          <span>{ev.eventType ?? 'Campus Event'}</span>
+                          <span aria-hidden="true">·</span>
+                          <StatusText status={ev.approvalStatus ?? 'Approved'} />
+                          {ev.recurrence && ev.recurrence !== 'None' && (
+                            <>
+                              <span aria-hidden="true">·</span>
+                              <span className="text-[#004B87] font-medium">
+                                {ev.recurrence} Series
+                              </span>
+                            </>
+                          )}
+                          {ev.coSponsorClubCodes && ev.coSponsorClubCodes.length > 0 && (
+                            <>
+                              <span aria-hidden="true">·</span>
+                              <span className="font-mono font-semibold text-[#004B87]">
+                                Co-Sponsored w/ {ev.coSponsorClubCodes.join(', ')}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        <EditableText
+                          as="h3"
+                          value={ev.title}
+                          onChange={(next) =>
+                            void handleEntityAction('events', {
+                              action: 'update',
+                              id: ev.eventId,
+                              title: next,
+                            })
+                          }
+                          className="text-sm font-semibold text-slate-900"
+                        />
+                        <EditableText
+                          as="p"
+                          multiline
+                          value={ev.description}
+                          onChange={(next) =>
+                            void handleEntityAction('events', {
+                              action: 'update',
+                              id: ev.eventId,
+                              description: next,
+                            })
+                          }
+                          className="text-xs text-slate-600"
+                        />
+                        <div className="text-[11px] text-slate-500 flex flex-wrap items-center gap-3 pt-0.5">
+                          <span className="inline-flex items-center gap-1">
+                            <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                            <EditableText
+                              as="span"
+                              value={ev.location}
+                              onChange={(next) =>
+                                void handleEntityAction('events', {
+                                  action: 'update',
+                                  id: ev.eventId,
+                                  location: next,
+                                })
+                              }
+                            />
+                          </span>
+                          <span aria-hidden="true" className="text-slate-300">
+                            ·
+                          </span>
+                          <span className="inline-flex items-center gap-1 font-mono-tabular text-slate-700">
+                            <Users className="w-3.5 h-3.5 text-[#004B87] shrink-0" />
+                            <span>{ev.rsvpCount ?? 0} RSVPs</span>
+                            {typeof ev.inPersonCapacity === 'number' && (
+                              <span className="text-slate-500">
+                                · {ev.inPersonConfirmedCount ?? 0}/{ev.inPersonCapacity} room cap
+                              </span>
+                            )}
+                          </span>
+                          {typeof ev.avgFeedbackRating === 'number' && (
+                            <>
+                              <span aria-hidden="true" className="text-slate-300">
+                                ·
+                              </span>
+                              <span className="inline-flex items-center gap-1 font-mono-tabular text-amber-700 font-semibold">
+                                <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                                <span>{ev.avgFeedbackRating.toFixed(1)}/5</span>
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 shrink-0 self-end lg:self-center">
+                      <button
+                        type="button"
+                        onClick={() => downloadEventIcs(ev)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-md whitespace-nowrap cursor-pointer"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>.ics</span>
+                      </button>
+                      <a
+                        href={buildGoogleCalendarUrl(ev)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-[#004B87] bg-white border border-slate-300 hover:border-[#004B87] rounded-md whitespace-nowrap"
+                      >
+                        <CalendarPlus className="w-3.5 h-3.5" />
+                        <span>Google Calendar</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                      {isMember ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-md whitespace-nowrap">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>Member</span>
+                        </span>
+                      ) : isPending ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-md whitespace-nowrap">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>Join Pending</span>
+                        </span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => openJoinApplication(ev.clubId)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-[#004B87] hover:bg-[#003865] rounded-md whitespace-nowrap cursor-pointer"
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                          <span>Request to Join {ev.clubShortCode}</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+    </EditableSectionShell>
+  ) : null;
+
+  return (
+    <div className="space-y-6">
+      {pd.sectionOrder[0] === 'hero' && heroSectionEl}
 
       {error && (
         <div role="alert" className="p-3.5 text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg">
@@ -733,230 +1162,68 @@ export function PublicCampusDirectory({
         </section>
       )}
 
-      {/* Approved Club Events & Activities Section */}
-      {(viewSection === 'all' || viewSection === 'events') && (
-        <section
-          ref={eventsSectionRef}
-          aria-label="Approved Club Events and Activities"
-          className="bg-white border border-slate-200 rounded-lg overflow-hidden"
-        >
-          <div className="px-5 py-3.5 border-b border-slate-200 bg-slate-50/70 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <CalendarDays className="w-4 h-4 text-[#004B87] shrink-0" />
-              <h2 className="text-sm font-bold text-slate-900">
-                Approved Club Events &amp; Campus Activities
-              </h2>
-              <span className="text-xs font-mono-tabular text-slate-500">
-                ({filteredEvents.length} approved)
-              </span>
-            </div>
-
-            {(() => {
-              const feedUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/api/public/campus.ics`;
-              return (
-                <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <span className="inline-flex items-center gap-1 font-medium text-slate-700">
-                    <Rss className="w-3.5 h-3.5 text-[#004B87]" />
-                    <span>Live .ics Feed:</span>
-                  </span>
-                  <code className="font-mono text-[11px] text-slate-600 bg-white border border-slate-200 px-2 py-0.5 rounded max-w-[230px] truncate">
-                    {feedUrl}
-                  </code>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      void navigator.clipboard?.writeText(feedUrl);
-                      setFeedCopied(true);
-                      setTimeout(() => setFeedCopied(false), 2500);
-                    }}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#004B87] bg-white border border-slate-300 hover:border-[#004B87] rounded-md whitespace-nowrap cursor-pointer"
-                  >
-                    <Copy className="w-3 h-3" />
-                    <span>{feedCopied ? 'Feed URL Copied' : 'Copy Feed URL'}</span>
-                  </button>
-                  <a
-                    href="/api/public/campus.ics"
-                    download="cuny-sps-campus.ics"
-                    className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-md whitespace-nowrap"
-                  >
-                    <Download className="w-3 h-3" />
-                    <span>All .ics</span>
-                  </a>
-                </div>
-              );
-            })()}
-          </div>
-
-          {loading ? (
-            <div className="p-5 space-y-3">
-              <div className="h-24 bg-slate-100 rounded-md animate-pulse" />
-              <div className="h-24 bg-slate-100 rounded-md animate-pulse" />
-            </div>
-          ) : filteredEvents.length === 0 ? (
-            <div className="p-8 text-center space-y-3">
-              <p className="text-xs text-slate-500">
-                No approved club events match your current search or filter criteria.
-              </p>
-              {hasActiveFilters && (
-                <button
-                  type="button"
-                  onClick={resetFilters}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#004B87] bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-md cursor-pointer"
-                >
-                  <RotateCcw className="w-3 h-3" />
-                  <span>Show All Approved Events</span>
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="divide-y divide-slate-200">
-              {filteredEvents.map((ev) => {
-                const isMember = activeMembershipClubIds.has(ev.clubId);
-                const existingRequest = myRequestsByClubId.get(ev.clubId);
-                const isPending = existingRequest?.status === 'Pending';
-
-                return (
-                  <div
-                    key={ev.eventId}
-                    className="px-5 py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4 hover:bg-slate-50/70"
-                  >
-                    <div className="flex items-start gap-4 min-w-0">
-                      <div className="w-24 shrink-0 border border-slate-200 rounded-md bg-slate-50 px-2.5 py-2 text-center">
-                        <div className="text-xs font-mono-tabular font-bold text-slate-900">
-                          {ev.date}
-                        </div>
-                        <div className="text-[11px] font-mono-tabular text-slate-500 mt-0.5 flex items-center justify-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          <span>{ev.time}</span>
-                        </div>
-                      </div>
-                      <div className="min-w-0 space-y-1">
-                        <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-                          <ClubLogoMark
-                            clubId={ev.clubId}
-                            clubShortCode={ev.clubShortCode}
-                            clubName={ev.clubName}
-                            logoUrl={ev.clubLogoUrl}
-                            accentColor={ev.clubAccentColor}
-                            size="xs"
-                          />
-                          <span className="font-semibold text-[#004B87]">
-                            {ev.clubShortCode} · {ev.clubName}
-                          </span>
-                          <span aria-hidden="true">·</span>
-                          <span>{ev.eventType ?? 'Campus Event'}</span>
-                          <span aria-hidden="true">·</span>
-                          <StatusText status={ev.approvalStatus ?? 'Approved'} />
-                          {ev.recurrence && ev.recurrence !== 'None' && (
-                            <>
-                              <span aria-hidden="true">·</span>
-                              <span className="text-[#004B87] font-medium">
-                                {ev.recurrence} Series
-                              </span>
-                            </>
-                          )}
-                          {ev.coSponsorClubCodes && ev.coSponsorClubCodes.length > 0 && (
-                            <>
-                              <span aria-hidden="true">·</span>
-                              <span className="font-mono font-semibold text-[#004B87]">
-                                Co-Sponsored w/ {ev.coSponsorClubCodes.join(', ')}
-                              </span>
-                            </>
-                          )}
-                        </div>
-                        <h3 className="text-sm font-semibold text-slate-900">{ev.title}</h3>
-                        <p className="text-xs text-slate-600">{ev.description}</p>
-                        <div className="text-[11px] text-slate-500 flex flex-wrap items-center gap-3 pt-0.5">
-                          <span className="inline-flex items-center gap-1">
-                            <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                            <span>{ev.location}</span>
-                          </span>
-                          <span aria-hidden="true" className="text-slate-300">
-                            ·
-                          </span>
-                          <span className="inline-flex items-center gap-1 font-mono-tabular text-slate-700">
-                            <Users className="w-3.5 h-3.5 text-[#004B87] shrink-0" />
-                            <span>{ev.rsvpCount ?? 0} RSVPs</span>
-                            {typeof ev.inPersonCapacity === 'number' && (
-                              <span className="text-slate-500">
-                                · {ev.inPersonConfirmedCount ?? 0}/{ev.inPersonCapacity} room cap
-                              </span>
-                            )}
-                          </span>
-                          {typeof ev.avgFeedbackRating === 'number' && (
-                            <>
-                              <span aria-hidden="true" className="text-slate-300">
-                                ·
-                              </span>
-                              <span className="inline-flex items-center gap-1 font-mono-tabular text-amber-700 font-semibold">
-                                <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                                <span>{ev.avgFeedbackRating.toFixed(1)}/5</span>
-                              </span>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-2 shrink-0 self-end lg:self-center">
-                      <button
-                        type="button"
-                        onClick={() => downloadEventIcs(ev)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-md whitespace-nowrap cursor-pointer"
-                      >
-                        <Download className="w-3.5 h-3.5" />
-                        <span>.ics</span>
-                      </button>
-                      <a
-                        href={buildGoogleCalendarUrl(ev)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-[#004B87] bg-white border border-slate-300 hover:border-[#004B87] rounded-md whitespace-nowrap"
-                      >
-                        <CalendarPlus className="w-3.5 h-3.5" />
-                        <span>Google Calendar</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
-                      {isMember ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-md whitespace-nowrap">
-                          <CheckCircle2 className="w-3.5 h-3.5" />
-                          <span>Member</span>
-                        </span>
-                      ) : isPending ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-md whitespace-nowrap">
-                          <Clock className="w-3.5 h-3.5" />
-                          <span>Join Pending</span>
-                        </span>
-                      ) : (
+      {/* Ordered Directory Sections */}
+      {pd.sectionOrder.map((secKey) => {
+        if (secKey === 'hero') {
+          return pd.sectionOrder[0] === 'hero' ? null : heroSectionEl;
+        }
+        if (secKey === 'events') {
+          return eventsSectionEl;
+        }
+        if (secKey === 'blog') {
+          if (!((viewSection === 'all' || viewSection === 'blog') && (publicBlogPosts.length > 0 || isEditActive))) {
+            return null;
+          }
+          return (
+            <EditableSectionShell
+              key="blog"
+              title="Club Blog Stories"
+              visible={pd.sectionVisibility.blog}
+              canMoveUp={pd.sectionOrder.indexOf('blog') > 0}
+              canMoveDown={pd.sectionOrder.indexOf('blog') < pd.sectionOrder.length - 1}
+              onToggleVisible={() =>
+                updateContent((d) => {
+                  d.pages.publicDirectory.sectionVisibility.blog =
+                    !d.pages.publicDirectory.sectionVisibility.blog;
+                })
+              }
+              onMoveUp={() => moveDirectorySection('blog', -1)}
+              onMoveDown={() => moveDirectorySection('blog', 1)}
+            >
+              <section aria-label="Published Club Blog Stories" className="space-y-4">
+                <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <BookOpen className="w-4 h-4 text-[#004B87]" />
+                      <EditableText
+                        as="h2"
+                        value={pd.blogSectionTitle}
+                        onChange={(next) =>
+                          updateContent((d) => {
+                            d.pages.publicDirectory.blogSectionTitle = next;
+                          })
+                        }
+                        className="text-sm font-bold text-slate-900"
+                      />
+                      {isEditActive && (
                         <button
                           type="button"
-                          onClick={() => openJoinApplication(ev.clubId)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-[#004B87] hover:bg-[#003865] rounded-md whitespace-nowrap cursor-pointer"
+                          onClick={() =>
+                            void handleEntityAction('blogPosts', {
+                              action: 'add',
+                              clubId: clubFilter !== 'ALL' ? clubFilter : clubs[0]?.clubId,
+                              title: 'New Club Story',
+                              excerpt: 'Click to edit the article summary while Edit Mode is ON.',
+                              category: 'News',
+                            })
+                          }
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-white bg-[#004B87] hover:bg-[#003865] rounded cursor-pointer"
                         >
-                          <Send className="w-3.5 h-3.5" />
-                          <span>Request to Join {ev.clubShortCode}</span>
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Add new post</span>
                         </button>
                       )}
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* Published Club Blog Stories */}
-      {(viewSection === 'all' || viewSection === 'blog') && publicBlogPosts.length > 0 && (
-        <section aria-label="Published Club Blog Stories" className="space-y-4">
-          <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-[#004B87]" />
-                <h2 className="text-sm font-bold text-slate-900">
-                  Club Blog Stories &amp; Event Recaps
-                </h2>
-              </div>
               <div className="flex items-center gap-3">
                 {(blogCategoryFilter !== 'ALL' || blogTagFilter !== 'ALL') && (
                   <button
@@ -1169,12 +1436,70 @@ export function PublicCampusDirectory({
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredBlogPosts.map((bp) => (
+              {filteredBlogPosts.map((bp, bpIdx) => (
                 <article
                   key={bp.blogPostId}
+                  draggable={isEditActive}
+                  onDragStart={() => setDraggingBlogId(bp.blogPostId)}
+                  onDragOver={(e) => {
+                    if (isEditActive) e.preventDefault();
+                  }}
+                  onDrop={() => {
+                    if (!draggingBlogId || draggingBlogId === bp.blogPostId) return;
+                    const ids = publicBlogPosts.map((p) => p.blogPostId);
+                    const from = ids.indexOf(draggingBlogId);
+                    const to = ids.indexOf(bp.blogPostId);
+                    if (from >= 0 && to >= 0) {
+                      const [m] = ids.splice(from, 1);
+                      ids.splice(to, 0, m);
+                      void handleEntityAction('blogPosts', { action: 'reorder', orderedIds: ids });
+                    }
+                    setDraggingBlogId(null);
+                  }}
                   className="bg-white border border-slate-200 rounded-lg p-5 flex flex-col justify-between gap-3"
                 >
                   <div className="space-y-2">
+                    <EditableRepeatingItemBar
+                      itemLabel={`Post #${bpIdx + 1}`}
+                      canMoveUp={bpIdx > 0}
+                      canMoveDown={bpIdx < filteredBlogPosts.length - 1}
+                      onMoveUp={() => {
+                        const ids = publicBlogPosts.map((p) => p.blogPostId);
+                        const from = ids.indexOf(bp.blogPostId);
+                        if (from > 0) {
+                          const [m] = ids.splice(from, 1);
+                          ids.splice(from - 1, 0, m);
+                          void handleEntityAction('blogPosts', {
+                            action: 'reorder',
+                            orderedIds: ids,
+                          });
+                        }
+                      }}
+                      onMoveDown={() => {
+                        const ids = publicBlogPosts.map((p) => p.blogPostId);
+                        const from = ids.indexOf(bp.blogPostId);
+                        if (from >= 0 && from < ids.length - 1) {
+                          const [m] = ids.splice(from, 1);
+                          ids.splice(from + 1, 0, m);
+                          void handleEntityAction('blogPosts', {
+                            action: 'reorder',
+                            orderedIds: ids,
+                          });
+                        }
+                      }}
+                      onDuplicate={() =>
+                        void handleEntityAction('blogPosts', {
+                          action: 'duplicate',
+                          id: bp.blogPostId,
+                        })
+                      }
+                      onDelete={() =>
+                        void handleEntityAction('blogPosts', {
+                          action: 'delete',
+                          id: bp.blogPostId,
+                        })
+                      }
+                    />
                     <div className="flex items-center gap-2 text-[11px] text-slate-500">
                       <ClubLogoMark
                         clubId={bp.clubId}
@@ -1198,16 +1523,41 @@ export function PublicCampusDirectory({
                       <span aria-hidden="true">·</span>
                       <span className="font-mono-tabular">{bp.readingTimeMinutes} min</span>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setActiveBlogPostId(bp.blogPostId)}
-                      className="block text-left text-sm font-bold text-slate-900 hover:text-[#004B87] leading-snug cursor-pointer"
-                    >
-                      {bp.title}
-                    </button>
-                    <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
-                      {bp.excerpt}
-                    </p>
+                    {isEditActive ? (
+                      <EditableText
+                        as="div"
+                        value={bp.title}
+                        onChange={(next) =>
+                          void handleEntityAction('blogPosts', {
+                            action: 'update',
+                            id: bp.blogPostId,
+                            title: next,
+                          })
+                        }
+                        className="text-sm font-bold text-slate-900 leading-snug"
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setActiveBlogPostId(bp.blogPostId)}
+                        className="block text-left text-sm font-bold text-slate-900 hover:text-[#004B87] leading-snug cursor-pointer"
+                      >
+                        {bp.title}
+                      </button>
+                    )}
+                    <EditableText
+                      as="p"
+                      multiline
+                      value={bp.excerpt}
+                      onChange={(next) =>
+                        void handleEntityAction('blogPosts', {
+                          action: 'update',
+                          id: bp.blogPostId,
+                          excerpt: next,
+                        })
+                      }
+                      className="text-xs text-slate-600 leading-relaxed line-clamp-3"
+                    />
                     {bp.tags.length > 0 && (
                       <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-mono text-slate-500 pt-0.5">
                         {bp.tags.slice(0, 3).map((tag, idx) => (
@@ -1242,75 +1592,238 @@ export function PublicCampusDirectory({
               ))}
             </div>
           )}
-        </section>
-      )}
+                </section>
+              </EditableSectionShell>
+            );
+          }
 
-      {/* Active Student Organizations Catalog (Direct Club Request to Join) */}
-      {(viewSection === 'all' || viewSection === 'clubs') && (
-        <section aria-label="Recognized Student Clubs and Organizations" className="space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-[#004B87]" />
-              <h2 className="text-sm font-bold text-slate-900">
-                Recognized Student Clubs &amp; Membership Applications
-              </h2>
-            </div>
-            <span className="text-xs font-mono-tabular text-slate-500">
-              {filteredClubs.length} of {clubs.length} clubs shown
-            </span>
-          </div>
+          if (secKey === 'clubs') {
+            if (!(viewSection === 'all' || viewSection === 'clubs')) return null;
+            return (
+              <EditableSectionShell
+                key="clubs"
+                title="Recognized Student Clubs"
+                visible={pd.sectionVisibility.clubs}
+                canMoveUp={pd.sectionOrder.indexOf('clubs') > 0}
+                canMoveDown={pd.sectionOrder.indexOf('clubs') < pd.sectionOrder.length - 1}
+                onToggleVisible={() =>
+                  updateContent((d) => {
+                    d.pages.publicDirectory.sectionVisibility.clubs =
+                      !d.pages.publicDirectory.sectionVisibility.clubs;
+                  })
+                }
+                onMoveUp={() => moveDirectorySection('clubs', -1)}
+                onMoveDown={() => moveDirectorySection('clubs', 1)}
+              >
+                <section aria-label="Recognized Student Clubs and Organizations" className="space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Building2 className="w-4 h-4 text-[#004B87]" />
+                      <EditableText
+                        as="h2"
+                        value={pd.clubsSectionTitle}
+                        onChange={(next) =>
+                          updateContent((d) => {
+                            d.pages.publicDirectory.clubsSectionTitle = next;
+                          })
+                        }
+                        className="text-sm font-bold text-slate-900"
+                      />
+                      {isEditActive && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            void handleEntityAction('clubs', {
+                              action: 'add',
+                              name: 'New Student Club',
+                              shortCode: 'NEW',
+                              category: 'Special Interest',
+                              description: 'Click to edit club description while Edit Mode is ON.',
+                            })
+                          }
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-white bg-[#004B87] hover:bg-[#003865] rounded cursor-pointer"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Add new club</span>
+                        </button>
+                      )}
+                    </div>
+                    <span className="text-xs font-mono-tabular text-slate-500">
+                      {filteredClubs.length} of {clubs.length} clubs shown
+                    </span>
+                  </div>
 
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="h-44 bg-slate-200 rounded-lg animate-pulse" />
-              <div className="h-44 bg-slate-200 rounded-lg animate-pulse" />
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filteredClubs.length === 0 ? (
-                <div className="md:col-span-2 bg-white border border-slate-200 rounded-lg p-8 text-center text-xs text-slate-500">
-                  No active CUNY SPS clubs match your search criteria.
-                </div>
-              ) : (
-                filteredClubs.map((club) => {
-                  const isMember = activeMembershipClubIds.has(club.clubId);
-                  const existingRequest = myRequestsByClubId.get(club.clubId);
-                  const isPending = existingRequest?.status === 'Pending';
-
-                  return (
-                    <article
-                      key={club.clubId}
-                      className="bg-white border border-slate-200 rounded-lg p-5 flex flex-col justify-between gap-4"
-                    >
-                      <div className="space-y-2">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-start gap-3 min-w-0">
-                            <ClubLogoMark
-                              clubId={club.clubId}
-                              clubShortCode={club.shortCode}
-                              clubName={club.name}
-                              logoUrl={club.logoUrl}
-                              accentColor={club.accentColor}
-                              size="md"
-                            />
-                            <div className="min-w-0">
-                              <div className="text-[11px] font-mono font-semibold text-[#004B87]">
-                                {club.shortCode} · {club.category}
-                              </div>
-                              <h3 className="text-base font-bold text-slate-900 mt-0.5 leading-snug">
-                                {club.name}
-                              </h3>
-                              {club.tagline && (
-                                <p className="text-xs font-medium text-slate-700 mt-0.5">{club.tagline}</p>
-                              )}
-                            </div>
-                          </div>
-                          <span className="text-xs font-mono-tabular text-slate-500 whitespace-nowrap">
-                            {club.activeMemberCount} members
-                          </span>
+                  {loading ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="h-44 bg-slate-200 rounded-lg animate-pulse" />
+                      <div className="h-44 bg-slate-200 rounded-lg animate-pulse" />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {filteredClubs.length === 0 ? (
+                        <div className="md:col-span-2 bg-white border border-slate-200 rounded-lg p-8 text-center text-xs text-slate-500">
+                          No active CUNY SPS clubs match your search criteria.
                         </div>
+                      ) : (
+                        filteredClubs.map((club, clubIdx) => {
+                          const isMember = activeMembershipClubIds.has(club.clubId);
+                          const existingRequest = myRequestsByClubId.get(club.clubId);
+                          const isPending = existingRequest?.status === 'Pending';
 
-                        <p className="text-xs text-slate-600 leading-relaxed">{club.description}</p>
+                          return (
+                            <article
+                              key={club.clubId}
+                              draggable={isEditActive}
+                              onDragStart={() => setDraggingClubId(club.clubId)}
+                              onDragOver={(e) => {
+                                if (isEditActive) e.preventDefault();
+                              }}
+                              onDrop={() => {
+                                if (!draggingClubId || draggingClubId === club.clubId) return;
+                                const ids = clubs.map((c) => c.clubId);
+                                const from = ids.indexOf(draggingClubId);
+                                const to = ids.indexOf(club.clubId);
+                                if (from >= 0 && to >= 0) {
+                                  const [m] = ids.splice(from, 1);
+                                  ids.splice(to, 0, m);
+                                  void handleEntityAction('clubs', {
+                                    action: 'reorder',
+                                    orderedIds: ids,
+                                  });
+                                }
+                                setDraggingClubId(null);
+                              }}
+                              className="bg-white border border-slate-200 rounded-lg p-5 flex flex-col justify-between gap-4"
+                            >
+                              <div className="space-y-2">
+                                <EditableRepeatingItemBar
+                                  itemLabel={`Club #${clubIdx + 1}`}
+                                  canMoveUp={clubIdx > 0}
+                                  canMoveDown={clubIdx < filteredClubs.length - 1}
+                                  onMoveUp={() => {
+                                    const ids = clubs.map((c) => c.clubId);
+                                    const from = ids.indexOf(club.clubId);
+                                    if (from > 0) {
+                                      const [m] = ids.splice(from, 1);
+                                      ids.splice(from - 1, 0, m);
+                                      void handleEntityAction('clubs', {
+                                        action: 'reorder',
+                                        orderedIds: ids,
+                                      });
+                                    }
+                                  }}
+                                  onMoveDown={() => {
+                                    const ids = clubs.map((c) => c.clubId);
+                                    const from = ids.indexOf(club.clubId);
+                                    if (from >= 0 && from < ids.length - 1) {
+                                      const [m] = ids.splice(from, 1);
+                                      ids.splice(from + 1, 0, m);
+                                      void handleEntityAction('clubs', {
+                                        action: 'reorder',
+                                        orderedIds: ids,
+                                      });
+                                    }
+                                  }}
+                                  onDuplicate={() =>
+                                    void handleEntityAction('clubs', {
+                                      action: 'duplicate',
+                                      id: club.clubId,
+                                    })
+                                  }
+                                  onDelete={() =>
+                                    void handleEntityAction('clubs', {
+                                      action: 'delete',
+                                      id: club.clubId,
+                                    })
+                                  }
+                                />
+
+                                <div className="flex items-start justify-between gap-3">
+                                  <div className="flex items-start gap-3 min-w-0">
+                                    {isEditActive ? (
+                                      <EditableImage
+                                        src={club.logoUrl ?? ''}
+                                        alt={`${club.name} logo`}
+                                        onChange={(nextImg) =>
+                                          void handleEntityAction('clubs', {
+                                            action: 'update',
+                                            id: club.clubId,
+                                            logoUrl: nextImg.src,
+                                          })
+                                        }
+                                        className="w-11 h-11 rounded-full object-cover border border-slate-200 bg-white shrink-0"
+                                        fallback={
+                                          <ClubLogoMark
+                                            clubId={club.clubId}
+                                            clubShortCode={club.shortCode}
+                                            clubName={club.name}
+                                            logoUrl={club.logoUrl}
+                                            accentColor={club.accentColor}
+                                            size="md"
+                                          />
+                                        }
+                                      />
+                                    ) : (
+                                      <ClubLogoMark
+                                        clubId={club.clubId}
+                                        clubShortCode={club.shortCode}
+                                        clubName={club.name}
+                                        logoUrl={club.logoUrl}
+                                        accentColor={club.accentColor}
+                                        size="md"
+                                      />
+                                    )}
+                                    <div className="min-w-0">
+                                      <div className="text-[11px] font-mono font-semibold text-[#004B87]">
+                                        {club.shortCode} · {club.category}
+                                      </div>
+                                      <EditableText
+                                        as="h3"
+                                        value={club.name}
+                                        onChange={(next) =>
+                                          void handleEntityAction('clubs', {
+                                            action: 'update',
+                                            id: club.clubId,
+                                            name: next,
+                                          })
+                                        }
+                                        className="text-base font-bold text-slate-900 mt-0.5 leading-snug"
+                                      />
+                                      {(club.tagline || isEditActive) && (
+                                        <EditableText
+                                          as="p"
+                                          value={club.tagline ?? ''}
+                                          placeholder="Optional club tagline"
+                                          onChange={(next) =>
+                                            void handleEntityAction('clubs', {
+                                              action: 'update',
+                                              id: club.clubId,
+                                              tagline: next,
+                                            })
+                                          }
+                                          className="text-xs font-medium text-slate-700 mt-0.5"
+                                        />
+                                      )}
+                                    </div>
+                                  </div>
+                                  <span className="text-xs font-mono-tabular text-slate-500 whitespace-nowrap">
+                                    {club.activeMemberCount} members
+                                  </span>
+                                </div>
+
+                                <EditableText
+                                  as="p"
+                                  multiline
+                                  value={club.description}
+                                  onChange={(next) =>
+                                    void handleEntityAction('clubs', {
+                                      action: 'update',
+                                      id: club.clubId,
+                                      description: next,
+                                    })
+                                  }
+                                  className="text-xs text-slate-600 leading-relaxed"
+                                />
 
                         {(club.meetingSchedule || club.contactEmail || club.websiteUrl) && (
                           <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
@@ -1381,6 +1894,8 @@ export function PublicCampusDirectory({
                             </span>
                           )}
                         </div>
+
+                        <PublicClubLinksList links={club.links} />
                       </div>
 
                       {/* Membership / Join Request Action */}
@@ -1430,8 +1945,22 @@ export function PublicCampusDirectory({
               )}
             </div>
           )}
-        </section>
-      )}
+                </section>
+              </EditableSectionShell>
+            );
+          }
+
+          return null;
+        })}
+
+      <CustomSectionsList
+        sections={pd.customSections}
+        onChange={(nextSections) =>
+          updateContent((d) => {
+            d.pages.publicDirectory.customSections = nextSections;
+          })
+        }
+      />
     </div>
   );
 }

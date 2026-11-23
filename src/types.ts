@@ -29,7 +29,8 @@ export type AccountRequestType =
   | 'New Official Account'
   | 'Ownership Transfer'
   | 'Account Closure'
-  | 'Account Archival';
+  | 'Account Archival'
+  | 'New Club Leadership';
 
 export type AccountRequestStatus =
   | 'Submitted'
@@ -56,15 +57,68 @@ export type MembershipStatus = 'Active' | 'Invited' | 'Revoked' | 'Alumni';
 export interface User {
   userId: string;
   name: string;
+  displayName?: string;
+  lastName?: string;
+  avatarUrl?: string;
   email: string;
   identitySubject: string;
   title: string;
   departmentOrMajor: string;
+  program?: string;
+  programLocked?: boolean;
+  interests?: string[];
+  notificationsEnabled?: boolean;
+  onboardingCompleted?: boolean;
+  staffAccessPending?: boolean;
   systemRole: 'SL_SUPER_ADMIN' | 'SL_ADMIN' | 'STANDARD_USER';
   assignedAdminClubIds?: string[]; // Scoped clubs for SL_ADMIN
   status: 'Active' | 'Revoked';
   lastLoginAt: string;
   emailRemindersEnabled?: boolean;
+}
+
+export interface AuthPublicConfig {
+  demoMode: boolean;
+  googleClientId: string;
+  authProvider: 'google' | 'cuny-sso';
+  allowedDomains: string[];
+}
+
+export type OnboardingRoleType =
+  | 'ADMIN'
+  | 'CLUB_LEAD'
+  | 'CONTRIBUTOR'
+  | 'NO_CLUB_STUDENT'
+  | 'PENDING_STAFF';
+
+export interface OnboardingNotificationCard {
+  id: string;
+  category: string;
+  title: string;
+  body: string;
+  timeLabel: string;
+}
+
+export interface OnboardingSummary {
+  roleType: OnboardingRoleType;
+  clubs: {
+    clubId: string;
+    name: string;
+    shortCode: string;
+    role: RoleName;
+    roleBadge: string;
+    logoUrl?: string;
+    accentColor?: string;
+  }[];
+  notificationCards: OnboardingNotificationCard[];
+  finalStats: {
+    postsWaitingReview: number;
+    newAnnouncements: number;
+    newMembers: number;
+    accountRequestsCount: number;
+    officerHandoversCount: number;
+  };
+  pendingJoinRequestClubIds: string[];
 }
 
 export interface ClubGovernanceSummary {
@@ -118,6 +172,28 @@ export interface BudgetIncreaseRequest {
   approvedAdditionalUsd?: number;
 }
 
+export type FixedClubLinkKey = 'website' | 'facebook' | 'instagram' | 'tiktok' | 'whatsapp';
+
+export interface ClubFixedLink {
+  key: FixedClubLinkKey;
+  active: boolean;
+  url: string;
+  description: string;
+}
+
+export interface ClubAdditionalLink {
+  id: string;
+  label: string;
+  url: string;
+  description: string;
+  active: boolean;
+}
+
+export interface ClubLinksConfig {
+  fixed: ClubFixedLink[];
+  additional: ClubAdditionalLink[];
+}
+
 export interface Club {
   clubId: string;
   name: string;
@@ -133,6 +209,7 @@ export interface Club {
   meetingSchedule?: string;
   contactEmail?: string;
   websiteUrl?: string;
+  links?: ClubLinksConfig;
   upcomingLeadershipChange?: string;
   semesterBudgetAllocatedUsd?: number;
   budgetSummary?: ClubBudgetSummary;
@@ -770,6 +847,7 @@ export interface PublicClubSummary {
   meetingSchedule?: string;
   contactEmail?: string;
   websiteUrl?: string;
+  links?: ClubLinksConfig;
 }
 
 export interface TransitionChecklistItem {

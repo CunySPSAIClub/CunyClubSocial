@@ -13,10 +13,12 @@ import {
   FileText,
   Pencil,
   PenSquare,
+  Plus,
   Send,
   ShieldCheck,
 } from 'lucide-react';
 import { formatRoleLabel, useAuth } from '../../context/AuthContext';
+import { useSiteContent } from '../../context/SiteContentContext';
 import type {
   BudgetIncreaseRequest,
   Club,
@@ -35,6 +37,13 @@ import type {
 import { exportCharterRenewalPdf } from '../../utils/resourcePdfExport';
 import { ClubLogoMark } from '../BrandMarks';
 import { StatusText } from '../StatusText';
+import {
+  EditableImage,
+  EditableRepeatingItemBar,
+  EditableText,
+} from '../cms/EditablePrimitives';
+import { CustomSectionsList, EditableSectionShell } from '../cms/SectionBuilder';
+import { ClubLinksSection } from './ClubLinksSection';
 import { ClubMessagingCenter } from './ClubMessagingCenter';
 import { ClubProfileEditor } from './ClubProfileEditor';
 import { ClubWhatsAppPanel } from './ClubWhatsAppPanel';
@@ -71,6 +80,9 @@ export function ClubOverview({
   onRefresh,
 }: ClubOverviewProps) {
   const { apiFetch, session } = useAuth();
+  const { content, isEditActive, updateContent, mutateEntity } = useSiteContent();
+  const co = content.pages.clubOverview;
+  const [draggingShortcutId, setDraggingShortcutId] = useState<string | null>(null);
   const [submissions, setSubmissions] = useState<ResourceSubmission[]>([]);
   const [transition, setTransition] = useState<OfficerTransitionChecklist | null>(null);
   const [extrasLoading, setExtrasLoading] = useState(true);
@@ -95,6 +107,11 @@ export function ClubOverview({
   const recentPublished = posts.filter((p) => p.status === 'Published' || p.status === 'Failed');
 
   const canCreate = effectiveRole !== 'VIEWER';
+  const canEditLinks =
+    Boolean(session?.effectiveAdminRole) ||
+    effectiveRole === 'CLUB_LEAD' ||
+    effectiveRole === 'EDITOR' ||
+    effectiveRole === 'CONTRIBUTOR';
   const canEditProfile =
     effectiveRole === 'CLUB_LEAD' ||
     effectiveRole === 'SL_ADMIN' ||
@@ -285,27 +302,73 @@ export function ClubOverview({
     }
   };
 
+  const handleInlineClubUpdate = async (patch: Record<string, unknown>) => {
+    setActionError('');
+    try {
+      await mutateEntity('clubs', { action: 'update', id: club.clubId, ...patch });
+      if (onRefresh) await onRefresh();
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : 'Unable to update club.');
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4">
         <div className="flex items-start gap-4 min-w-0">
-          <ClubLogoMark
-            clubId={club.clubId}
-            clubShortCode={club.shortCode}
-            clubName={club.name}
-            logoUrl={club.logoUrl}
-            accentColor={club.accentColor}
-            size="lg"
-          />
+          {isEditActive ? (
+            <EditableImage
+              src={club.logoUrl ?? ''}
+              alt={`${club.name} profile picture`}
+              onChange={(nextImg) => void handleInlineClubUpdate({ logoUrl: nextImg.src })}
+              className="w-14 h-14 rounded-full object-cover border border-slate-200 bg-white shrink-0"
+              fallback={
+                <ClubLogoMark
+                  clubId={club.clubId}
+                  clubShortCode={club.shortCode}
+                  clubName={club.name}
+                  logoUrl={club.logoUrl}
+                  accentColor={club.accentColor}
+                  size="lg"
+                />
+              }
+            />
+          ) : (
+            <ClubLogoMark
+              clubId={club.clubId}
+              clubShortCode={club.shortCode}
+              clubName={club.name}
+              logoUrl={club.logoUrl}
+              accentColor={club.accentColor}
+              size="lg"
+            />
+          )}
           <div className="space-y-1">
             <div className="text-xs font-medium text-slate-500">
               {club.shortCode} · {club.category} · Your Role: {formatRoleLabel(effectiveRole)}
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">{club.name}</h1>
-            {club.tagline && (
-              <p className="text-xs font-medium text-[#004B87]">{club.tagline}</p>
+            <EditableText
+              as="h1"
+              value={club.name}
+              onChange={(next) => void handleInlineClubUpdate({ name: next })}
+              className="text-2xl font-bold tracking-tight text-slate-900"
+            />
+            {(club.tagline || isEditActive) && (
+              <EditableText
+                as="p"
+                value={club.tagline ?? ''}
+                placeholder="Optional club tagline"
+                onChange={(next) => void handleInlineClubUpdate({ tagline: next })}
+                className="text-xs font-medium text-[#004B87]"
+              />
             )}
-            <p className="text-sm text-slate-600 max-w-2xl">{club.description}</p>
+            <EditableText
+              as="p"
+              multiline
+              value={club.description}
+              onChange={(next) => void handleInlineClubUpdate({ description: next })}
+              className="text-sm text-slate-600 max-w-2xl"
+            />
             {(club.meetingSchedule || club.contactEmail || club.websiteUrl) && (
               <div className="flex flex-wrap items-center gap-2.5 pt-0.5 text-xs text-slate-500">
                 {club.meetingSchedule && <span>Meetings: {club.meetingSchedule}</span>}
@@ -342,7 +405,15 @@ export function ClubOverview({
             className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-md whitespace-nowrap cursor-pointer"
           >
             <BookOpen className="w-3.5 h-3.5 text-[#004B87]" />
-            <span>Club Blog</span>
+            <EditableText
+              as="span"
+              value={co.clubBlogBtnLabel}
+              onChange={(next) =>
+                updateContent((d) => {
+                  d.pages.clubOverview.clubBlogBtnLabel = next;
+                })
+              }
+            />
           </button>
           {canEditProfile && (
             <button
@@ -351,7 +422,15 @@ export function ClubOverview({
               className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#004B87] bg-white border border-[#004B87] hover:bg-sky-50 rounded-md whitespace-nowrap cursor-pointer"
             >
               <Pencil className="w-3.5 h-3.5" />
-              <span>{showProfileEditor ? 'Close Profile Editor' : 'Edit Profile & Picture'}</span>
+              <EditableText
+                as="span"
+                value={showProfileEditor ? 'Close Profile Editor' : co.editProfileBtnLabel}
+                onChange={(next) =>
+                  updateContent((d) => {
+                    d.pages.clubOverview.editProfileBtnLabel = next;
+                  })
+                }
+              />
             </button>
           )}
           <button
@@ -361,7 +440,15 @@ export function ClubOverview({
             className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-md whitespace-nowrap cursor-pointer"
           >
             <FileText className="w-3.5 h-3.5 text-[#004B87]" />
-            <span>Charter Renewal PDF</span>
+            <EditableText
+              as="span"
+              value={co.charterPdfBtnLabel}
+              onChange={(next) =>
+                updateContent((d) => {
+                  d.pages.clubOverview.charterPdfBtnLabel = next;
+                })
+              }
+            />
           </button>
           <button
             type="button"
@@ -370,7 +457,15 @@ export function ClubOverview({
             className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-md whitespace-nowrap cursor-pointer"
           >
             <Download className="w-3.5 h-3.5 text-slate-500" />
-            <span>CSV</span>
+            <EditableText
+              as="span"
+              value={co.charterCsvBtnLabel}
+              onChange={(next) =>
+                updateContent((d) => {
+                  d.pages.clubOverview.charterCsvBtnLabel = next;
+                })
+              }
+            />
           </button>
           {canCreate && (
             <button
@@ -379,7 +474,15 @@ export function ClubOverview({
               className="inline-flex items-center gap-2 px-4 py-2 text-xs font-medium text-white bg-[#004B87] hover:bg-[#003865] rounded-md whitespace-nowrap cursor-pointer"
             >
               <PenSquare className="w-4 h-4" />
-              <span>Create Post</span>
+              <EditableText
+                as="span"
+                value={co.createPostBtnLabel}
+                onChange={(next) =>
+                  updateContent((d) => {
+                    d.pages.clubOverview.createPostBtnLabel = next;
+                  })
+                }
+              />
             </button>
           )}
         </div>
@@ -412,13 +515,51 @@ export function ClubOverview({
         </div>
       )}
 
+      <EditableSectionShell
+        title="Club Links"
+        visible={co.sectionVisibility.clubLinks}
+        onToggleVisible={() =>
+          updateContent((d) => {
+            d.pages.clubOverview.sectionVisibility.clubLinks =
+              !d.pages.clubOverview.sectionVisibility.clubLinks;
+          })
+        }
+      >
+        <ClubLinksSection
+          clubId={club.clubId}
+          links={club.links}
+          canEdit={canEditLinks}
+          onSaved={async () => {
+            if (onRefresh) await onRefresh();
+          }}
+        />
+      </EditableSectionShell>
+
+      <EditableSectionShell
+        title="Publishing & Activity Grid"
+        visible={co.sectionVisibility.publishingGrid}
+        onToggleVisible={() =>
+          updateContent((d) => {
+            d.pages.clubOverview.sectionVisibility.publishingGrid =
+              !d.pages.clubOverview.sectionVisibility.publishingGrid;
+          })
+        }
+      >
       {/* Upcoming Scheduled, Drafts, Publishing Activity */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <section className="bg-white border border-slate-200 rounded-lg flex flex-col">
           <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
               <CalendarClock className="w-4 h-4 text-slate-400" />
-              <span>Upcoming Scheduled Posts</span>
+              <EditableText
+                as="span"
+                value={co.scheduledPostsHeading}
+                onChange={(next) =>
+                  updateContent((d) => {
+                    d.pages.clubOverview.scheduledPostsHeading = next;
+                  })
+                }
+              />
             </h2>
             <span className="text-xs font-mono-tabular text-slate-500">{scheduledPosts.length}</span>
           </div>
@@ -447,7 +588,15 @@ export function ClubOverview({
           <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
               <FileEdit className="w-4 h-4 text-slate-400" />
-              <span>Drafts & Peer Review Queue</span>
+              <EditableText
+                as="span"
+                value={co.draftsHeading}
+                onChange={(next) =>
+                  updateContent((d) => {
+                    d.pages.clubOverview.draftsHeading = next;
+                  })
+                }
+              />
             </h2>
             <span className="text-xs font-mono-tabular text-slate-500">{draftPosts.length}</span>
           </div>
@@ -479,7 +628,15 @@ export function ClubOverview({
           <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
               <Send className="w-4 h-4 text-slate-400" />
-              <span>Recorded Publishing Activity</span>
+              <EditableText
+                as="span"
+                value={co.activityHeading}
+                onChange={(next) =>
+                  updateContent((d) => {
+                    d.pages.clubOverview.activityHeading = next;
+                  })
+                }
+              />
             </h2>
             <span className="text-xs font-mono-tabular text-slate-500">{recentPublished.length}</span>
           </div>
@@ -507,17 +664,155 @@ export function ClubOverview({
           </div>
         </section>
       </div>
-      <p className="text-xs text-slate-500">Showing up to 3 items per list. <button type="button" onClick={() => onNavigate('calendar')} className="text-[#004B87] underline">View all in Content Calendar</button>. Recorded statuses may include simulation.</p>
+      <p className="text-xs text-slate-500 mt-3">Showing up to 3 items per list. <button type="button" onClick={() => onNavigate('calendar')} className="text-[#004B87] underline">View all in Content Calendar</button>. Recorded statuses may include simulation.</p>
+      </EditableSectionShell>
 
-      <section aria-label="Workspace shortcuts" className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {[['upcoming-events', 'Upcoming events', `${events.length} event records`], ['messaging-center', 'Messaging Center', 'Broadcasts and replies'], ['whatsapp', 'WhatsApp Group', `${whatsappGroups.length} linked groups · share links`], ['club-resources', 'Club Resources', 'Forms and submissions']].map(([tab, label, detail]) => (
-          <button key={tab} type="button" onClick={() => onNavigate(tab)} className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 text-left hover:border-sky-400 focus-visible:outline-2 focus-visible:outline-sky-700">
-            <span className="block text-sm font-semibold text-[#004B87]">{label} →</span>
-            <span className="mt-1 block text-xs text-slate-500">{detail}</span>
-          </button>
-        ))}
-      </section>
+      <EditableSectionShell
+        title="Workspace Shortcuts"
+        visible={co.sectionVisibility.shortcuts}
+        onToggleVisible={() =>
+          updateContent((d) => {
+            d.pages.clubOverview.sectionVisibility.shortcuts =
+              !d.pages.clubOverview.sectionVisibility.shortcuts;
+          })
+        }
+      >
+        <div className="space-y-2">
+          {isEditActive && (
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() =>
+                  updateContent((d) => {
+                    d.pages.clubOverview.shortcuts.push({
+                      id: `sc-${Date.now().toString(36)}`,
+                      tab: 'upcoming-events',
+                      label: 'New Shortcut',
+                      detail: 'Click to edit description',
+                    });
+                  })
+                }
+                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-white bg-[#004B87] hover:bg-[#003865] rounded cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add shortcut</span>
+              </button>
+            </div>
+          )}
+          <section aria-label="Workspace shortcuts" className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {co.shortcuts.map((sc, scIdx) => {
+              const liveDetail =
+                !isEditActive && sc.tab === 'upcoming-events' && sc.detail === 'View event schedule and RSVPs'
+                  ? `${events.length} event records`
+                  : !isEditActive && sc.tab === 'whatsapp' && sc.detail === 'Linked groups & share links'
+                  ? `${whatsappGroups.length} linked groups · share links`
+                  : sc.detail;
 
+              return (
+                <div
+                  key={sc.id}
+                  draggable={isEditActive}
+                  onDragStart={() => setDraggingShortcutId(sc.id)}
+                  onDragOver={(e) => {
+                    if (isEditActive) e.preventDefault();
+                  }}
+                  onDrop={() => {
+                    if (!draggingShortcutId || draggingShortcutId === sc.id) return;
+                    updateContent((d) => {
+                      const list = d.pages.clubOverview.shortcuts;
+                      const from = list.findIndex((i) => i.id === draggingShortcutId);
+                      const to = list.findIndex((i) => i.id === sc.id);
+                      if (from >= 0 && to >= 0) {
+                        const [m] = list.splice(from, 1);
+                        list.splice(to, 0, m);
+                      }
+                    });
+                    setDraggingShortcutId(null);
+                  }}
+                  className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 text-left hover:border-sky-400"
+                >
+                  <EditableRepeatingItemBar
+                    itemLabel={`Card #${scIdx + 1}`}
+                    canMoveUp={scIdx > 0}
+                    canMoveDown={scIdx < co.shortcuts.length - 1}
+                    onMoveUp={() =>
+                      updateContent((d) => {
+                        const [m] = d.pages.clubOverview.shortcuts.splice(scIdx, 1);
+                        d.pages.clubOverview.shortcuts.splice(scIdx - 1, 0, m);
+                      })
+                    }
+                    onMoveDown={() =>
+                      updateContent((d) => {
+                        const [m] = d.pages.clubOverview.shortcuts.splice(scIdx, 1);
+                        d.pages.clubOverview.shortcuts.splice(scIdx + 1, 0, m);
+                      })
+                    }
+                    onDuplicate={() =>
+                      updateContent((d) => {
+                        d.pages.clubOverview.shortcuts.splice(scIdx + 1, 0, {
+                          ...sc,
+                          id: `sc-copy-${Date.now().toString(36)}`,
+                          label: `${sc.label} (Copy)`,
+                        });
+                      })
+                    }
+                    onDelete={() =>
+                      updateContent((d) => {
+                        d.pages.clubOverview.shortcuts = d.pages.clubOverview.shortcuts.filter(
+                          (item) => item.id !== sc.id
+                        );
+                      })
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!isEditActive) onNavigate(sc.tab);
+                    }}
+                    className="w-full text-left focus-visible:outline-2 focus-visible:outline-sky-700 cursor-pointer"
+                  >
+                    <span className="block text-sm font-semibold text-[#004B87]">
+                      <EditableText
+                        as="span"
+                        value={sc.label}
+                        onChange={(next) =>
+                          updateContent((d) => {
+                            const t = d.pages.clubOverview.shortcuts.find((i) => i.id === sc.id);
+                            if (t) t.label = next;
+                          })
+                        }
+                      />{' '}
+                      →
+                    </span>
+                    <EditableText
+                      as="span"
+                      value={liveDetail}
+                      onChange={(next) =>
+                        updateContent((d) => {
+                          const t = d.pages.clubOverview.shortcuts.find((i) => i.id === sc.id);
+                          if (t) t.detail = next;
+                        })
+                      }
+                      className="mt-1 block text-xs text-slate-500"
+                    />
+                  </button>
+                </div>
+              );
+            })}
+          </section>
+        </div>
+      </EditableSectionShell>
+
+      <EditableSectionShell
+        title="Budget & Advisor Items"
+        visible={co.sectionVisibility.budgetAndAdvisor}
+        onToggleVisible={() =>
+          updateContent((d) => {
+            d.pages.clubOverview.sectionVisibility.budgetAndAdvisor =
+              !d.pages.clubOverview.sectionVisibility.budgetAndAdvisor;
+          })
+        }
+      >
       <details className="rounded-lg border border-slate-200 bg-white p-4">
         <summary className="cursor-pointer text-sm font-semibold text-slate-800">Budget & advisor items · expand details</summary>
         <div className="mt-4">
@@ -835,7 +1130,18 @@ export function ClubOverview({
 
         </div>
       </details>
+      </EditableSectionShell>
 
+      <EditableSectionShell
+        title="Social Accounts & Engagement"
+        visible={co.sectionVisibility.accountsAndEngagement}
+        onToggleVisible={() =>
+          updateContent((d) => {
+            d.pages.clubOverview.sectionVisibility.accountsAndEngagement =
+              !d.pages.clubOverview.sectionVisibility.accountsAndEngagement;
+          })
+        }
+      >
       {/* Connected Accounts & Engagement Snapshot */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <section className="lg:col-span-6 bg-white border border-slate-200 rounded-lg">
@@ -914,7 +1220,18 @@ export function ClubOverview({
           )}
         </section>
       </div>
+      </EditableSectionShell>
 
+      <EditableSectionShell
+        title="Workspace Notifications"
+        visible={co.sectionVisibility.notifications}
+        onToggleVisible={() =>
+          updateContent((d) => {
+            d.pages.clubOverview.sectionVisibility.notifications =
+              !d.pages.clubOverview.sectionVisibility.notifications;
+          })
+        }
+      >
       {/* Relevant Notifications */}
       <section className="bg-white border border-slate-200 rounded-lg">
         <div className="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between">
@@ -956,6 +1273,16 @@ export function ClubOverview({
           </div>
         )}
       </section>
+      </EditableSectionShell>
+
+      <CustomSectionsList
+        sections={co.customSections}
+        onChange={(nextSections) =>
+          updateContent((d) => {
+            d.pages.clubOverview.customSections = nextSections;
+          })
+        }
+      />
     </div>
   );
 }

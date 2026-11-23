@@ -114,3 +114,37 @@ export function canAdminManageClub(user: User, clubId: string): boolean {
   }
   return false;
 }
+
+export function canEditClubLinks(
+  user: User,
+  clubId: string,
+  memberships?: ClubMembership[]
+): boolean {
+  if (user.status !== 'Active') return false;
+  if (user.systemRole === 'SL_SUPER_ADMIN' || user.systemRole === 'SL_ADMIN') {
+    return true;
+  }
+  const membership = (memberships ?? getDb().memberships).find(
+    (m) => m.userId === user.userId && m.clubId === clubId && m.status === 'Active'
+  );
+  if (!membership) return false;
+  return (
+    membership.role === 'CLUB_LEAD' ||
+    membership.role === 'EDITOR' ||
+    membership.role === 'CONTRIBUTOR'
+  );
+}
+
+export function canViewClubWhatsAppLink(
+  user: User | null | undefined,
+  clubId: string,
+  memberships?: ClubMembership[]
+): boolean {
+  if (!user || user.status !== 'Active') return false;
+  if (user.systemRole === 'SL_SUPER_ADMIN' || user.systemRole === 'SL_ADMIN') {
+    return true;
+  }
+  return (memberships ?? getDb().memberships).some(
+    (m) => m.userId === user.userId && m.clubId === clubId && m.status === 'Active'
+  );
+}

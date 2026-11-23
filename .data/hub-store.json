@@ -103,7 +103,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Kenji Takahashi",
       "onboardedAt": "2026-11-01T12:00:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-ai",
@@ -115,7 +150,50 @@
       "facultyAdvisor": "Prof. Jordan Reyes",
       "onboardedAt": "2026-10-15T14:00:00.000Z",
       "upcomingLeadershipChange": "Spring 2027 Co-Chair transition scheduled (Noah Kim)",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": true,
+            "url": "https://sps.cuny.edu/student-services/student-life/student-clubs-and-organizations",
+            "description": "Official club hub, semester schedule, and resources"
+          },
+          {
+            "key": "facebook",
+            "active": true,
+            "url": "https://www.facebook.com/cunyspsaiclub",
+            "description": "Campus announcements and event RSVPs"
+          },
+          {
+            "key": "instagram",
+            "active": true,
+            "url": "https://www.instagram.com/cunysps.ai",
+            "description": "Weekly updates and event photos"
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": true,
+            "url": "https://chat.whatsapp.com/LiEAv8DRlII7pMqN60PGj6?s=cl&p=a&iam=2",
+            "description": "Member chat, study jams, and event reminders"
+          }
+        ],
+        "additional": [
+          {
+            "id": "link-ai-project-showcase",
+            "label": "Project Showcase",
+            "url": "https://ai-showcase.sps.cuny.edu",
+            "description": "Student demos, capstone builds, and hackathon archives",
+            "active": false
+          }
+        ]
+      }
     },
     {
       "clubId": "club-arts-crafts",
@@ -126,7 +204,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Claire Bennett",
       "onboardedAt": "2026-11-01T12:05:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-bsu",
@@ -137,7 +250,42 @@
       "status": "Active",
       "facultyAdvisor": "Dr. Monique Carter",
       "onboardedAt": "2026-11-01T12:10:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-book",
@@ -148,7 +296,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Miriam Weiss",
       "onboardedAt": "2026-11-01T12:15:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-christian-fellowship",
@@ -159,7 +342,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Grace Okafor",
       "onboardedAt": "2026-11-01T12:20:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-cosplay",
@@ -170,7 +388,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Kenji Takahashi",
       "onboardedAt": "2026-11-01T12:25:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-creative-writing",
@@ -181,7 +434,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Daniel Alvarez",
       "onboardedAt": "2026-11-01T12:30:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-delta-alpha-pi",
@@ -192,7 +480,42 @@
       "status": "Active",
       "facultyAdvisor": "Dr. Rachel Goldman",
       "onboardedAt": "2026-11-01T12:35:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-disability-access",
@@ -203,7 +526,42 @@
       "status": "Active",
       "facultyAdvisor": "Dr. Rachel Goldman",
       "onboardedAt": "2026-11-01T12:40:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-film-tv",
@@ -214,7 +572,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Marcus Vance",
       "onboardedAt": "2026-11-01T12:45:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-green",
@@ -225,7 +618,42 @@
       "status": "Active",
       "facultyAdvisor": "Dr. Naomi Park",
       "onboardedAt": "2026-11-01T12:50:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-hian",
@@ -236,7 +664,42 @@
       "status": "Active",
       "facultyAdvisor": "Dr. Priya Nair",
       "onboardedAt": "2026-11-01T12:55:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-human-relations-soc",
@@ -247,7 +710,42 @@
       "status": "Active",
       "facultyAdvisor": "Dr. Elena Morales",
       "onboardedAt": "2026-11-01T13:00:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-latinx",
@@ -258,7 +756,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Sofia Mendoza",
       "onboardedAt": "2026-11-01T13:05:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-makeup-beauty",
@@ -269,7 +802,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Claire Bennett",
       "onboardedAt": "2026-11-01T13:10:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-melo",
@@ -280,7 +848,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Samuel Ortiz",
       "onboardedAt": "2026-11-01T13:15:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-mental-health",
@@ -291,7 +894,42 @@
       "status": "Active",
       "facultyAdvisor": "Dr. Hannah Morales",
       "onboardedAt": "2026-11-01T13:20:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-museum-studies",
@@ -302,7 +940,42 @@
       "status": "Active",
       "facultyAdvisor": "Dr. Arthur Pendelton",
       "onboardedAt": "2026-11-01T13:25:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-msa",
@@ -313,7 +986,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Tariq Siddiqui",
       "onboardedAt": "2026-10-22T15:30:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-neurodiversity",
@@ -324,7 +1032,42 @@
       "status": "Active",
       "facultyAdvisor": "Dr. Rachel Goldman",
       "onboardedAt": "2026-11-01T13:30:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-parent",
@@ -335,7 +1078,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Carla Rivera",
       "onboardedAt": "2026-11-01T13:35:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-photography",
@@ -346,7 +1124,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Marcus Vance",
       "onboardedAt": "2026-11-01T13:40:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-pride",
@@ -357,7 +1170,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Jordan Reyes",
       "onboardedAt": "2026-11-01T13:45:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-psychology",
@@ -368,7 +1216,42 @@
       "status": "Active",
       "facultyAdvisor": "Dr. Hannah Morales",
       "onboardedAt": "2026-11-01T13:50:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-retail-therapy",
@@ -379,7 +1262,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Samuel Ortiz",
       "onboardedAt": "2026-11-01T13:55:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-shrm",
@@ -390,7 +1308,42 @@
       "status": "Active",
       "facultyAdvisor": "Dr. Elena Morales",
       "onboardedAt": "2026-11-01T14:00:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-sigma-beta-delta",
@@ -401,7 +1354,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Samuel Ortiz",
       "onboardedAt": "2026-11-01T14:05:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-social-impact",
@@ -412,7 +1400,42 @@
       "status": "Active",
       "facultyAdvisor": "Dr. Naomi Park",
       "onboardedAt": "2026-11-01T14:10:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-sasu",
@@ -423,7 +1446,42 @@
       "status": "Active",
       "facultyAdvisor": "Dr. Priya Nair",
       "onboardedAt": "2026-11-01T14:15:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-svo",
@@ -434,7 +1492,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Samuel Ortiz",
       "onboardedAt": "2026-11-01T14:20:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-study-lounge",
@@ -445,7 +1538,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Miriam Weiss",
       "onboardedAt": "2026-11-01T14:25:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-women-stem",
@@ -456,7 +1584,42 @@
       "status": "Active",
       "facultyAdvisor": "Dr. Priya Nair",
       "onboardedAt": "2026-11-01T14:30:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     },
     {
       "clubId": "club-youth-studies",
@@ -467,7 +1630,42 @@
       "status": "Active",
       "facultyAdvisor": "Prof. Carla Rivera",
       "onboardedAt": "2026-11-01T14:35:00.000Z",
-      "semesterBudgetAllocatedUsd": 500
+      "semesterBudgetAllocatedUsd": 500,
+      "links": {
+        "fixed": [
+          {
+            "key": "website",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "facebook",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "instagram",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "tiktok",
+            "active": false,
+            "url": "",
+            "description": ""
+          },
+          {
+            "key": "whatsapp",
+            "active": false,
+            "url": "",
+            "description": ""
+          }
+        ],
+        "additional": []
+      }
     }
   ],
   "memberships": [
@@ -704,17 +1902,39 @@
       "eventDate": "2026-11-19",
       "authorId": "usr-editor-ai",
       "authorName": "Devon Brooks",
-      "status": "Scheduled",
+      "status": "Published",
       "targetAccountIds": [
         "acc-ai-fb",
         "acc-ai-ig"
       ],
       "scheduledAt": "2026-11-16T15:00:00.000Z",
       "createdAt": "2026-11-12T16:20:00.000Z",
-      "updatedAt": "2026-11-12T16:20:00.000Z",
+      "updatedAt": "2026-11-23T02:27:59.209Z",
       "aiAssisted": true,
       "aiReviewedByHuman": true,
-      "publishAttempts": []
+      "publishAttempts": [
+        {
+          "attemptId": "att-1795400879209-775",
+          "postId": "post-ai-101",
+          "accountId": "acc-ai-fb",
+          "platform": "Facebook Pages",
+          "handle": "@cunyspsaiclub",
+          "outcome": "Success",
+          "providerPostId": "fb_graph_180260906",
+          "attemptedAt": "2026-11-23T02:27:59.209Z"
+        },
+        {
+          "attemptId": "att-1795400879209-425",
+          "postId": "post-ai-101",
+          "accountId": "acc-ai-ig",
+          "platform": "Instagram Professional",
+          "handle": "@cunysps.ai",
+          "outcome": "Success",
+          "providerPostId": "ig_media_781564624",
+          "attemptedAt": "2026-11-23T02:27:59.209Z"
+        }
+      ],
+      "publishedAt": "2026-11-23T02:27:59.209Z"
     },
     {
       "postId": "post-ai-102",
@@ -801,16 +2021,28 @@
       "eventDate": "2026-11-18",
       "authorId": "usr-lead-msa",
       "authorName": "Zainab Siddiqui",
-      "status": "Scheduled",
+      "status": "Published",
       "targetAccountIds": [
         "acc-msa-ig"
       ],
       "scheduledAt": "2026-11-15T16:00:00.000Z",
       "createdAt": "2026-11-11T12:00:00.000Z",
-      "updatedAt": "2026-11-11T12:00:00.000Z",
+      "updatedAt": "2026-11-23T02:27:59.213Z",
       "aiAssisted": false,
       "aiReviewedByHuman": true,
-      "publishAttempts": []
+      "publishAttempts": [
+        {
+          "attemptId": "att-1795400879213-573",
+          "postId": "post-msa-201",
+          "accountId": "acc-msa-ig",
+          "platform": "Instagram Professional",
+          "handle": "@cunysps.msa",
+          "outcome": "Success",
+          "providerPostId": "ig_media_219469714",
+          "attemptedAt": "2026-11-23T02:27:59.213Z"
+        }
+      ],
+      "publishedAt": "2026-11-23T02:27:59.213Z"
     }
   ],
   "events": [
@@ -866,7 +2098,8 @@
           "takeaway": "Hybrid captioning worked seamlessly for online participants.",
           "submittedAt": "2026-11-13T19:45:00.000Z"
         }
-      ]
+      ],
+      "approvalStatus": "Approved"
     },
     {
       "eventId": "evt-2",
@@ -884,7 +2117,8 @@
       "rsvpUserIds": [
         "usr-editor-ai",
         "usr-contrib-ai"
-      ]
+      ],
+      "approvalStatus": "Approved"
     },
     {
       "eventId": "evt-3",
@@ -901,7 +2135,8 @@
       "guestWalkInCount": 0,
       "rsvpUserIds": [
         "usr-contrib-ai"
-      ]
+      ],
+      "approvalStatus": "Approved"
     },
     {
       "eventId": "evt-4",
@@ -921,7 +2156,8 @@
       "rsvpUserIds": [
         "usr-lead-msa",
         "usr-lead-ai"
-      ]
+      ],
+      "approvalStatus": "Approved"
     },
     {
       "eventId": "evt-5",
@@ -938,7 +2174,8 @@
       "guestWalkInCount": 0,
       "rsvpUserIds": [
         "usr-lead-ai"
-      ]
+      ],
+      "approvalStatus": "Approved"
     },
     {
       "eventId": "evt-6",
@@ -1400,7 +2637,29 @@
       "updatedAt": "2026-11-09T11:00:00.000Z"
     }
   ],
-  "emailReminders": [],
+  "emailReminders": [
+    {
+      "reminderId": "rem-869232-282",
+      "eventId": "evt-7",
+      "eventTitle": "Women in Tech & Research Career Panel",
+      "eventDate": "2026-11-23",
+      "eventTime": "18:00",
+      "eventLocation": "Zoom / CUNY SPS Virtual Commons",
+      "clubId": "club-women-stem",
+      "clubName": "Women in STEM Club",
+      "clubShortCode": "WSTEM",
+      "recipientUserId": "usr-lead-ai",
+      "recipientName": "Aisha Rahman",
+      "recipientEmail": "aisha.rahman@spsmail.cuny.edu",
+      "subject": "[24h Reminder] WSTEM: Women in Tech & Research Career Panel (2026-11-23 at 18:00)",
+      "body": "Hello Aisha Rahman,\n\nThis is your 24-hour reminder for an upcoming Women in STEM Club (WSTEM) event:\n\nEvent: Women in Tech & Research Career Panel\nDate & Time: 2026-11-23 at 18:00\nLocation: Zoom / CUNY SPS Virtual Commons\nCheck-In Code: WS2318\nYour RSVP Status: RSVP Confirmed (Attending)\n\nDetails: Alumni and faculty researchers share pathways into data science, engineering, and graduate fellowships.\n\nManage your RSVP or email reminder preferences in the CUNY SPS Club Social Hub: https://ais-dev-o6wubffhuvqidcgv2ejc66-915953600164.us-east1.run.app\n\n— CUNY SPS Office of Student Life & Club Social Hub",
+      "triggerMode": "24h Automated",
+      "deliveryStatus": "Queued (Hub Outbox)",
+      "providerMessageId": "outbox_1795400869232_usr-lead-ai",
+      "sentAt": "2026-11-23T02:27:49.232Z",
+      "webhookEvents": []
+    }
+  ],
   "emailWebhookEvents": [],
   "smtpConfig": {
     "host": "",
@@ -1920,6 +3179,66 @@
   ],
   "auditLogs": [
     {
+      "eventId": "AUD-9059",
+      "timestamp": "2026-11-23T02:30:45.956Z",
+      "actorId": "usr-sl-super",
+      "actorName": "Dr. Elena Vance",
+      "actorRole": "SL_SUPER_ADMIN",
+      "action": "CLUB_LINKS_UPDATED",
+      "category": "Governance",
+      "target": "Artificial Intelligence Club (AI-CLUB)",
+      "clubId": "club-ai",
+      "details": "Saved club links with no changes."
+    },
+    {
+      "eventId": "AUD-9058",
+      "timestamp": "2026-11-23T02:27:59.213Z",
+      "actorId": "system-worker",
+      "actorName": "Publishing Queue Worker",
+      "actorRole": "SYSTEM_WORKER",
+      "action": "PUBLISH_SUCCEEDED",
+      "category": "Publishing",
+      "target": "post-msa-201 (MSA Community Tea & Finals Study Circle)",
+      "clubId": "club-msa",
+      "details": "Published to 1 authorized social account(s)."
+    },
+    {
+      "eventId": "AUD-9057",
+      "timestamp": "2026-11-23T02:27:59.209Z",
+      "actorId": "system-worker",
+      "actorName": "Publishing Queue Worker",
+      "actorRole": "SYSTEM_WORKER",
+      "action": "PUBLISH_SUCCEEDED",
+      "category": "Publishing",
+      "target": "post-ai-101 (Fall AI & Civic Tech Build Night)",
+      "clubId": "club-ai",
+      "details": "Published to 2 authorized social account(s)."
+    },
+    {
+      "eventId": "AUD-9056",
+      "timestamp": "2026-11-23T02:27:49.234Z",
+      "actorId": "system-reminder-worker",
+      "actorName": "24h Event Reminder Worker",
+      "actorRole": "SYSTEM_WORKER",
+      "action": "SEND_24H_EVENT_REMINDERS",
+      "category": "Publishing",
+      "target": "Women in Tech & Research Career Panel (2026-11-23)",
+      "clubId": "club-women-stem",
+      "details": "Dispatched 1 event reminder email(s) for Women in STEM Club (Hub Notification Outbox)."
+    },
+    {
+      "eventId": "AUD-9055",
+      "timestamp": "2026-11-23T02:27:49.204Z",
+      "actorId": "system-token-monitor",
+      "actorName": "Token Expiry Monitor",
+      "actorRole": "SYSTEM_WORKER",
+      "action": "TOKEN_EXPIRY_ALERT",
+      "category": "Integration",
+      "target": "Instagram Professional @cunysps.msa",
+      "clubId": "club-msa",
+      "details": "Urgent 7-Day Token Expiry Alert: @cunysps.msa (7d window)."
+    },
+    {
       "eventId": "AUD-9047",
       "actorId": "usr-lead-ai",
       "actorName": "Aisha Rahman",
@@ -1981,6 +3300,36 @@
     }
   ],
   "notifications": [
+    {
+      "notificationId": "notif-1795400869232-822",
+      "read": false,
+      "createdAt": "2026-11-23T02:27:49.232Z",
+      "userId": "usr-lead-ai",
+      "clubId": "club-women-stem",
+      "type": "Event Reminder",
+      "title": "24-Hour Event Reminder: Women in Tech & Research Career Panel",
+      "message": "WSTEM meets on 2026-11-23 at 18:00 (Zoom / CUNY SPS Virtual Commons). Reminder recorded for aisha.rahman@spsmail.cuny.edu; delivery status: Queued (Hub Outbox)."
+    },
+    {
+      "notificationId": "notif-1795400869203-173",
+      "read": false,
+      "createdAt": "2026-11-23T02:27:49.203Z",
+      "userId": "usr-sl-super",
+      "clubId": "club-msa",
+      "type": "Security",
+      "title": "Urgent 7-Day Token Expiry Alert: @cunysps.msa",
+      "message": "Instagram Professional OAuth token for Muslim Student Association (MSA) expires in 3 day(s). Coordinate renewal with custodian Marcus Sterling. [acc-msa-ig:7d]"
+    },
+    {
+      "notificationId": "notif-1795400869201-842",
+      "read": false,
+      "createdAt": "2026-11-23T02:27:49.201Z",
+      "userId": "usr-sl-scoped",
+      "clubId": "club-msa",
+      "type": "Security",
+      "title": "Urgent 7-Day Token Expiry Alert: @cunysps.msa",
+      "message": "Instagram Professional OAuth token for Muslim Student Association (MSA) expires in 3 day(s). Coordinate renewal with custodian Marcus Sterling. [acc-msa-ig:7d]"
+    },
     {
       "notificationId": "notif-1",
       "userId": "usr-sl-super",
@@ -2457,5 +3806,499 @@
       "updatedAt": "2026-11-09T15:30:00.000Z"
     }
   },
-  "publicCatalogEventsSeeded": true
+  "publicCatalogEventsSeeded": true,
+  "siteContent": {
+    "version": 1,
+    "settings": {
+      "siteName": "Club Social Hub",
+      "browserTitle": "CUNY SPS Club Social Hub",
+      "tagline": "CUNY SPS · Office of Student Life",
+      "sidebarSubtitle": "CUNY SPS · Student Life",
+      "pilotBadgeSubtitle": "A CUNY SPS AI Club Engineering Pilot",
+      "logoUrl": "",
+      "logoAlt": "CUNY SPS Club Social Hub logo",
+      "partnerLogoUrl": "/assets/aistudio/concept_idea_2_final-01_a0d17aff.png",
+      "partnerLogoAlt": "CUNY SPS Office of Student Life",
+      "faviconUrl": "/club-social-hub-mark.svg",
+      "colors": {
+        "primary": "#004b87",
+        "secondary": "#0b0b0f",
+        "accent": "#c4f500",
+        "background": "#f8fafc",
+        "text": "#0f172a"
+      },
+      "fonts": {
+        "heading": "Plus Jakarta Sans",
+        "body": "Public Sans",
+        "brand": "Archivo"
+      }
+    },
+    "navigation": {
+      "topNav": [
+        {
+          "id": "nav-login",
+          "label": "Demo Sign-In",
+          "target": "login",
+          "kind": "builtin-login",
+          "visible": true
+        },
+        {
+          "id": "nav-directory",
+          "label": "Public Events & Join Clubs",
+          "target": "directory",
+          "kind": "builtin-directory",
+          "visible": true
+        }
+      ],
+      "adminNav": [
+        {
+          "id": "dashboard",
+          "label": "Student Life Console",
+          "section": "Student Life Governance (L1)",
+          "visible": true
+        },
+        {
+          "id": "clubs",
+          "label": "Clubs & Membership",
+          "section": "Student Life Governance (L1)",
+          "visible": true
+        },
+        {
+          "id": "account-requests",
+          "label": "Account Requests",
+          "section": "Student Life Governance (L1)",
+          "visible": true
+        },
+        {
+          "id": "club-leaders",
+          "label": "Club Leaders",
+          "section": "Student Life Governance (L1)",
+          "visible": true
+        },
+        {
+          "id": "social-accounts",
+          "label": "Social Accounts",
+          "section": "Student Life Governance (L1)",
+          "visible": true
+        },
+        {
+          "id": "users-permissions",
+          "label": "Users & Access Control",
+          "section": "Student Life Governance (L1)",
+          "visible": true
+        },
+        {
+          "id": "activity-logs",
+          "label": "Audit Logs",
+          "section": "Student Life Governance (L1)",
+          "visible": true
+        },
+        {
+          "id": "reports",
+          "label": "Governance Reports",
+          "section": "Student Life Governance (L1)",
+          "visible": true
+        },
+        {
+          "id": "settings",
+          "label": "Platform Settings",
+          "section": "Student Life Governance (L1)",
+          "visible": true
+        },
+        {
+          "id": "club-dashboard",
+          "label": "Club Overview Table",
+          "section": "Campus & Club Oversight (L2)",
+          "visible": true
+        },
+        {
+          "id": "club-announcements",
+          "label": "Club Announcements",
+          "section": "Campus & Club Oversight (L2)",
+          "visible": true
+        },
+        {
+          "id": "upcoming-events",
+          "label": "Upcoming Events",
+          "section": "Campus & Club Oversight (L2)",
+          "visible": true
+        },
+        {
+          "id": "event-calendar",
+          "label": "Club Event Calendar",
+          "section": "Campus & Club Oversight (L2)",
+          "visible": true
+        },
+        {
+          "id": "event-analytics",
+          "label": "Event Analytics",
+          "section": "Campus & Club Oversight (L2)",
+          "visible": true
+        },
+        {
+          "id": "event-reminders",
+          "label": "Email Reminders",
+          "section": "Campus & Club Oversight (L2)",
+          "visible": true
+        },
+        {
+          "id": "club-forums",
+          "label": "Club Forums",
+          "section": "Campus & Club Oversight (L2)",
+          "visible": true
+        },
+        {
+          "id": "project-tasks",
+          "label": "Project Tasks",
+          "section": "Campus & Club Oversight (L2)",
+          "visible": true
+        },
+        {
+          "id": "member-directory",
+          "label": "Member Directory",
+          "section": "Campus & Club Oversight (L2)",
+          "visible": true
+        },
+        {
+          "id": "messaging-center",
+          "label": "Club Messaging Center",
+          "section": "Campus & Club Oversight (L2)",
+          "visible": true
+        },
+        {
+          "id": "club-blog",
+          "label": "Club Blog",
+          "section": "Campus & Club Oversight (L2)",
+          "visible": true
+        },
+        {
+          "id": "campus-directory",
+          "label": "Campus Directory",
+          "section": "Campus & Club Oversight (L2)",
+          "visible": true
+        },
+        {
+          "id": "club-resources",
+          "label": "Club Resources",
+          "section": "Campus & Club Oversight (L2)",
+          "visible": true
+        },
+        {
+          "id": "ai-assistant",
+          "label": "AI Assistant",
+          "section": "Campus & Club Oversight (L2)",
+          "visible": true
+        }
+      ],
+      "clubNav": [
+        {
+          "id": "overview",
+          "label": "Overview",
+          "section": "Workspace",
+          "visible": true
+        },
+        {
+          "id": "club-announcements",
+          "label": "Club Announcements",
+          "section": "Workspace",
+          "visible": true
+        },
+        {
+          "id": "create-post",
+          "label": "Create Post",
+          "section": "Social Publishing",
+          "visible": true
+        },
+        {
+          "id": "calendar",
+          "label": "Content Calendar",
+          "section": "Social Publishing",
+          "visible": true
+        },
+        {
+          "id": "social-accounts",
+          "label": "My Social Accounts",
+          "section": "Social Publishing",
+          "visible": true
+        },
+        {
+          "id": "ai-assistant",
+          "label": "AI Assistant",
+          "section": "Social Publishing",
+          "visible": true
+        },
+        {
+          "id": "inbox",
+          "label": "Inbox",
+          "section": "Social Publishing",
+          "visible": true
+        },
+        {
+          "id": "analytics",
+          "label": "Analytics",
+          "section": "Social Publishing",
+          "visible": true
+        },
+        {
+          "id": "upcoming-events",
+          "label": "Upcoming Events",
+          "section": "Club Community",
+          "visible": true
+        },
+        {
+          "id": "event-calendar",
+          "label": "Club Event Calendar",
+          "section": "Club Community",
+          "visible": true
+        },
+        {
+          "id": "event-analytics",
+          "label": "Event Analytics",
+          "section": "Club Community",
+          "visible": true
+        },
+        {
+          "id": "event-reminders",
+          "label": "Email Reminders",
+          "section": "Club Community",
+          "visible": true
+        },
+        {
+          "id": "club-forums",
+          "label": "Club Forums",
+          "section": "Club Community",
+          "visible": true
+        },
+        {
+          "id": "messaging-center",
+          "label": "Messaging Center",
+          "section": "Club Community",
+          "visible": true
+        },
+        {
+          "id": "whatsapp",
+          "label": "WhatsApp Group",
+          "section": "Club Community",
+          "visible": true
+        },
+        {
+          "id": "club-blog",
+          "label": "Club Blog",
+          "section": "Club Community",
+          "visible": true
+        },
+        {
+          "id": "project-tasks",
+          "label": "Project Tasks",
+          "section": "Club Community",
+          "visible": true
+        },
+        {
+          "id": "club-dashboard",
+          "label": "Club Dashboard",
+          "section": "Administration",
+          "visible": true
+        },
+        {
+          "id": "member-directory",
+          "label": "Member Directory",
+          "section": "Administration",
+          "visible": true
+        },
+        {
+          "id": "team",
+          "label": "Team Management",
+          "section": "Administration",
+          "visible": true
+        },
+        {
+          "id": "account-requests",
+          "label": "Account Requests",
+          "section": "Administration",
+          "visible": true
+        },
+        {
+          "id": "club-resources",
+          "label": "Club Resources",
+          "section": "Administration",
+          "visible": true
+        },
+        {
+          "id": "campus-directory",
+          "label": "Campus Directory",
+          "section": "Administration",
+          "visible": true
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "section": "Administration",
+          "visible": true
+        }
+      ]
+    },
+    "footer": {
+      "text": "© 2026 CUNY School of Professional Studies · Office of Student Life",
+      "subtext": "Centralized governance, events, and communications for CUNY SPS student organizations.",
+      "contactEmail": "studentlife@sps.cuny.edu",
+      "socialLinks": [
+        {
+          "id": "soc-sps",
+          "label": "CUNY SPS Student Life",
+          "url": "https://sps.cuny.edu/student-services/student-life/student-clubs-and-organizations"
+        },
+        {
+          "id": "soc-ig",
+          "label": "Instagram",
+          "url": "https://www.instagram.com/cunysps"
+        },
+        {
+          "id": "soc-li",
+          "label": "LinkedIn",
+          "url": "https://www.linkedin.com/school/cuny-school-of-professional-studies/"
+        }
+      ]
+    },
+    "pageRegistry": [
+      {
+        "id": "page-login",
+        "title": "Home & Demo Sign-In",
+        "slug": "home",
+        "visible": true,
+        "isBuiltin": true,
+        "builtinTarget": "login"
+      },
+      {
+        "id": "page-directory",
+        "title": "Public Events & Join Clubs",
+        "slug": "public",
+        "visible": true,
+        "isBuiltin": true,
+        "builtinTarget": "directory"
+      }
+    ],
+    "pages": {
+      "landing": {
+        "headerStatusText": "Demonstration — institutional SSO not connected",
+        "partnerClubName": "Artificial Intelligence Club",
+        "partnerClubRole": "Pilot Build Partner",
+        "partnerClubLogoUrl": "/assets/aistudio/c40622e2-7fb5-4f17-b219-706c74628073_ba47136b.jpg",
+        "partnerClubLogoAlt": "Artificial Intelligence Club profile picture",
+        "eyebrow": "CUNY School of Professional Studies",
+        "headline": "Centralized social media governance and publishing for student clubs",
+        "leadParagraph": "Explore example workspaces for student officers, faculty advisors, and Student Life administrators. This demonstration uses synthetic identities and is not ready for real student records or official social publishing.",
+        "browseEventsCta": {
+          "label": "Browse Approved Club Events & Request to Join",
+          "href": "#public"
+        },
+        "loginCardHeading": "Demo Workspace Access",
+        "loginCardSubtext": "Explore with a listed demo @sps.cuny.edu or @spsmail.cuny.edu address.",
+        "emailFieldLabel": "CUNY Institutional Email",
+        "loginSubmitLabel": "Enter Demo Workspace",
+        "quickLaunchLabel": "Quick Demo Portal Launch",
+        "adminConsoleBtnLabel": "Student Life Admin Console",
+        "clubPortalBtnLabel": "Club Officer Workspace",
+        "securityNote1": "Demo role restrictions — institutional security review outstanding",
+        "securityNote2": "Do not enter passwords or real social account credentials",
+        "personaDirectoryHeading": "Demo Persona Directory",
+        "personaDirectorySubtext": "Choose a synthetic persona to explore permissions. This does not verify your identity.",
+        "enterPortalBtnLabel": "Enter Portal",
+        "sectionVisibility": {
+          "hero": true,
+          "loginCard": true,
+          "personaDirectory": true
+        },
+        "sectionOrder": [
+          "hero",
+          "loginCard",
+          "personaDirectory"
+        ],
+        "customSections": []
+      },
+      "publicDirectory": {
+        "heroTitle": "Approved Campus Club Events & Membership Directory",
+        "heroDescription": "Browse officially approved CUNY SPS student club events and activities, export dates to your calendar, and submit a Request to Join application for any club.",
+        "requestJoinCtaLabel": "Request to Join a Club",
+        "memberSignInLabel": "Member Sign-In",
+        "eventsSectionTitle": "Approved Club Events & Campus Activities",
+        "blogSectionTitle": "Club Blog Stories & Event Recaps",
+        "clubsSectionTitle": "Recognized Student Clubs & Membership Applications",
+        "sectionVisibility": {
+          "hero": true,
+          "events": true,
+          "blog": true,
+          "clubs": true
+        },
+        "sectionOrder": [
+          "hero",
+          "events",
+          "blog",
+          "clubs"
+        ],
+        "customSections": []
+      },
+      "portal": {
+        "adminPortalBreadcrumb": "University Administration Portal",
+        "clubPortalBreadcrumb": "Club Management Portal",
+        "demoBannerTitle": "Demonstration workspace.",
+        "demoBannerText": "Persona sign-in does not verify institutional identity. Sample account, publishing and analytics records are not evidence of live integrations. Do not enter confidential student information.",
+        "searchLabel": "Find a page or tool",
+        "searchPlaceholder": "Search posts, members, reminders…",
+        "switchIdentityLabel": "Switch Identity / Sign Out",
+        "notificationsLabel": "Notifications",
+        "announcementsBannerPrefix": "Student Life announcements",
+        "announcementsBannerSuffix": "View updates and deadlines →",
+        "clubDashboardHeading": "Club Dashboard — Active Student Clubs & Governance Status",
+        "upcomingEventsHeading": "Upcoming Club Events & Meetings",
+        "customSections": []
+      },
+      "clubOverview": {
+        "clubBlogBtnLabel": "Club Blog",
+        "editProfileBtnLabel": "Edit Profile & Picture",
+        "charterPdfBtnLabel": "Charter Renewal PDF",
+        "charterCsvBtnLabel": "CSV",
+        "createPostBtnLabel": "Create Post",
+        "scheduledPostsHeading": "Upcoming Scheduled Posts",
+        "draftsHeading": "Drafts & Peer Review Queue",
+        "activityHeading": "Recorded Publishing Activity",
+        "shortcuts": [
+          {
+            "id": "sc-events",
+            "tab": "upcoming-events",
+            "label": "Upcoming events",
+            "detail": "View event schedule and RSVPs"
+          },
+          {
+            "id": "sc-messaging",
+            "tab": "messaging-center",
+            "label": "Messaging Center",
+            "detail": "Broadcasts and replies"
+          },
+          {
+            "id": "sc-whatsapp",
+            "tab": "whatsapp",
+            "label": "WhatsApp Group",
+            "detail": "Linked groups & share links"
+          },
+          {
+            "id": "sc-resources",
+            "tab": "club-resources",
+            "label": "Club Resources",
+            "detail": "Forms and submissions"
+          }
+        ],
+        "sectionVisibility": {
+          "clubLinks": true,
+          "publishingGrid": true,
+          "shortcuts": true,
+          "budgetAndAdvisor": true,
+          "accountsAndEngagement": true,
+          "notifications": true
+        },
+        "customSections": []
+      }
+    },
+    "customPages": []
+  },
+  "siteContentUpdatedAt": "2026-11-23T02:27:49.200Z"
 }

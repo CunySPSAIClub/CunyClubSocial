@@ -22,10 +22,18 @@ import {
   PERMISSIONS_MATRIX,
   canAccessClub,
   canAdminManageClub,
+  canEditClubLinks,
+  canViewClubWhatsAppLink,
   getUserEffectiveClubRole,
   hasClubCapability,
   isAdminUser,
 } from './server/rbac.ts';
+import {
+  diffClubLinks,
+  normalizeClubLinks,
+  sanitizeClubLinksForPublic,
+  validateClubLinks,
+} from './src/utils/clubLinks.ts';
 import {
   dispatchEventReminders,
   dispatchEventUpdateEmails,
@@ -38,7 +46,41 @@ import {
   testSmtpConfiguration,
 } from './server/reminders.ts';
 import { OFFICIAL_CLUB_RESOURCES } from './server/resources.ts';
+import {
+  extractBearerToken,
+  getAdminAuthStatus,
+  hashAdminPassword,
+  issueEditorSessionToken,
+  revokeEditorSessionToken,
+  verifyAdminPassword,
+  verifyEditorSessionToken,
+} from './server/siteContentAuth.ts';
 import { getDb, pushNotification, recordAudit, resetDb, saveDb } from './server/store.ts';
+import {
+  DEFAULT_SITE_CONTENT,
+  cloneSiteContent,
+  normalizeSiteContent,
+  sanitizeImageSrc,
+} from './src/data/siteContent.ts';
+import {
+  ALLOWED_INTEREST_SET,
+  ALLOWED_STAFF_DOMAIN,
+  ALLOWED_STUDENT_DOMAIN,
+  classifyCunyEmail,
+  getGoogleClientId,
+  getStudentLifeAdminEmails,
+  isDemoModeEnabled,
+  splitFullName,
+} from './server/authConfig.ts';
+import {
+  clearSessionCookie,
+  extractSessionCookie,
+  setSessionCookie,
+  verifyCsrfForMutation,
+  verifyGoogleIdToken,
+  verifyUserSessionToken,
+} from './server/sessionAuth.ts';
+import { createDefaultClubLinks } from './src/utils/clubLinks.ts';
 import type {
   AccountRequestStatus,
   AnnouncementPriority,
@@ -758,6 +800,7 @@ async function executePostPublish(
 
 async function startServer() {
   const app = express();
+  app.set('trust proxy', 1);
   app.use(express.json({ limit: '25mb' }));
 
   // Run initial token expiry check on boot
@@ -794,14 +837,19 @@ async function startServer() {
   }, 15000);
   reminderInterval.unref();
 
-  // Auth middleware resolving verified CUNY identity
+  // Auth middleware verifying signed httpOnly session cookie (never trusts x-cuny-user-id header)
   app.use('/api', (req: AuthedRequest, res: Response, next: NextFunction) => {
     if (
+      req.path === '/auth/config' ||
       req.path === '/auth/personas' ||
       req.path === '/auth/login' ||
+      req.path === '/auth/google' ||
+      req.path === '/auth/logout' ||
       req.path === '/health' ||
       req.path === '/public/campus' ||
       req.path === '/public/campus.ics' ||
+      req.path === '/site-content' ||
+      req.path.startsWith('/site-content/') ||
       /^\/public\/clubs\/[^/]+\/join-requests$/.test(req.path) ||
       /^\/clubs\/[^/]+\/calendar\.ics$/.test(req.path) ||
       req.path === '/webhooks/email-delivery'
@@ -809,14 +857,23 @@ async function startServer() {
       next();
       return;
     }
-    const userId = req.header('x-cuny-user-id');
-    if (!userId) {
-      res.status(401).json({ error: 'Institutional authentication required. Sign in via CUNY SSO.' });
+
+    const sessionToken = extractSessionCookie(req);
+    const verified = verifyUserSessionToken(sessionToken);
+    if (!verified) {
+      res.status(401).json({ error: 'Institutional authentication required. Sign in with your CUNY SPS email.' });
       return;
     }
+
+    if (!verifyCsrfForMutation(req)) {
+      res.status(403).json({ error: 'Cross-site request verification failed.' });
+      return;
+    }
+
     const db = getDb();
-    const user = db.users.find((u) => u.userId === userId);
+    const user = db.users.find((u) => u.userId === verified.userId);
     if (!user || user.status !== 'Active') {
+      clearSessionCookie(req, res);
       res.status(403).json({ error: 'Institutional account is inactive or access has been revoked.' });
       return;
     }
@@ -828,7 +885,674 @@ async function startServer() {
     res.json({ status: 'ok', service: 'cuny-sps-club-social-hub' });
   });
 
+  // =========================================================================
+  // Site-Wide CMS Content & Admin Edit Mode Authentication
+  // =========================================================================
+  const requireSiteEditorAuth = (req: Request, res: Response, next: NextFunction) => {
+    const token = extractBearerToken(req.header('authorization'));
+    if (!verifyEditorSessionToken(token)) {
+      res.status(401).json({ error: 'Admin Edit Mode authentication required.' });
+      return;
+    }
+    next();
+  };
+
+  app.get('/api/site-content', (_req, res) => {
+    const db = getDb();
+    res.json({
+      content: normalizeSiteContent(db.siteContent),
+      updatedAt: db.siteContentUpdatedAt,
+    });
+  });
+
+  app.get('/api/site-content/auth/status', (_req, res) => {
+    const db = getDb();
+    res.json(getAdminAuthStatus(db.siteEditorAuth));
+  });
+
+  app.post('/api/site-content/auth/setup', (req, res) => {
+    const db = getDb();
+    const status = getAdminAuthStatus(db.siteEditorAuth);
+    if (status.configured) {
+      res.status(409).json({
+        error: 'An Admin Edit Mode password is already configured. Please sign in instead.',
+      });
+      return;
+    }
+    const { password } = (req.body ?? {}) as { password?: unknown };
+    if (typeof password !== 'string' || password.trim().length < 8) {
+      res.status(400).json({ error: 'Choose an admin password of at least 8 characters.' });
+      return;
+    }
+    if (password.length > 128) {
+      res.status(400).json({ error: 'Password must be 128 characters or fewer.' });
+      return;
+    }
+    db.siteEditorAuth = hashAdminPassword(password.trim());
+    saveDb();
+    const session = issueEditorSessionToken();
+    recordAudit({
+      actorId: 'site-editor-admin',
+      actorName: 'Site Content Administrator',
+      actorRole: 'SITE_EDITOR_ADMIN',
+      action: 'SITE_EDITOR_PASSWORD_CLAIMED',
+      category: 'Authentication',
+      target: 'Site Edit Mode',
+      details: 'Initialized Admin Edit Mode password via first-run setup.',
+    });
+    res.status(201).json({
+      token: session.token,
+      expiresAt: session.expiresAt,
+      configured: true,
+      source: 'claimed',
+    });
+  });
+
+  app.post('/api/site-content/auth/login', (req, res) => {
+    const db = getDb();
+    const status = getAdminAuthStatus(db.siteEditorAuth);
+    if (!status.configured) {
+      res.status(400).json({
+        error: 'Admin Edit Mode password has not been set yet. Complete first-run setup first.',
+      });
+      return;
+    }
+    const { password } = (req.body ?? {}) as { password?: unknown };
+    if (typeof password !== 'string' || !verifyAdminPassword(password, db.siteEditorAuth)) {
+      res.status(401).json({ error: 'Incorrect admin password.' });
+      return;
+    }
+    const session = issueEditorSessionToken();
+    res.json({
+      token: session.token,
+      expiresAt: session.expiresAt,
+      source: status.source,
+    });
+  });
+
+  app.post('/api/site-content/auth/logout', (req, res) => {
+    const token = extractBearerToken(req.header('authorization'));
+    if (token) revokeEditorSessionToken(token);
+    res.json({ ok: true });
+  });
+
+  app.put('/api/site-content', requireSiteEditorAuth, (req, res) => {
+    const db = getDb();
+    const incoming =
+      req.body && typeof req.body === 'object' && 'content' in req.body
+        ? (req.body as { content?: unknown }).content
+        : req.body;
+    if (!incoming || typeof incoming !== 'object') {
+      res.status(400).json({ error: 'Valid site content payload is required.' });
+      return;
+    }
+    const normalized = normalizeSiteContent(incoming);
+    db.siteContent = normalized;
+    db.siteContentUpdatedAt = new Date().toISOString();
+    recordAudit({
+      actorId: 'site-editor-admin',
+      actorName: 'Site Content Administrator',
+      actorRole: 'SITE_EDITOR_ADMIN',
+      action: 'SITE_CONTENT_UPDATED',
+      category: 'Governance',
+      target: 'Global Site Content & Settings',
+      details: `Saved site-wide content and theme settings (${normalized.settings.siteName}).`,
+    });
+    saveDb();
+    res.json({
+      content: db.siteContent,
+      updatedAt: db.siteContentUpdatedAt,
+    });
+  });
+
+  app.post('/api/site-content/reset', requireSiteEditorAuth, (_req, res) => {
+    const db = getDb();
+    db.siteContent = cloneSiteContent(DEFAULT_SITE_CONTENT);
+    db.siteContentUpdatedAt = new Date().toISOString();
+    recordAudit({
+      actorId: 'site-editor-admin',
+      actorName: 'Site Content Administrator',
+      actorRole: 'SITE_EDITOR_ADMIN',
+      action: 'SITE_CONTENT_RESET',
+      category: 'Governance',
+      target: 'Global Site Content & Settings',
+      details: 'Reset all site content, branding, navigation, and sections to original defaults.',
+    });
+    saveDb();
+    res.json({
+      content: db.siteContent,
+      updatedAt: db.siteContentUpdatedAt,
+    });
+  });
+
+  // Admin Edit Mode list & item persistence for repeating entities (clubs, events, blogPosts, personas)
+  app.post('/api/site-content/entities/:kind', requireSiteEditorAuth, (req, res) => {
+    const kind = String(req.params.kind);
+    const body = (req.body ?? {}) as Record<string, unknown>;
+    const action = typeof body.action === 'string' ? body.action : '';
+    const db = getDb();
+
+    if (kind === 'clubs') {
+      if (action === 'add') {
+        const id = `club-custom-${Date.now().toString(36)}`;
+        const newClub: Club = {
+          clubId: id,
+          name: typeof body.name === 'string' && body.name.trim() ? body.name.trim().slice(0, 120) : 'New Student Club',
+          shortCode:
+            typeof body.shortCode === 'string' && body.shortCode.trim()
+              ? body.shortCode.trim().toUpperCase().slice(0, 12)
+              : `CLUB${Math.floor(10 + Math.random() * 89)}`,
+          description:
+            typeof body.description === 'string' && body.description.trim()
+              ? body.description.trim().slice(0, 500)
+              : 'Student-led organization at CUNY SPS. Click to edit description in Edit Mode.',
+          category: typeof body.category === 'string' && body.category.trim() ? body.category.trim().slice(0, 80) : 'Academic & Technology',
+          status: 'Active',
+          facultyAdvisor:
+            typeof body.facultyAdvisor === 'string' && body.facultyAdvisor.trim()
+              ? body.facultyAdvisor.trim().slice(0, 100)
+              : 'Office of Student Life',
+          onboardedAt: new Date().toISOString(),
+          semesterBudgetAllocatedUsd: 500,
+          links: createDefaultClubLinks(),
+        };
+        db.clubs.unshift(newClub);
+        saveDb();
+        res.status(201).json({ club: newClub });
+        return;
+      }
+      if (action === 'duplicate') {
+        const sourceId = typeof body.id === 'string' ? body.id : '';
+        const src = db.clubs.find((c) => c.clubId === sourceId);
+        if (!src) {
+          res.status(404).json({ error: 'Club not found.' });
+          return;
+        }
+        const copy: Club = {
+          ...JSON.parse(JSON.stringify(src)),
+          clubId: `club-copy-${Date.now().toString(36)}`,
+          name: `${src.name} (Copy)`,
+          shortCode: `${src.shortCode.slice(0, 8)}-2`,
+          onboardedAt: new Date().toISOString(),
+        };
+        const idx = db.clubs.findIndex((c) => c.clubId === sourceId);
+        db.clubs.splice(idx + 1, 0, copy);
+        saveDb();
+        res.status(201).json({ club: copy });
+        return;
+      }
+      if (action === 'update') {
+        const id = typeof body.id === 'string' ? body.id : '';
+        const club = db.clubs.find((c) => c.clubId === id);
+        if (!club) {
+          res.status(404).json({ error: 'Club not found.' });
+          return;
+        }
+        if (typeof body.name === 'string' && body.name.trim()) club.name = body.name.trim().slice(0, 120);
+        if (typeof body.shortCode === 'string' && body.shortCode.trim()) club.shortCode = body.shortCode.trim().slice(0, 16);
+        if (typeof body.description === 'string') club.description = body.description.trim().slice(0, 600);
+        if (typeof body.category === 'string' && body.category.trim()) club.category = body.category.trim().slice(0, 80);
+        if (typeof body.tagline === 'string') club.tagline = body.tagline.trim().slice(0, 160);
+        if (typeof body.facultyAdvisor === 'string' && body.facultyAdvisor.trim()) club.facultyAdvisor = body.facultyAdvisor.trim().slice(0, 100);
+        if (typeof body.logoUrl === 'string') club.logoUrl = body.logoUrl.trim() || undefined;
+        saveDb();
+        res.json({ club });
+        return;
+      }
+      if (action === 'delete') {
+        const id = typeof body.id === 'string' ? body.id : '';
+        const before = db.clubs.length;
+        db.clubs = db.clubs.filter((c) => c.clubId !== id);
+        if (db.clubs.length === before) {
+          res.status(404).json({ error: 'Club not found.' });
+          return;
+        }
+        saveDb();
+        res.json({ ok: true });
+        return;
+      }
+      if (action === 'reorder' && Array.isArray(body.orderedIds)) {
+        const order = body.orderedIds.filter((x): x is string => typeof x === 'string');
+        const map = new Map(db.clubs.map((c) => [c.clubId, c]));
+        const reordered: Club[] = [];
+        for (const id of order) {
+          const item = map.get(id);
+          if (item) {
+            reordered.push(item);
+            map.delete(id);
+          }
+        }
+        for (const rem of map.values()) reordered.push(rem);
+        db.clubs = reordered;
+        saveDb();
+        res.json({ ok: true });
+        return;
+      }
+    }
+
+    if (kind === 'events') {
+      if (action === 'add') {
+        const hostClub =
+          db.clubs.find((c) => c.clubId === body.clubId) ??
+          db.clubs.find((c) => c.status === 'Active') ??
+          db.clubs[0];
+        if (!hostClub) {
+          res.status(400).json({ error: 'No active club available to host event.' });
+          return;
+        }
+        const newEvent: ClubEvent = {
+          eventId: `evt-cms-${Date.now().toString(36)}`,
+          clubId: hostClub.clubId,
+          title: typeof body.title === 'string' && body.title.trim() ? body.title.trim().slice(0, 160) : 'New Campus Event',
+          date: typeof body.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(body.date) ? body.date : '2026-12-05',
+          time: typeof body.time === 'string' && /^\d{2}:\d{2}$/.test(body.time) ? body.time : '18:00',
+          location: typeof body.location === 'string' && body.location.trim() ? body.location.trim().slice(0, 160) : 'Zoom / CUNY SPS Virtual Commons',
+          description:
+            typeof body.description === 'string' && body.description.trim()
+              ? body.description.trim().slice(0, 600)
+              : 'Click to customize this event description in Edit Mode.',
+          eventType: 'Campus Event',
+          postedByName: 'Site Content Administrator',
+          isPublic: true,
+          approvalStatus: 'Approved',
+          rsvpUserIds: [],
+          checkedInUserIds: [],
+          guestWalkInCount: 0,
+        };
+        db.events.unshift(newEvent);
+        saveDb();
+        res.status(201).json({ event: newEvent });
+        return;
+      }
+      if (action === 'duplicate') {
+        const sourceId = typeof body.id === 'string' ? body.id : '';
+        const src = db.events.find((e) => e.eventId === sourceId);
+        if (!src) {
+          res.status(404).json({ error: 'Event not found.' });
+          return;
+        }
+        const copy: ClubEvent = {
+          ...JSON.parse(JSON.stringify(src)),
+          eventId: `evt-copy-${Date.now().toString(36)}`,
+          title: `${src.title} (Copy)`,
+          rsvpUserIds: [],
+          checkedInUserIds: [],
+        };
+        const idx = db.events.findIndex((e) => e.eventId === sourceId);
+        db.events.splice(idx + 1, 0, copy);
+        saveDb();
+        res.status(201).json({ event: copy });
+        return;
+      }
+      if (action === 'update') {
+        const id = typeof body.id === 'string' ? body.id : '';
+        const ev = db.events.find((e) => e.eventId === id);
+        if (!ev) {
+          res.status(404).json({ error: 'Event not found.' });
+          return;
+        }
+        if (typeof body.title === 'string' && body.title.trim()) ev.title = body.title.trim().slice(0, 160);
+        if (typeof body.description === 'string') ev.description = body.description.trim().slice(0, 800);
+        if (typeof body.location === 'string' && body.location.trim()) ev.location = body.location.trim().slice(0, 160);
+        if (typeof body.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(body.date)) ev.date = body.date;
+        if (typeof body.time === 'string' && /^\d{2}:\d{2}$/.test(body.time)) ev.time = body.time;
+        saveDb();
+        res.json({ event: ev });
+        return;
+      }
+      if (action === 'delete') {
+        const id = typeof body.id === 'string' ? body.id : '';
+        db.events = db.events.filter((e) => e.eventId !== id);
+        saveDb();
+        res.json({ ok: true });
+        return;
+      }
+      if (action === 'reorder' && Array.isArray(body.orderedIds)) {
+        const order = body.orderedIds.filter((x): x is string => typeof x === 'string');
+        const map = new Map(db.events.map((e) => [e.eventId, e]));
+        const reordered: ClubEvent[] = [];
+        for (const id of order) {
+          const item = map.get(id);
+          if (item) {
+            reordered.push(item);
+            map.delete(id);
+          }
+        }
+        for (const rem of map.values()) reordered.push(rem);
+        db.events = reordered;
+        saveDb();
+        res.json({ ok: true });
+        return;
+      }
+    }
+
+    if (kind === 'blogPosts') {
+      if (!Array.isArray(db.blogPosts)) db.blogPosts = [];
+      if (action === 'add') {
+        const hostClub = db.clubs.find((c) => c.clubId === 'club-ai') ?? db.clubs[0];
+        if (!hostClub) {
+          res.status(400).json({ error: 'No club found.' });
+          return;
+        }
+        const now = new Date().toISOString();
+        const post: ClubBlogPost = {
+          blogPostId: `blog-cms-${Date.now().toString(36)}`,
+          clubId: hostClub.clubId,
+          clubName: hostClub.name,
+          clubShortCode: hostClub.shortCode,
+          clubLogoUrl: hostClub.logoUrl,
+          clubAccentColor: hostClub.accentColor,
+          title: 'New Club Story',
+          slug: `new-club-story-${Date.now().toString(36)}`,
+          category: 'News',
+          excerpt: 'Click to edit this blog summary directly in Edit Mode.',
+          bodyMarkdown: 'Write your full story here.',
+          tags: ['Campus'],
+          readingTimeMinutes: 2,
+          status: 'Published',
+          featured: false,
+          visibility: 'Public Campus',
+          authorUserId: 'site-editor-admin',
+          authorName: 'Office of Student Life',
+          authorRoleLabel: 'Site Admin',
+          likedByUserIds: [],
+          comments: [],
+          publishedAt: now,
+          createdAt: now,
+          updatedAt: now,
+        };
+        db.blogPosts.unshift(post);
+        saveDb();
+        res.status(201).json({ blogPost: post });
+        return;
+      }
+      if (action === 'duplicate') {
+        const sourceId = typeof body.id === 'string' ? body.id : '';
+        const src = db.blogPosts.find((b) => b.blogPostId === sourceId);
+        if (!src) {
+          res.status(404).json({ error: 'Blog post not found.' });
+          return;
+        }
+        const now = new Date().toISOString();
+        const copy: ClubBlogPost = {
+          ...JSON.parse(JSON.stringify(src)),
+          blogPostId: `blog-copy-${Date.now().toString(36)}`,
+          title: `${src.title} (Copy)`,
+          slug: `${src.slug}-copy-${Date.now().toString(36)}`,
+          createdAt: now,
+          updatedAt: now,
+          publishedAt: now,
+        };
+        const idx = db.blogPosts.findIndex((b) => b.blogPostId === sourceId);
+        db.blogPosts.splice(idx + 1, 0, copy);
+        saveDb();
+        res.status(201).json({ blogPost: copy });
+        return;
+      }
+      if (action === 'update') {
+        const id = typeof body.id === 'string' ? body.id : '';
+        const bp = db.blogPosts.find((b) => b.blogPostId === id);
+        if (!bp) {
+          res.status(404).json({ error: 'Blog post not found.' });
+          return;
+        }
+        if (typeof body.title === 'string' && body.title.trim()) bp.title = body.title.trim().slice(0, 180);
+        if (typeof body.excerpt === 'string') bp.excerpt = body.excerpt.trim().slice(0, 500);
+        if (typeof body.authorName === 'string' && body.authorName.trim()) bp.authorName = body.authorName.trim().slice(0, 100);
+        bp.updatedAt = new Date().toISOString();
+        saveDb();
+        res.json({ blogPost: bp });
+        return;
+      }
+      if (action === 'delete') {
+        const id = typeof body.id === 'string' ? body.id : '';
+        db.blogPosts = db.blogPosts.filter((b) => b.blogPostId !== id);
+        saveDb();
+        res.json({ ok: true });
+        return;
+      }
+      if (action === 'reorder' && Array.isArray(body.orderedIds)) {
+        const order = body.orderedIds.filter((x): x is string => typeof x === 'string');
+        const map = new Map(db.blogPosts.map((b) => [b.blogPostId, b]));
+        const reordered: ClubBlogPost[] = [];
+        for (const id of order) {
+          const item = map.get(id);
+          if (item) {
+            reordered.push(item);
+            map.delete(id);
+          }
+        }
+        for (const rem of map.values()) reordered.push(rem);
+        db.blogPosts = reordered;
+        saveDb();
+        res.json({ ok: true });
+        return;
+      }
+    }
+
+    if (kind === 'personas') {
+      if (action === 'add') {
+        const suffix = Date.now().toString(36);
+        const newUser: User = {
+          userId: `usr-cms-${suffix}`,
+          name: typeof body.name === 'string' && body.name.trim() ? body.name.trim().slice(0, 100) : 'New Team Member',
+          email:
+            typeof body.email === 'string' && body.email.trim()
+              ? body.email.trim().toLowerCase().slice(0, 120)
+              : `member.${suffix}@spsmail.cuny.edu`,
+          identitySubject: `cuny-sso|member-${suffix}`,
+          title: 'Student Club Contributor',
+          departmentOrMajor:
+            typeof body.departmentOrMajor === 'string' && body.departmentOrMajor.trim()
+              ? body.departmentOrMajor.trim().slice(0, 100)
+              : 'B.S. Information Systems',
+          systemRole: 'STANDARD_USER',
+          status: 'Active',
+          lastLoginAt: new Date().toISOString(),
+        };
+        db.users.push(newUser);
+        saveDb();
+        res.status(201).json({ user: newUser });
+        return;
+      }
+      if (action === 'duplicate') {
+        const sourceId = typeof body.id === 'string' ? body.id : '';
+        const src = db.users.find((u) => u.userId === sourceId);
+        if (!src) {
+          res.status(404).json({ error: 'Persona not found.' });
+          return;
+        }
+        const suffix = Date.now().toString(36);
+        const copy: User = {
+          ...JSON.parse(JSON.stringify(src)),
+          userId: `usr-copy-${suffix}`,
+          name: `${src.name} (Copy)`,
+          email: `${src.email.split('@')[0]}.${suffix}@spsmail.cuny.edu`,
+          identitySubject: `cuny-sso|copy-${suffix}`,
+        };
+        const idx = db.users.findIndex((u) => u.userId === sourceId);
+        db.users.splice(idx + 1, 0, copy);
+        saveDb();
+        res.status(201).json({ user: copy });
+        return;
+      }
+      if (action === 'update') {
+        const id = typeof body.id === 'string' ? body.id : '';
+        const u = db.users.find((usr) => usr.userId === id);
+        if (!u) {
+          res.status(404).json({ error: 'Persona not found.' });
+          return;
+        }
+        if (typeof body.name === 'string' && body.name.trim()) u.name = body.name.trim().slice(0, 100);
+        if (typeof body.departmentOrMajor === 'string' && body.departmentOrMajor.trim()) {
+          u.departmentOrMajor = body.departmentOrMajor.trim().slice(0, 120);
+        }
+        saveDb();
+        res.json({ user: u });
+        return;
+      }
+      if (action === 'delete') {
+        const id = typeof body.id === 'string' ? body.id : '';
+        if (db.users.length <= 1) {
+          res.status(400).json({ error: 'Cannot delete the last remaining user.' });
+          return;
+        }
+        db.users = db.users.filter((u) => u.userId !== id);
+        saveDb();
+        res.json({ ok: true });
+        return;
+      }
+      if (action === 'reorder' && Array.isArray(body.orderedIds)) {
+        const order = body.orderedIds.filter((x): x is string => typeof x === 'string');
+        const map = new Map(db.users.map((u) => [u.userId, u]));
+        const reordered: User[] = [];
+        for (const id of order) {
+          const item = map.get(id);
+          if (item) {
+            reordered.push(item);
+            map.delete(id);
+          }
+        }
+        for (const rem of map.values()) reordered.push(rem);
+        db.users = reordered;
+        saveDb();
+        res.json({ ok: true });
+        return;
+      }
+    }
+
+    res.status(400).json({ error: 'Unsupported entity kind or action.' });
+  });
+
+  function buildSessionPayload(user: User) {
+    const db = getDb();
+    const memberships = db.memberships
+      .filter((m) => m.userId === user.userId && m.status === 'Active')
+      .map((m) => {
+        const club = db.clubs.find((c) => c.clubId === m.clubId);
+        return {
+          ...m,
+          clubName: club?.name ?? m.clubId,
+          clubShortCode: club?.shortCode ?? m.clubId,
+          clubStatus: club?.status ?? 'Active',
+        };
+      });
+    return {
+      user,
+      memberships,
+      effectiveAdminRole: user.systemRole === 'STANDARD_USER' ? null : user.systemRole,
+    };
+  }
+
+  function findOrCreateInstitutionalUser(params: {
+    email: string;
+    fullName: string;
+    givenName?: string;
+    familyName?: string;
+    identitySubject: string;
+    avatarUrl?: string;
+  }): { user: User; created: boolean } {
+    const db = getDb();
+    const cleanEmail = params.email.trim().toLowerCase();
+    const adminEmails = getStudentLifeAdminEmails();
+    const isStaffEmail = cleanEmail.endsWith(ALLOWED_STAFF_DOMAIN);
+    const isAdminListed = isStaffEmail && adminEmails.has(cleanEmail);
+
+    let user = db.users.find((u) => u.email.toLowerCase() === cleanEmail);
+    const now = new Date().toISOString();
+
+    if (user) {
+      user.lastLoginAt = now;
+      if (isAdminListed && user.systemRole === 'STANDARD_USER') {
+        user.systemRole = 'SL_ADMIN';
+        user.staffAccessPending = false;
+      }
+      if (!user.avatarUrl && params.avatarUrl) {
+        const safePic = sanitizeImageSrc(params.avatarUrl);
+        if (safePic) user.avatarUrl = safePic;
+      }
+      saveDb();
+      return { user, created: false };
+    }
+
+    const { firstName, lastName } = splitFullName(params.fullName);
+    const displayName = (params.givenName || firstName || 'Student').trim();
+    const resolvedLastName = (params.familyName ?? lastName ?? '').trim();
+    const safePic = params.avatarUrl ? sanitizeImageSrc(params.avatarUrl) : '';
+
+    const systemRole: User['systemRole'] = isAdminListed ? 'SL_ADMIN' : 'STANDARD_USER';
+    const staffAccessPending = isStaffEmail && !isAdminListed;
+
+    user = {
+      userId: `usr-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+      name: `${displayName}${resolvedLastName ? ` ${resolvedLastName}` : ''}`.trim(),
+      displayName,
+      lastName: resolvedLastName,
+      avatarUrl: safePic || undefined,
+      email: cleanEmail,
+      identitySubject: params.identitySubject,
+      title: isAdminListed
+        ? 'Student Life Staff'
+        : isStaffEmail
+          ? 'CUNY SPS Staff'
+          : 'CUNY SPS Student',
+      departmentOrMajor: isStaffEmail ? 'CUNY SPS Student Life' : 'CUNY SPS',
+      program: isStaffEmail ? 'CUNY SPS Student Life' : '',
+      programLocked: isStaffEmail,
+      interests: [],
+      notificationsEnabled: true,
+      emailRemindersEnabled: true,
+      onboardingCompleted: false,
+      staffAccessPending,
+      systemRole,
+      assignedAdminClubIds: isAdminListed ? db.clubs.map((c) => c.clubId) : undefined,
+      status: 'Active',
+      lastLoginAt: now,
+    };
+
+    db.users.push(user);
+
+    // Notify SL_SUPER_ADMIN when an unlisted @sps.cuny.edu staff account signs in
+    if (staffAccessPending) {
+      for (const superAdmin of db.users) {
+        if (superAdmin.systemRole === 'SL_SUPER_ADMIN' && superAdmin.status === 'Active') {
+          pushNotification({
+            userId: superAdmin.userId,
+            type: 'Approval',
+            title: 'Staff Student Life Access Pending',
+            message: `${user.name} (${user.email}) signed in with a CUNY SPS staff email and is awaiting Student Life admin approval.`,
+          });
+        }
+      }
+      recordAudit({
+        actorId: user.userId,
+        actorName: user.name,
+        actorRole: user.systemRole,
+        action: 'STAFF_ACCESS_PENDING_NOTIFICATION',
+        category: 'Authentication',
+        target: user.email,
+        details: 'Unlisted @sps.cuny.edu staff member signed in; SL_SUPER_ADMIN notified.',
+      });
+    }
+
+    saveDb();
+    return { user, created: true };
+  }
+
+  app.get('/api/auth/config', (_req, res) => {
+    res.json({
+      demoMode: isDemoModeEnabled(),
+      googleClientId: getGoogleClientId(),
+      authProvider: 'google',
+      allowedDomains: [ALLOWED_STUDENT_DOMAIN, ALLOWED_STAFF_DOMAIN],
+    });
+  });
+
   app.get('/api/auth/personas', (_req, res) => {
+    if (!isDemoModeEnabled()) {
+      res.status(404).json({ error: 'Demo sign-in is disabled.' });
+      return;
+    }
     const db = getDb();
     const personas = db.users.map((user) => {
       const memberships = db.memberships
@@ -848,20 +1572,75 @@ async function startServer() {
   });
 
   app.post('/api/auth/login', (req, res) => {
-    const { userId, email } = req.body as { userId?: string; email?: string };
+    if (!isDemoModeEnabled()) {
+      res.status(403).json({ error: 'Demo sign-in is disabled. Please sign in with your CUNY SPS Google account.' });
+      return;
+    }
+    const { userId, email, startOnboarding } = req.body as {
+      userId?: string;
+      email?: string;
+      startOnboarding?: boolean;
+    };
     const db = getDb();
-    const user = db.users.find(
+    let user = db.users.find(
       (u) => (userId && u.userId === userId) || (email && u.email.toLowerCase() === email.toLowerCase())
     );
+
+    // Allow testing new @spsmail.cuny.edu or @sps.cuny.edu first-time sign-up cleanly in DEMO_MODE
+    if (!user && email) {
+      const check = classifyCunyEmail(email);
+      if (!check.valid) {
+        res.status(403).json({ error: check.error });
+        return;
+      }
+      const localPart = check.email.split('@')[0];
+      const guessedName = localPart
+        .split(/[._-]+/)
+        .filter(Boolean)
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(' ');
+      const result = findOrCreateInstitutionalUser({
+        email: check.email,
+        fullName: guessedName || 'CUNY Student',
+        identitySubject: `demo-cuny|${localPart}`,
+      });
+      user = result.user;
+    }
+
     if (!user) {
-      res.status(404).json({ error: 'No verified CUNY SPS institutional identity matched those credentials.' });
+      res.status(404).json({ error: 'Please use your CUNY SPS email or select a demo account.' });
       return;
     }
     if (user.status !== 'Active') {
       res.status(403).json({ error: 'Platform access for this institutional account has been revoked by Student Life.' });
       return;
     }
+
     user.lastLoginAt = new Date().toISOString();
+    if (startOnboarding === true) {
+      user.onboardingCompleted = false;
+    }
+
+    // Ensure pending staff notification fires on first login for seeded pending staff demo persona
+    if (
+      user.staffAccessPending &&
+      user.systemRole === 'STANDARD_USER' &&
+      !db.notifications.some(
+        (n) => n.title === 'Staff Student Life Access Pending' && n.message.includes(user!.email)
+      )
+    ) {
+      for (const superAdmin of db.users) {
+        if (superAdmin.systemRole === 'SL_SUPER_ADMIN' && superAdmin.status === 'Active') {
+          pushNotification({
+            userId: superAdmin.userId,
+            type: 'Approval',
+            title: 'Staff Student Life Access Pending',
+            message: `${user.name} (${user.email}) signed in with a CUNY SPS staff email and is awaiting Student Life admin approval.`,
+          });
+        }
+      }
+    }
+
     recordAudit({
       actorId: user.userId,
       actorName: user.name,
@@ -869,45 +1648,393 @@ async function startServer() {
       action: 'DEMO_PERSONA_LOGIN',
       category: 'Authentication',
       target: user.identitySubject,
-      details: `Demo persona selected (${user.email}); institutional identity was not verified.`,
+      details: `Demo sign-in (${user.email}).`,
     });
-    const memberships = db.memberships
-      .filter((m) => m.userId === user.userId && m.status === 'Active')
-      .map((m) => {
-        const club = db.clubs.find((c) => c.clubId === m.clubId);
-        return {
-          ...m,
-          clubName: club?.name ?? m.clubId,
-          clubShortCode: club?.shortCode ?? m.clubId,
-          clubStatus: club?.status ?? 'Active',
-        };
-      });
-    res.json({
-      user,
-      memberships,
-      effectiveAdminRole: user.systemRole === 'STANDARD_USER' ? null : user.systemRole,
+    saveDb();
+    setSessionCookie(req, res, user.userId);
+    res.json(buildSessionPayload(user));
+  });
+
+  app.post('/api/auth/google', async (req, res) => {
+    const { credential } = (req.body ?? {}) as { credential?: string };
+    const verification = await verifyGoogleIdToken(credential ?? '');
+    if (!verification.ok) {
+      res.status(401).json({ error: verification.error });
+      return;
+    }
+    const domainCheck = classifyCunyEmail(verification.profile.email);
+    if (!domainCheck.valid) {
+      res.status(403).json({ error: 'Please use your CUNY SPS email.' });
+      return;
+    }
+
+    const { user, created } = findOrCreateInstitutionalUser({
+      email: domainCheck.email,
+      fullName: verification.profile.name,
+      givenName: verification.profile.givenName,
+      familyName: verification.profile.familyName,
+      identitySubject: `google-oauth2|${verification.profile.sub}`,
+      avatarUrl: verification.profile.picture,
     });
+
+    if (user.status !== 'Active') {
+      res.status(403).json({ error: 'Platform access for this institutional account has been revoked by Student Life.' });
+      return;
+    }
+
+    recordAudit({
+      actorId: user.userId,
+      actorName: user.name,
+      actorRole: user.systemRole,
+      action: created ? 'GOOGLE_FIRST_SIGN_IN' : 'GOOGLE_SIGN_IN',
+      category: 'Authentication',
+      target: user.email,
+      details: created
+        ? `Created institutional account from Google Sign-In (${domainCheck.kind}).`
+        : 'Signed in via verified Google Sign-In.',
+    });
+    saveDb();
+    setSessionCookie(req, res, user.userId);
+    res.json(buildSessionPayload(user));
+  });
+
+  app.post('/api/auth/logout', (req, res) => {
+    clearSessionCookie(req, res);
+    res.json({ ok: true });
   });
 
   app.get('/api/auth/session', (req: AuthedRequest, res) => {
     const user = req.currentUser!;
+    res.json(buildSessionPayload(user));
+  });
+
+  // First-time onboarding real-data summary
+  app.get('/api/onboarding/summary', (req: AuthedRequest, res) => {
+    const user = req.currentUser!;
     const db = getDb();
-    const memberships = db.memberships
-      .filter((m) => m.userId === user.userId && m.status === 'Active')
-      .map((m) => {
-        const club = db.clubs.find((c) => c.clubId === m.clubId);
-        return {
-          ...m,
-          clubName: club?.name ?? m.clubId,
-          clubShortCode: club?.shortCode ?? m.clubId,
-          clubStatus: club?.status ?? 'Active',
-        };
-      });
-    res.json({
-      user,
-      memberships,
-      effectiveAdminRole: user.systemRole === 'STANDARD_USER' ? null : user.systemRole,
+
+    const activeMemberships = db.memberships.filter(
+      (m) => m.userId === user.userId && m.status === 'Active'
+    );
+    const clubs = activeMemberships.map((m) => {
+      const club = db.clubs.find((c) => c.clubId === m.clubId);
+      const roleBadge =
+        m.role === 'CLUB_LEAD'
+          ? 'Club Lead'
+          : m.role === 'EDITOR'
+            ? 'Editor'
+            : m.role === 'CONTRIBUTOR'
+              ? 'Contributor'
+              : 'Viewer';
+      return {
+        clubId: m.clubId,
+        name: club?.name ?? m.clubId,
+        shortCode: club?.shortCode ?? m.clubId,
+        role: m.role,
+        roleBadge,
+        logoUrl: club?.logoUrl,
+        accentColor: club?.accentColor,
+      };
     });
+
+    const isStaffEmail = user.email.toLowerCase().endsWith(ALLOWED_STAFF_DOMAIN);
+    const isAdmin = isAdminUser(user);
+    const hasClubLead = activeMemberships.some((m) => m.role === 'CLUB_LEAD');
+
+    let roleType: 'ADMIN' | 'CLUB_LEAD' | 'CONTRIBUTOR' | 'NO_CLUB_STUDENT' | 'PENDING_STAFF';
+    if (isAdmin) {
+      roleType = 'ADMIN';
+    } else if (hasClubLead) {
+      roleType = 'CLUB_LEAD';
+    } else if (activeMemberships.length > 0) {
+      roleType = 'CONTRIBUTOR';
+    } else if (isStaffEmail || user.staffAccessPending) {
+      roleType = 'PENDING_STAFF';
+    } else {
+      roleType = 'NO_CLUB_STUDENT';
+    }
+
+    const memberClubIds = new Set(activeMemberships.map((m) => m.clubId));
+
+    // Build up to 3 real notification preview cards from notifications & upcoming events
+    const notificationCards: {
+      id: string;
+      category: string;
+      title: string;
+      body: string;
+      timeLabel: string;
+    }[] = [];
+
+    const userNotifs = db.notifications
+      .filter((n) => n.userId === user.userId || (n.clubId && memberClubIds.has(n.clubId)))
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+
+    for (const notif of userNotifs.slice(0, 2)) {
+      notificationCards.push({
+        id: notif.notificationId,
+        category: notif.type,
+        title: notif.title,
+        body: notif.message,
+        timeLabel: new Date(notif.createdAt).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+        }),
+      });
+    }
+
+    const relevantEvents = db.events
+      .filter((ev) =>
+        isAdmin
+          ? true
+          : memberClubIds.size > 0
+            ? memberClubIds.has(ev.clubId)
+            : ev.isPublic !== false && (ev.approvalStatus ?? 'Approved') === 'Approved'
+      )
+      .sort((a, b) => `${a.date}T${a.time}`.localeCompare(`${b.date}T${b.time}`));
+
+    for (const ev of relevantEvents) {
+      if (notificationCards.length >= 3) break;
+      const club = db.clubs.find((c) => c.clubId === ev.clubId);
+      notificationCards.push({
+        id: `ev-preview-${ev.eventId}`,
+        category: 'Upcoming Event',
+        title: ev.title,
+        body: `${club?.name ?? 'Campus Club'} · ${ev.date} at ${ev.time} (${ev.location})`,
+        timeLabel: '24h reminder',
+      });
+    }
+
+    // Pad with recent campus announcements if fewer than 3 cards exist
+    for (const ann of db.announcements ?? []) {
+      if (notificationCards.length >= 3) break;
+      notificationCards.push({
+        id: `ann-preview-${ann.announcementId}`,
+        category: 'Announcement',
+        title: ann.title,
+        body: ann.body.slice(0, 120),
+        timeLabel: 'Club update',
+      });
+    }
+
+    const primaryClubId = clubs[0]?.clubId;
+    const postsWaitingReview = primaryClubId
+      ? db.posts.filter(
+          (p) => p.clubId === primaryClubId && (p.status === 'In Review' || p.status === 'Draft')
+        ).length +
+        (db.blogPosts ?? []).filter(
+          (bp) => bp.clubId === primaryClubId && bp.status === 'In Review'
+        ).length
+      : 0;
+
+    const newAnnouncements = primaryClubId
+      ? (db.announcements ?? []).filter(
+          (a) => !a.clubId || a.clubId === primaryClubId
+        ).length
+      : (db.announcements ?? []).length;
+
+    const newMembers = primaryClubId
+      ? db.memberships.filter((m) => m.clubId === primaryClubId && m.status === 'Active').length
+      : 0;
+
+    const accountRequestsCount = db.accountRequests.filter(
+      (r) =>
+        !['Connected', 'Rejected', 'Cancelled'].includes(r.status) &&
+        (!isAdmin || canAdminManageClub(user, r.clubId) || r.clubId === 'club-new-proposal')
+    ).length;
+
+    const officerHandoversCount = (db.officerTransitions ?? []).filter(
+      (t) => t.status !== 'Completed'
+    ).length;
+
+    const pendingJoinRequestClubIds = (db.joinRequests ?? [])
+      .filter((jr) => jr.userId === user.userId && jr.status === 'Pending')
+      .map((jr) => jr.clubId);
+
+    res.json({
+      roleType,
+      clubs,
+      notificationCards: notificationCards.slice(0, 3),
+      finalStats: {
+        postsWaitingReview,
+        newAnnouncements,
+        newMembers,
+        accountRequestsCount,
+        officerHandoversCount,
+      },
+      pendingJoinRequestClubIds,
+    });
+  });
+
+  // Update signed-in user's own onboarding & profile preferences
+  app.patch('/api/profile', (req: AuthedRequest, res) => {
+    const user = req.currentUser!;
+    const db = getDb();
+    const targetUser = db.users.find((u) => u.userId === user.userId);
+    if (!targetUser) {
+      res.status(404).json({ error: 'User profile not found.' });
+      return;
+    }
+
+    const {
+      displayName,
+      program,
+      avatarUrl,
+      interests,
+      notificationsEnabled,
+      onboardingCompleted,
+    } = (req.body ?? {}) as {
+      displayName?: string;
+      program?: string;
+      avatarUrl?: string;
+      interests?: string[];
+      notificationsEnabled?: boolean;
+      onboardingCompleted?: boolean;
+    };
+
+    if (typeof displayName === 'string') {
+      const cleanDisplay = displayName.trim().slice(0, 60);
+      if (cleanDisplay.length < 1) {
+        res.status(400).json({ error: 'Display name cannot be empty.' });
+        return;
+      }
+      targetUser.displayName = cleanDisplay;
+      const lockedLast = (targetUser.lastName ?? '').trim();
+      targetUser.name = lockedLast ? `${cleanDisplay} ${lockedLast}` : cleanDisplay;
+    }
+
+    if (typeof program === 'string' && program.trim()) {
+      // Program can only be set once for students; admins always stay "CUNY SPS Student Life"
+      if (isAdminUser(targetUser)) {
+        targetUser.program = 'CUNY SPS Student Life';
+        targetUser.programLocked = true;
+      } else if (!targetUser.programLocked) {
+        const cleanProg = program.trim().slice(0, 100);
+        targetUser.program = cleanProg;
+        targetUser.departmentOrMajor = cleanProg;
+        targetUser.programLocked = true;
+      }
+    }
+
+    if (avatarUrl !== undefined) {
+      if (avatarUrl === '' || avatarUrl === null) {
+        targetUser.avatarUrl = undefined;
+      } else if (typeof avatarUrl === 'string') {
+        const safeAvatar = sanitizeImageSrc(avatarUrl);
+        if (!safeAvatar) {
+          res.status(400).json({ error: 'Please upload a valid PNG, JPEG, or WebP profile image.' });
+          return;
+        }
+        targetUser.avatarUrl = safeAvatar;
+      }
+    }
+
+    if (Array.isArray(interests)) {
+      const cleanInterests = Array.from(
+        new Set(interests.filter((i): i is string => typeof i === 'string' && ALLOWED_INTEREST_SET.has(i)))
+      );
+      targetUser.interests = cleanInterests;
+    }
+
+    if (typeof notificationsEnabled === 'boolean') {
+      targetUser.notificationsEnabled = notificationsEnabled;
+      targetUser.emailRemindersEnabled = notificationsEnabled;
+    }
+
+    if (typeof onboardingCompleted === 'boolean') {
+      targetUser.onboardingCompleted = onboardingCompleted;
+    }
+
+    saveDb();
+    res.json(buildSessionPayload(targetUser));
+  });
+
+  // Part 4: "Want to lead a club?" form -> routes directly into existing Student Life Account Requests queue
+  app.post('/api/onboarding/lead-club-request', (req: AuthedRequest, res) => {
+    const user = req.currentUser!;
+    const { clubName, reason, facultyAdvisor } = (req.body ?? {}) as {
+      clubName?: string;
+      reason?: string;
+      facultyAdvisor?: string;
+    };
+
+    const cleanClubName = (clubName ?? '').trim();
+    const cleanReason = (reason ?? '').trim();
+    const cleanAdvisor = (facultyAdvisor ?? '').trim();
+
+    if (cleanClubName.length < 2) {
+      res.status(400).json({ error: 'Please enter the club name.' });
+      return;
+    }
+    if (cleanReason.length < 10) {
+      res.status(400).json({ error: 'Please share a brief note explaining why you want to lead this club.' });
+      return;
+    }
+    if (cleanAdvisor.length < 2) {
+      res.status(400).json({ error: 'Please enter your faculty advisor name.' });
+      return;
+    }
+
+    const db = getDb();
+    const matchedClub = db.clubs.find(
+      (c) => c.name.toLowerCase() === cleanClubName.toLowerCase()
+    );
+    const requestId = `REQ-2026-${String(db.accountRequests.length + 15).padStart(3, '0')}`;
+    const now = new Date().toISOString();
+
+    const newRequest = {
+      requestId,
+      clubId: matchedClub?.clubId ?? 'club-new-proposal',
+      clubName: matchedClub?.name ?? cleanClubName,
+      requestType: 'New Club Leadership' as AccountRequestType,
+      platform: 'Instagram Professional' as SocialAccount['platform'],
+      proposedAccountName: cleanClubName,
+      businessPurpose: `${cleanReason} (Proposed Faculty Advisor: ${cleanAdvisor})`,
+      intendedAudience: 'CUNY SPS students',
+      responsibleRepresentatives: `${user.name} (${user.email}) · Faculty Advisor: ${cleanAdvisor}`,
+      status: 'Submitted' as AccountRequestStatus,
+      submittedByUserId: user.userId,
+      submittedByName: user.name,
+      submittedAt: now,
+      updatedAt: now,
+      approvals: [
+        {
+          approvalId: `apr-${Date.now()}`,
+          requestId,
+          authority: 'Club Leadership Proposal Submission',
+          actorName: user.name,
+          decision: 'Submitted',
+          notes: `Submitted via student onboarding ("Want to lead a club?"). Faculty Advisor: ${cleanAdvisor}.`,
+          timestamp: now,
+        },
+      ],
+    };
+
+    db.accountRequests.unshift(newRequest);
+
+    for (const admin of db.users) {
+      if ((admin.systemRole === 'SL_SUPER_ADMIN' || admin.systemRole === 'SL_ADMIN') && admin.status === 'Active') {
+        pushNotification({
+          userId: admin.userId,
+          clubId: matchedClub?.clubId,
+          type: 'Approval',
+          title: `Club Leadership Request: ${cleanClubName}`,
+          message: `${user.name} (${user.email}) requested to lead ${cleanClubName} with Faculty Advisor ${cleanAdvisor}.`,
+        });
+      }
+    }
+
+    recordAudit({
+      actorId: user.userId,
+      actorName: user.name,
+      actorRole: user.systemRole,
+      action: 'SUBMIT_CLUB_LEADERSHIP_REQUEST',
+      category: 'Governance',
+      target: `${requestId} (${cleanClubName})`,
+      clubId: matchedClub?.clubId,
+      details: `Submitted club leadership request for "${cleanClubName}" (Advisor: ${cleanAdvisor}).`,
+    });
+    saveDb();
+    res.status(201).json({ request: newRequest });
   });
 
   // Public Campus Club Directory & Upcoming Public Events (no auth required)
@@ -949,6 +2076,7 @@ async function startServer() {
         meetingSchedule: club.meetingSchedule,
         contactEmail: club.contactEmail,
         websiteUrl: club.websiteUrl,
+        links: sanitizeClubLinksForPublic(club.links),
       };
     });
 
@@ -1199,6 +2327,9 @@ async function startServer() {
 
         return {
           ...club,
+          links: canViewClubWhatsAppLink(user, club.clubId)
+            ? normalizeClubLinks(club.links)
+            : sanitizeClubLinksForPublic(club.links),
           budgetSummary: computeClubBudgetSummary(club.clubId),
           governanceSummary: {
             authorizedLeadersCount,
@@ -1287,6 +2418,9 @@ async function startServer() {
     res.json({
       club: {
         ...club,
+        links: canViewClubWhatsAppLink(user, clubId)
+          ? normalizeClubLinks(club.links)
+          : sanitizeClubLinksForPublic(club.links),
         budgetSummary: computeClubBudgetSummary(clubId),
       },
       effectiveRole,
@@ -1479,8 +2613,74 @@ async function startServer() {
     res.json({
       club: {
         ...club,
+        links: canViewClubWhatsAppLink(user, clubId)
+          ? normalizeClubLinks(club.links)
+          : sanitizeClubLinksForPublic(club.links),
         budgetSummary: computeClubBudgetSummary(clubId),
       },
+    });
+  });
+
+  // Update Club Links (Website, Social Media, WhatsApp Group, Additional Links)
+  app.put('/api/clubs/:id/links', (req: AuthedRequest, res) => {
+    const user = req.currentUser!;
+    const clubId = String(req.params.id);
+    const db = getDb();
+    const club = db.clubs.find((c) => c.clubId === clubId);
+    if (!club) {
+      res.status(404).json({ error: 'Club not found.' });
+      return;
+    }
+    if (!canEditClubLinks(user, clubId)) {
+      res.status(403).json({
+        error:
+          'Only active club members (Club President / Co-Chair, Social Media Editor, or Contributor) and Student Life administrators can edit club links.',
+      });
+      return;
+    }
+
+    const payload =
+      req.body && typeof req.body === 'object' && 'links' in req.body
+        ? (req.body as { links?: unknown }).links
+        : req.body;
+    const normalized = normalizeClubLinks(
+      payload && typeof payload === 'object' ? (payload as Partial<NonNullable<Club['links']>>) : null
+    );
+    const validation = validateClubLinks(normalized);
+    if (!validation.valid) {
+      res.status(400).json({
+        error: validation.formError || 'Please fix the highlighted link errors before saving.',
+        validation,
+      });
+      return;
+    }
+
+    const previousLinks = normalizeClubLinks(club.links);
+    const changedLinks = diffClubLinks(previousLinks, normalized);
+    club.links = normalized;
+
+    recordAudit({
+      actorId: user.userId,
+      actorName: user.name,
+      actorRole: getUserEffectiveClubRole(user, clubId) ?? user.systemRole,
+      action: 'CLUB_LINKS_UPDATED',
+      category: 'Governance',
+      target: `${club.name} (${club.shortCode})`,
+      clubId,
+      details:
+        changedLinks.length > 0
+          ? `Updated club links: ${changedLinks.join('; ')}.`
+          : 'Saved club links with no changes.',
+    });
+    saveDb();
+
+    res.json({
+      club: {
+        ...club,
+        budgetSummary: computeClubBudgetSummary(clubId),
+      },
+      links: club.links,
+      changedLinks,
     });
   });
 
@@ -1496,7 +2696,9 @@ async function startServer() {
     const scopedClubIds = new Set(scopedClubs.map((c) => c.clubId));
 
     const socialAccounts = db.socialAccounts.filter((a) => scopedClubIds.has(a.clubId));
-    const accountRequests = db.accountRequests.filter((r) => scopedClubIds.has(r.clubId));
+    const accountRequests = db.accountRequests.filter(
+      (r) => scopedClubIds.has(r.clubId) || r.clubId === 'club-new-proposal'
+    );
     const memberships = db.memberships.filter((m) => scopedClubIds.has(m.clubId));
     const posts = db.posts.filter((p) => scopedClubIds.has(p.clubId));
     const auditLogs = db.auditLogs.filter((l) => !l.clubId || scopedClubIds.has(l.clubId));
@@ -2221,6 +3423,10 @@ async function startServer() {
       res.status(403).json({ error: 'Policy BR-006 violation: Club leaders cannot grant university administrator privileges.' });
       return;
     }
+    if (role === 'CLUB_LEAD' && !isAdminUser(user)) {
+      res.status(403).json({ error: 'Only Student Life administrators can authorize a Club Lead.' });
+      return;
+    }
     if (!['CLUB_LEAD', 'EDITOR', 'CONTRIBUTOR', 'VIEWER'].includes(role)) {
       res.status(400).json({ error: 'Invalid club role selected.' });
       return;
@@ -2391,6 +3597,12 @@ async function startServer() {
       });
       return;
     }
+    if (role === 'CLUB_LEAD' && !isAdminUser(user)) {
+      res.status(403).json({
+        error: 'Only Student Life administrators can assign someone as a Club Lead.',
+      });
+      return;
+    }
 
     const resolvedRole: ClubMembership['role'] =
       role && ['CLUB_LEAD', 'EDITOR', 'CONTRIBUTOR', 'VIEWER'].includes(role)
@@ -2498,6 +3710,14 @@ async function startServer() {
     if (!membership) {
       res.status(404).json({ error: 'Club membership record not found.' });
       return;
+    }
+    if (role && !isAdminUser(user)) {
+      if (role === 'CLUB_LEAD' || (membership.role === 'CLUB_LEAD' && role !== 'CLUB_LEAD')) {
+        res.status(403).json({
+          error: 'Only Student Life administrators can assign or change a Club Lead role.',
+        });
+        return;
+      }
     }
     const targetUser = db.users.find((u) => u.userId === targetUserId);
     if (role && ['CLUB_LEAD', 'EDITOR', 'CONTRIBUTOR', 'VIEWER'].includes(role)) {
@@ -3286,7 +4506,7 @@ async function startServer() {
       res.status(404).json({ error: 'Account request not found.' });
       return;
     }
-    if (!canAdminManageClub(user, accountReq.clubId)) {
+    if (accountReq.clubId !== 'club-new-proposal' && !canAdminManageClub(user, accountReq.clubId)) {
       res.status(403).json({ error: 'Request falls outside your scoped administrative clubs.' });
       return;
     }
@@ -3492,6 +4712,21 @@ async function startServer() {
       res.status(404).json({ error: 'Post not found.' });
       return;
     }
+    const effectiveRole = getUserEffectiveClubRole(user, clubId);
+    if (effectiveRole === 'CONTRIBUTOR') {
+      if (post.authorId !== user.userId) {
+        res.status(403).json({
+          error: 'Contributors can only edit their own drafts.',
+        });
+        return;
+      }
+      if (post.status !== 'Draft' && post.status !== 'In Review') {
+        res.status(403).json({
+          error: 'Contributors cannot edit scheduled or published posts.',
+        });
+        return;
+      }
+    }
     if (post.status === 'Scheduled' && !hasClubCapability(user, clubId, 'SCHEDULE_CONTENT')) {
       res.status(403).json({ error: 'Only an Editor or Club Lead may change scheduled content.' });
       return;
@@ -3611,6 +4846,11 @@ async function startServer() {
     const post = db.posts.find((p) => p.postId === postId && p.clubId === clubId);
     if (!post) {
       res.status(404).json({ error: 'Post not found.' });
+      return;
+    }
+    const effectiveRole = getUserEffectiveClubRole(user, clubId);
+    if (effectiveRole === 'CONTRIBUTOR' && post.authorId !== user.userId) {
+      res.status(403).json({ error: 'Contributors can only send their own drafts for review.' });
       return;
     }
     const { note } = (req.body ?? {}) as { note?: string };
@@ -7986,10 +9226,19 @@ async function startServer() {
     }
 
     const canPublish = hasClubCapability(user, clubId, 'PUBLISH_CONTENT');
-    let nextStatus: BlogPostStatus = status ?? (canPublish ? 'Published' : 'In Review');
-    if ((nextStatus === 'Published' || nextStatus === 'Archived') && !canPublish) {
-      nextStatus = 'In Review';
+    if (!canPublish && (status === 'Published' || status === 'Archived')) {
+      res.status(403).json({
+        error: 'Contributors cannot publish blog stories. Save as Draft or Send for review to a Club Lead.',
+      });
+      return;
     }
+    if (!canPublish && featured === true) {
+      res.status(403).json({
+        error: 'Contributors cannot feature blog stories.',
+      });
+      return;
+    }
+    const nextStatus: BlogPostStatus = status ?? (canPublish ? 'Published' : 'In Review');
 
     const parsedTags = Array.isArray(tags)
       ? Array.from(new Set(tags.map(normalizeTagLabel).filter(Boolean))).slice(0, 8)
@@ -8262,7 +9511,13 @@ async function startServer() {
       post.linkedEventId = linkedEvent?.eventId;
       post.linkedEventTitle = linkedEvent?.title;
     }
-    if (typeof featured === 'boolean' && canPublish) {
+    if (typeof featured === 'boolean') {
+      if (!canPublish) {
+        res.status(403).json({
+          error: 'Contributors cannot feature blog stories.',
+        });
+        return;
+      }
       post.featured = featured;
     }
 
@@ -8275,7 +9530,26 @@ async function startServer() {
         return;
       }
       const wasPublished = post.status === 'Published';
+      const wasInReview = post.status === 'In Review';
       post.status = status;
+      if (status === 'In Review' && !wasInReview) {
+        for (const m of db.memberships) {
+          if (
+            m.clubId === clubId &&
+            m.status === 'Active' &&
+            (m.role === 'CLUB_LEAD' || m.role === 'EDITOR') &&
+            m.userId !== user.userId
+          ) {
+            pushNotification({
+              userId: m.userId,
+              clubId,
+              type: 'Peer Review',
+              title: `Blog Story Ready for Review (${club.shortCode})`,
+              message: `${user.name} sent "${post.title}" for review.`,
+            });
+          }
+        }
+      }
       if (status === 'Published') {
         post.publishedAt = post.publishedAt ?? now;
         post.reviewedByName = user.name;
@@ -8514,6 +9788,18 @@ async function startServer() {
     }
     resetDb();
     res.json({ ok: true });
+  });
+
+  app.use((req, res, next) => {
+    if (req.path === '/manifest.webmanifest') {
+      res.type('application/manifest+json; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-cache');
+    } else if (req.path === '/sw.js') {
+      res.type('application/javascript; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Service-Worker-Allowed', '/');
+    }
+    next();
   });
 
   if (process.env.NODE_ENV !== 'production') {

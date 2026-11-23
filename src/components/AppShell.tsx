@@ -3,7 +3,9 @@ import { requestDraftDiscard } from '../utils/draftProtection';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Activity,
+  ArrowDown,
   ArrowRight,
+  ArrowUp,
   BarChart3,
   Bell,
   BookOpen,
@@ -16,6 +18,7 @@ import {
   ChevronRight,
   ClipboardCheck,
   Clock,
+  Copy,
   Download,
   Edit3,
   ExternalLink,
@@ -25,6 +28,7 @@ import {
   Inbox,
   KeyRound,
   LayoutDashboard,
+  Link2,
   ListChecks,
   LogOut,
   Mail,
@@ -50,6 +54,8 @@ import {
   X,
 } from 'lucide-react';
 import { formatRoleLabel, useAuth } from '../context/AuthContext';
+import { useSiteContent } from '../context/SiteContentContext';
+import { sanitizeHref } from '../data/siteContent';
 import type {
   AccountRequest,
   AuditLog,
@@ -125,6 +131,11 @@ import { ClubTeamView } from './club/ClubTeamView';
 import { ClubWhatsAppPanel } from './club/ClubWhatsAppPanel';
 import { ContentCalendar } from './club/ContentCalendar';
 import { ContentStudio } from './club/ContentStudio';
+import { CustomPageView } from './cms/CustomPageView';
+import { EditableText } from './cms/EditablePrimitives';
+import { CustomSectionsList } from './cms/SectionBuilder';
+import { SiteFooter } from './cms/SiteFooter';
+import { PWAInstallButton } from './pwa/PWAInstallButton';
 
 interface ClubWorkspacePayload {
   club: Club;
@@ -216,6 +227,7 @@ export function ClubDashboard({
   portalMode,
   onOpenClubWorkspace,
 }: ClubDashboardProps) {
+  const { content, updateContent } = useSiteContent();
   const [statusFilter, setStatusFilter] = useState<'active' | 'all'>('active');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -247,9 +259,16 @@ export function ClubDashboard({
       <div className="px-5 py-4 border-b border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h2 className="text-base font-bold text-slate-900">
-              Club Dashboard — Active Student Clubs & Governance Status
-            </h2>
+            <EditableText
+              as="h2"
+              value={content.pages.portal.clubDashboardHeading}
+              onChange={(next) =>
+                updateContent((d) => {
+                  d.pages.portal.clubDashboardHeading = next;
+                })
+              }
+              className="text-base font-bold text-slate-900"
+            />
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
             {activeCount} active clubs · {compliantCount} fully compliant · {attentionCount}{' '}
@@ -418,6 +437,7 @@ export function UpcomingClubEvents({
   onDraftPostForEvent,
 }: UpcomingClubEventsProps) {
   const { apiFetch, session } = useAuth();
+  const { content, updateContent } = useSiteContent();
   const [typeFilter, setTypeFilter] = useState<'All' | ClubEventType>('All');
   const [scopeFilter, setScopeFilter] = useState<'all' | 'active'>(
     portalMode === 'CLUB' ? 'active' : 'all'
@@ -681,9 +701,16 @@ export function UpcomingClubEvents({
     >
       <div className="px-5 py-4 border-b border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h2 className="text-base font-bold text-slate-900">
-            Upcoming Club Events & Meetings
-          </h2>
+          <EditableText
+            as="h2"
+            value={content.pages.portal.upcomingEventsHeading}
+            onChange={(next) =>
+              updateContent((d) => {
+                d.pages.portal.upcomingEventsHeading = next;
+              })
+            }
+            className="text-base font-bold text-slate-900"
+          />
           <p className="text-xs text-slate-500 mt-0.5 font-mono-tabular">
             {filteredEvents.length} scheduled meeting{filteredEvents.length === 1 ? '' : 's'} &amp;
             campus event{filteredEvents.length === 1 ? '' : 's'} · {totalExpectedAttendance}{' '}
@@ -1520,13 +1547,51 @@ export function AppShell() {
     setClubTab('overview');
   };
 
-  const navItems = portalMode === 'ADMIN' ? ADMIN_NAV : CLUB_NAV;
+  const {
+    content,
+    isEditActive,
+    activeCustomPageId,
+    setActiveCustomPageId,
+    updateContent,
+  } = useSiteContent();
+  const [draggingPortalNavId, setDraggingPortalNavId] = useState<string | null>(null);
+
+  const iconById = new Map<string, React.ComponentType<{ className?: string }>>([
+    ...ADMIN_NAV.map((n) => [n.id, n.icon] as const),
+    ...CLUB_NAV.map((n) => [n.id, n.icon] as const),
+  ]);
+
+  const navConfigKey = portalMode === 'ADMIN' ? 'adminNav' : 'clubNav';
+  const configuredNav = content.navigation[navConfigKey];
+  const visibleConfiguredNav = isEditActive
+    ? configuredNav
+    : configuredNav.filter((item) => item.visible);
+
+  const navItems = visibleConfiguredNav.map((item) => ({
+    ...item,
+    icon: iconById.get(item.id) ?? (item.customUrl ? ExternalLink : Link2),
+  }));
+
   const currentTabId = portalMode === 'ADMIN' ? adminTab : clubTab;
-  const currentTabLabel =
-    navItems.find((item) => item.id === currentTabId)?.label ?? 'Overview';
+  const activeCustomPage = activeCustomPageId
+    ? content.customPages.find((p) => p.id === activeCustomPageId) ?? null
+    : null;
+  const currentTabLabel = activeCustomPage
+    ? activeCustomPage.title
+    : navItems.find((item) => item.id === currentTabId)?.label ?? 'Overview';
 
   const handleSelectNav = async (id: string) => {
+    const matched = navItems.find((n) => n.id === id);
+    if (matched?.customUrl) {
+      return;
+    }
     if (!(await requestDraftDiscard())) return;
+    if (matched?.customPageId) {
+      setActiveCustomPageId(matched.customPageId);
+      setMobileMenuOpen(false);
+      return;
+    }
+    setActiveCustomPageId(null);
     if (portalMode === 'ADMIN') setAdminTab(id);
     else setClubTab(id);
     setMobileMenuOpen(false);
@@ -1547,7 +1612,8 @@ export function AppShell() {
             theme="dark"
             size="sm"
             showSubtitle
-            subtitle="CUNY SPS · Student Life"
+            subtitleField="sidebarSubtitle"
+            subtitle={content.settings.sidebarSubtitle}
           />
           <button
             type="button"
@@ -1648,13 +1714,23 @@ export function AppShell() {
           <nav className="p-3 space-y-0.5" aria-label="Portal Navigation">
             {navItems.map((item, idx) => {
               const Icon = item.icon;
-              const active = currentTabId === item.id;
-              const section = 'section' in item ? (item as { section?: string }).section : undefined;
-              const prevSection =
-                idx > 0 && 'section' in navItems[idx - 1]
-                  ? (navItems[idx - 1] as { section?: string }).section
-                  : undefined;
+              const active = !activeCustomPageId && currentTabId === item.id;
+              const section = item.section;
+              const prevSection = idx > 0 ? navItems[idx - 1].section : undefined;
               const showSectionHeader = Boolean(section && section !== prevSection);
+
+              const moveSidebarNav = (delta: -1 | 1) => {
+                updateContent((d) => {
+                  const list = d.navigation[navConfigKey];
+                  const from = list.findIndex((n) => n.id === item.id);
+                  const to = from + delta;
+                  if (from >= 0 && to >= 0 && to < list.length) {
+                    const [m] = list.splice(from, 1);
+                    list.splice(to, 0, m);
+                  }
+                });
+              };
+
               return (
                 <React.Fragment key={item.id}>
                   {showSectionHeader && (
@@ -1666,26 +1742,164 @@ export function AppShell() {
                       {section}
                     </div>
                   )}
-                  <button
-                    type="button"
-                    aria-current={active ? 'page' : undefined}
-                    onClick={() => handleSelectNav(item.id)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
-                      active
-                        ? 'bg-sky-50 text-[#004B87] font-semibold'
-                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                    }`}
+                  <div
+                    draggable={isEditActive}
+                    onDragStart={() => setDraggingPortalNavId(item.id)}
+                    onDragOver={(e) => {
+                      if (isEditActive) e.preventDefault();
+                    }}
+                    onDrop={() => {
+                      if (!draggingPortalNavId || draggingPortalNavId === item.id) return;
+                      updateContent((d) => {
+                        const list = d.navigation[navConfigKey];
+                        const from = list.findIndex((n) => n.id === draggingPortalNavId);
+                        const to = list.findIndex((n) => n.id === item.id);
+                        if (from >= 0 && to >= 0) {
+                          const [m] = list.splice(from, 1);
+                          list.splice(to, 0, m);
+                        }
+                      });
+                      setDraggingPortalNavId(null);
+                    }}
+                    className={`flex items-center gap-1 ${!item.visible && isEditActive ? 'opacity-45' : ''}`}
                   >
-                    <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-[#004B87]' : 'text-slate-400'}`} />
-                    <span className="truncate">{item.label}</span>
-                  </button>
+                    {item.customUrl ? (
+                      <a
+                        href={sanitizeHref(item.customUrl)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 min-w-0 flex items-center gap-2.5 px-3 py-2 text-xs font-medium rounded-md text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors whitespace-nowrap"
+                      >
+                        <Icon className="w-4 h-4 shrink-0 text-slate-400" />
+                        <EditableText
+                          as="span"
+                          value={item.label}
+                          onChange={(next) =>
+                            updateContent((d) => {
+                              const t = d.navigation[navConfigKey].find((n) => n.id === item.id);
+                              if (t) t.label = next;
+                            })
+                          }
+                          className="truncate"
+                        />
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        aria-current={active ? 'page' : undefined}
+                        onClick={() => handleSelectNav(item.id)}
+                        className={`flex-1 min-w-0 flex items-center gap-2.5 px-3 py-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
+                          active
+                            ? 'bg-sky-50 text-[#004B87] font-semibold'
+                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                        }`}
+                      >
+                        <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-[#004B87]' : 'text-slate-400'}`} />
+                        <EditableText
+                          as="span"
+                          value={item.label}
+                          onChange={(next) =>
+                            updateContent((d) => {
+                              const t = d.navigation[navConfigKey].find((n) => n.id === item.id);
+                              if (t) t.label = next;
+                            })
+                          }
+                          className="truncate"
+                        />
+                      </button>
+                    )}
+
+                    {isEditActive && (
+                      <span className="inline-flex items-center gap-0.5 shrink-0 pr-1">
+                        <button
+                          type="button"
+                          disabled={idx === 0}
+                          onClick={() => moveSidebarNav(-1)}
+                          aria-label={`Move ${item.label} up`}
+                          className="p-0.5 text-slate-400 hover:text-slate-800 disabled:opacity-30 cursor-pointer"
+                        >
+                          <ArrowUp className="w-3 h-3" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={idx === navItems.length - 1}
+                          onClick={() => moveSidebarNav(1)}
+                          aria-label={`Move ${item.label} down`}
+                          className="p-0.5 text-slate-400 hover:text-slate-800 disabled:opacity-30 cursor-pointer"
+                        >
+                          <ArrowDown className="w-3 h-3" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            updateContent((d) => {
+                              const list = d.navigation[navConfigKey];
+                              const pos = list.findIndex((n) => n.id === item.id);
+                              if (pos >= 0) {
+                                list.splice(pos + 1, 0, {
+                                  ...list[pos],
+                                  id: `nav-copy-${Date.now().toString(36)}`,
+                                  label: `${item.label} (Copy)`,
+                                  customUrl: item.customUrl || 'https://sps.cuny.edu',
+                                });
+                              }
+                            })
+                          }
+                          aria-label={`Duplicate ${item.label}`}
+                          className="p-0.5 text-slate-400 hover:text-slate-800 cursor-pointer"
+                        >
+                          <Copy className="w-3 h-3" />
+                        </button>
+                        {item.customUrl !== undefined && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              updateContent((d) => {
+                                d.navigation[navConfigKey] = d.navigation[navConfigKey].filter(
+                                  (n) => n.id !== item.id
+                                );
+                              })
+                            }
+                            aria-label={`Delete ${item.label}`}
+                            className="p-0.5 text-red-500 hover:text-red-700 cursor-pointer"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        )}
+                      </span>
+                    )}
+                  </div>
                 </React.Fragment>
               );
             })}
+
+            {isEditActive && (
+              <div className="pt-2 px-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    updateContent((d) => {
+                      d.navigation[navConfigKey].push({
+                        id: `custom-nav-${Date.now().toString(36)}`,
+                        label: 'New Custom Link',
+                        section: 'Custom Links',
+                        visible: true,
+                        customUrl: 'https://sps.cuny.edu',
+                      });
+                    })
+                  }
+                  className="w-full inline-flex items-center justify-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-[#004B87] bg-sky-50 border border-dashed border-sky-300 hover:bg-sky-100 rounded-md cursor-pointer"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>Add nav item</span>
+                </button>
+              </div>
+            )}
           </nav>
 
           {/* Signed-in Identity & Switch Action */}
           <div className="p-4 border-t border-slate-200 space-y-3">
+            <PWAInstallButton variant="sidebar" />
             <div className="min-w-0">
               <div className="text-xs font-semibold text-slate-900 truncate">{session.user.name}</div>
               <div className="text-[11px] font-mono text-slate-500 truncate">
@@ -1698,7 +1912,15 @@ export function AppShell() {
               className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-700 border border-slate-300 hover:bg-slate-50 rounded-md transition-colors cursor-pointer whitespace-nowrap"
             >
               <LogOut className="w-3.5 h-3.5 shrink-0" />
-              <span>Switch Identity / Sign Out</span>
+              <EditableText
+                as="span"
+                value={content.pages.portal.switchIdentityLabel}
+                onChange={(next) =>
+                  updateContent((d) => {
+                    d.pages.portal.switchIdentityLabel = next;
+                  })
+                }
+              />
             </button>
           </div>
         </div>
@@ -1717,9 +1939,21 @@ export function AppShell() {
               <Menu className="w-5 h-5" />
             </button>
             <nav className="flex items-center gap-1.5 text-xs text-slate-500 min-w-0" aria-label="Breadcrumb">
-              <span className="whitespace-nowrap">
-                {portalMode === 'ADMIN' ? 'University Administration Portal' : 'Club Management Portal'}
-              </span>
+              <EditableText
+                as="span"
+                value={
+                  portalMode === 'ADMIN'
+                    ? content.pages.portal.adminPortalBreadcrumb
+                    : content.pages.portal.clubPortalBreadcrumb
+                }
+                onChange={(next) =>
+                  updateContent((d) => {
+                    if (portalMode === 'ADMIN') d.pages.portal.adminPortalBreadcrumb = next;
+                    else d.pages.portal.clubPortalBreadcrumb = next;
+                  })
+                }
+                className="whitespace-nowrap"
+              />
               <ChevronRight className="w-3.5 h-3.5 shrink-0 text-slate-400" />
               {portalMode === 'CLUB' && clubData && (
                 <>
@@ -1751,7 +1985,16 @@ export function AppShell() {
               className="relative inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 border border-slate-200 rounded-md cursor-pointer"
             >
               <Bell className="w-3.5 h-3.5 text-slate-600" />
-              <span className="hidden sm:inline">Notifications</span>
+              <EditableText
+                as="span"
+                value={content.pages.portal.notificationsLabel}
+                onChange={(next) =>
+                  updateContent((d) => {
+                    d.pages.portal.notificationsLabel = next;
+                  })
+                }
+                className="hidden sm:inline"
+              />
               {unreadNotificationsCount > 0 && (
                 <span className="px-1.5 py-0.5 text-[10px] font-mono-tabular font-bold bg-[#004B87] text-white rounded">
                   {unreadNotificationsCount}
@@ -1858,12 +2101,42 @@ export function AppShell() {
 
         <main className="flex-1 p-6 lg:p-8 max-w-[1280px] w-full mx-auto">
           <div role="note" className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
-            <strong>Demonstration workspace.</strong> Persona sign-in does not verify institutional identity. Sample account, publishing and analytics records are not evidence of live integrations. Do not enter confidential student information.
+            <strong className="mr-1">
+              <EditableText
+                as="span"
+                value={content.pages.portal.demoBannerTitle}
+                onChange={(next) =>
+                  updateContent((d) => {
+                    d.pages.portal.demoBannerTitle = next;
+                  })
+                }
+              />
+            </strong>
+            <EditableText
+              as="span"
+              multiline
+              value={content.pages.portal.demoBannerText}
+              onChange={(next) =>
+                updateContent((d) => {
+                  d.pages.portal.demoBannerText = next;
+                })
+              }
+            />
           </div>
           <section role="search" aria-label="Workspace page search" className="mb-6 rounded-lg border border-slate-200 bg-white p-3">
-            <label htmlFor="workspace-page-search" className="mb-1 block text-xs font-semibold text-slate-700">Find a page or tool</label>
+            <label htmlFor="workspace-page-search" className="mb-1 block text-xs font-semibold text-slate-700">
+              <EditableText
+                as="span"
+                value={content.pages.portal.searchLabel}
+                onChange={(next) =>
+                  updateContent((d) => {
+                    d.pages.portal.searchLabel = next;
+                  })
+                }
+              />
+            </label>
             <div className="flex gap-2">
-              <input id="workspace-page-search" type="search" maxLength={100} value={pageSearch} onChange={e => setPageSearch(e.target.value)} onKeyDown={e => { if (e.key === 'Escape') setPageSearch(''); }} placeholder="Search posts, members, reminders…" aria-controls="workspace-search-results" className="min-w-0 flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm" />
+              <input id="workspace-page-search" type="search" maxLength={100} value={pageSearch} onChange={e => setPageSearch(e.target.value)} onKeyDown={e => { if (e.key === 'Escape') setPageSearch(''); }} placeholder={content.pages.portal.searchPlaceholder} aria-controls="workspace-search-results" className="min-w-0 flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm" />
               {pageSearch && <button type="button" onClick={() => setPageSearch('')} className="px-2 text-xs text-[#004B87] underline">Clear search</button>}
             </div>
             {pageSearch.trim() && <div id="workspace-search-results" className="mt-3">
@@ -1881,7 +2154,12 @@ export function AppShell() {
             </div>
           )}
 
-          {loading || (!error && portalMode === 'CLUB' && activeClubId && clubData?.club.clubId !== activeClubId) ? (
+          {activeCustomPageId ? (
+            <CustomPageView
+              pageId={activeCustomPageId}
+              onBack={() => setActiveCustomPageId(null)}
+            />
+          ) : loading || (!error && portalMode === 'CLUB' && activeClubId && clubData?.club.clubId !== activeClubId) ? (
             <div className="space-y-4" role="status" aria-live="polite" aria-busy="true">
               <p className="text-sm text-slate-600">Loading workspace data…</p>
               <div className="h-8 w-64 bg-slate-200 rounded animate-pulse" />
@@ -2087,7 +2365,25 @@ export function AppShell() {
               {clubTab === 'overview' && (
                 <div className="space-y-8">
                   <button type="button" onClick={() => setClubTab('club-announcements')} className="w-full text-left rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-[#004B87] hover:bg-sky-100">
-                    Student Life announcements ({announcements.length}) · View updates and deadlines →
+                    <EditableText
+                      as="span"
+                      value={content.pages.portal.announcementsBannerPrefix}
+                      onChange={(next) =>
+                        updateContent((d) => {
+                          d.pages.portal.announcementsBannerPrefix = next;
+                        })
+                      }
+                    />{' '}
+                    ({announcements.length}) ·{' '}
+                    <EditableText
+                      as="span"
+                      value={content.pages.portal.announcementsBannerSuffix}
+                      onChange={(next) =>
+                        updateContent((d) => {
+                          d.pages.portal.announcementsBannerSuffix = next;
+                        })
+                      }
+                    />
                   </button>
                   <ClubOverview
                     key={clubData.club.clubId}
@@ -2321,7 +2617,19 @@ export function AppShell() {
           ) : (
             <PublicCampusDirectory mode="portal" onRefreshParent={refreshAll} />
           )}
+
+          <div className="mt-8">
+            <CustomSectionsList
+              sections={content.pages.portal.customSections}
+              onChange={(nextSections) =>
+                updateContent((d) => {
+                  d.pages.portal.customSections = nextSections;
+                })
+              }
+            />
+          </div>
         </main>
+        <SiteFooter compact />
       </div>
     </div>
   );

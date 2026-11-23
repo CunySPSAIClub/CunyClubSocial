@@ -1,15 +1,38 @@
 import React from 'react';
+import { useSiteContent } from '../context/SiteContentContext';
+import { sanitizeImageSrc } from '../data/siteContent';
 import { getClubLogoUrl, isMsaClubEntity, STUDENT_LIFE_LOGO_URL } from '../utils/brandAssets';
+import { EditableImage, EditableText } from './cms/EditablePrimitives';
 
 interface StudentLifeLogoProps {
   className?: string;
 }
 
 export function StudentLifeLogo({ className = 'h-10 w-auto' }: StudentLifeLogoProps) {
+  const { content, isEditActive, updateContent } = useSiteContent();
+  const src = sanitizeImageSrc(content.settings.partnerLogoUrl) || STUDENT_LIFE_LOGO_URL;
+  const alt = content.settings.partnerLogoAlt || 'CUNY SPS Office of Student Life';
+
+  if (isEditActive) {
+    return (
+      <EditableImage
+        src={src}
+        alt={alt}
+        onChange={(next) =>
+          updateContent((draft) => {
+            draft.settings.partnerLogoUrl = next.src || STUDENT_LIFE_LOGO_URL;
+            draft.settings.partnerLogoAlt = next.alt;
+          })
+        }
+        className={`object-contain shrink-0 select-none ${className}`}
+      />
+    );
+  }
+
   return (
     <img
-      src={STUDENT_LIFE_LOGO_URL}
-      alt="CUNY SPS Office of Student Life"
+      src={src}
+      alt={alt}
       className={`object-contain shrink-0 select-none ${className}`}
     />
   );
@@ -39,7 +62,21 @@ export function HubLogoMark({
   size = 'md',
   className = '',
 }: HubLogoMarkProps) {
+  const { content } = useSiteContent();
   const sizeClass = HUB_SIZE_MAP[size];
+  const customLogo = sanitizeImageSrc(content.settings.logoUrl);
+
+  if (customLogo) {
+    return (
+      <img
+        src={customLogo}
+        alt={content.settings.logoAlt || content.settings.siteName}
+        referrerPolicy="no-referrer"
+        className={`${sizeClass} object-contain rounded-lg shrink-0 select-none ${className}`}
+      />
+    );
+  }
+
   const isDarkTile = surface === 'ink' || surface === 'bare-light';
   const strokeColor =
     surface === 'signal' ? '#0B0B0F' : isDarkTile ? '#FFFFFF' : '#0B0B0F';
@@ -63,7 +100,7 @@ export function HubLogoMark({
       viewBox="0 0 64 64"
       fill="none"
       role="img"
-      aria-label="CUNY SPS Club Social Hub logo"
+      aria-label={content.settings.logoAlt || 'CUNY SPS Club Social Hub logo'}
       className={`${sizeClass} shrink-0 select-none ${className}`}
     >
       {tileBg !== 'none' && (
@@ -130,6 +167,7 @@ interface HubLogoLockupProps {
   size?: 'sm' | 'md' | 'lg';
   showSubtitle?: boolean;
   subtitle?: string;
+  subtitleField?: 'tagline' | 'sidebarSubtitle' | 'pilotBadgeSubtitle';
 }
 
 export function HubLogoLockup({
@@ -137,28 +175,60 @@ export function HubLogoLockup({
   theme = 'light',
   size = 'md',
   showSubtitle = false,
-  subtitle = 'CUNY SPS · Office of Student Life',
+  subtitle,
+  subtitleField = 'tagline',
 }: HubLogoLockupProps) {
+  const { content, isEditActive, updateContent } = useSiteContent();
   const isDark = theme === 'dark';
   const markSize = size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'md';
   const textSize =
     size === 'sm' ? 'text-sm' : size === 'lg' ? 'text-xl' : 'text-base';
   const dotSize = size === 'lg' ? 'w-2 h-2' : 'w-1.5 h-1.5';
 
+  const resolvedSubtitle =
+    content.settings[subtitleField] || subtitle || 'CUNY SPS · Office of Student Life';
+
+  const markFallback = (
+    <HubLogoMark
+      variant={variant}
+      surface={isDark ? 'bare-light' : 'ink'}
+      size={markSize}
+    />
+  );
+
   return (
     <div className="inline-flex items-center gap-3 min-w-0 select-none">
-      <HubLogoMark
-        variant={variant}
-        surface={isDark ? 'bare-light' : 'ink'}
-        size={markSize}
-      />
+      {isEditActive ? (
+        <EditableImage
+          src={content.settings.logoUrl}
+          alt={content.settings.logoAlt || content.settings.siteName}
+          onChange={(next) =>
+            updateContent((draft) => {
+              draft.settings.logoUrl = next.src;
+              draft.settings.logoAlt = next.alt;
+            })
+          }
+          className={`${HUB_SIZE_MAP[markSize]} object-contain rounded-lg shrink-0`}
+          fallback={markFallback}
+        />
+      ) : (
+        markFallback
+      )}
       <div className="min-w-0">
         <div
           className={`font-brand font-extrabold tracking-tight leading-none flex items-baseline gap-0.5 whitespace-nowrap ${textSize} ${
             isDark ? 'text-white' : 'text-[#0B0B0F]'
           }`}
         >
-          <span>Club Social Hub</span>
+          <EditableText
+            as="span"
+            value={content.settings.siteName}
+            onChange={(next) =>
+              updateContent((draft) => {
+                draft.settings.siteName = next;
+              })
+            }
+          />
           <span
             aria-hidden="true"
             className={`inline-block ${dotSize} ${
@@ -172,7 +242,15 @@ export function HubLogoLockup({
               isDark ? 'text-slate-300' : 'text-slate-500'
             }`}
           >
-            {subtitle}
+            <EditableText
+              as="span"
+              value={resolvedSubtitle}
+              onChange={(next) =>
+                updateContent((draft) => {
+                  draft.settings[subtitleField] = next;
+                })
+              }
+            />
           </div>
         )}
       </div>

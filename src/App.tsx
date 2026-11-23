@@ -5,7 +5,12 @@
 
 import { AppShell } from './components/AppShell';
 import { LoginView } from './components/LoginView';
+import { EditModeChrome } from './components/cms/EditModeChrome';
+import { SiteSettingsDrawer } from './components/cms/SiteSettingsDrawer';
+import { PWAChrome } from './components/pwa/PWAChrome';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { PWAProvider } from './context/PWAContext';
+import { SiteContentProvider } from './context/SiteContentContext';
 
 function RootRouter() {
   const { session, loading } = useAuth();
@@ -27,8 +32,15 @@ function RootRouter() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <RootRouter />
-    </AuthProvider>
+    <PWAProvider>
+      <SiteContentProvider>
+        <AuthProvider>
+          <EditModeChrome />
+          <RootRouter />
+          <SiteSettingsDrawer />
+          <PWAChrome />
+        </AuthProvider>
+      </SiteContentProvider>
+    </PWAProvider>
   );
 }

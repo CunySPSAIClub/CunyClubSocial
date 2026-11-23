@@ -30,6 +30,15 @@ import type {
   WhatsAppAlertMessage,
   WhatsAppGroupLink,
 } from '../src/types.ts';
+import {
+  DEFAULT_SITE_CONTENT,
+  cloneSiteContent,
+  normalizeSiteContent,
+  type SiteContent,
+} from '../src/data/siteContent.ts';
+import { createDefaultClubLinks, createSeedAiClubLinks, normalizeClubLinks } from '../src/utils/clubLinks.ts';
+import { splitFullName } from './authConfig.ts';
+import type { StoredSiteEditorAuth } from './siteContentAuth.ts';
 
 export interface StoredSmtpConfig {
   host: string;
@@ -82,6 +91,9 @@ export interface HubDatabase {
   blogPosts: ClubBlogPost[];
   clubBlogTaxonomies: Record<string, ClubBlogTaxonomy>;
   publicCatalogEventsSeeded?: boolean;
+  siteContent: SiteContent;
+  siteContentUpdatedAt: string;
+  siteEditorAuth?: StoredSiteEditorAuth;
 }
 
 const DATA_DIR = path.resolve(process.cwd(), '.data');
@@ -927,6 +939,7 @@ function createCatalogClubs(): Club[] {
       onboardedAt: '2026-10-15T14:00:00.000Z',
       upcomingLeadershipChange: 'Spring 2027 Co-Chair transition scheduled (Noah Kim)',
       semesterBudgetAllocatedUsd: 500,
+      links: createSeedAiClubLinks(),
     },
     {
       clubId: 'club-arts-crafts',
@@ -1405,6 +1418,46 @@ function createInitialDatabase(): HubDatabase {
       systemRole: 'STANDARD_USER',
       status: 'Active',
       lastLoginAt: '2026-11-11T15:00:00.000Z',
+      onboardingCompleted: true,
+    },
+    {
+      userId: 'usr-new-student',
+      name: 'Maya Chen',
+      displayName: 'Maya',
+      lastName: 'Chen',
+      email: 'maya.chen@spsmail.cuny.edu',
+      identitySubject: 'cuny-sso|mchen-725',
+      title: 'CUNY SPS Student',
+      departmentOrMajor: 'M.S. Generative AI · SPS',
+      program: '',
+      programLocked: false,
+      interests: [],
+      notificationsEnabled: true,
+      emailRemindersEnabled: true,
+      onboardingCompleted: false,
+      systemRole: 'STANDARD_USER',
+      status: 'Active',
+      lastLoginAt: '2026-11-22T15:00:00.000Z',
+    },
+    {
+      userId: 'usr-pending-staff',
+      name: 'Alex Rivera',
+      displayName: 'Alex',
+      lastName: 'Rivera',
+      email: 'alex.rivera@sps.cuny.edu',
+      identitySubject: 'cuny-sso|arivera-812',
+      title: 'Student Services Specialist',
+      departmentOrMajor: 'CUNY SPS Student Life',
+      program: 'CUNY SPS Student Life',
+      programLocked: true,
+      interests: [],
+      notificationsEnabled: true,
+      emailRemindersEnabled: true,
+      onboardingCompleted: false,
+      staffAccessPending: true,
+      systemRole: 'STANDARD_USER',
+      status: 'Active',
+      lastLoginAt: '2026-11-22T15:05:00.000Z',
     },
   ];
 
@@ -2531,6 +2584,8 @@ function createInitialDatabase(): HubDatabase {
     blogPosts,
     clubBlogTaxonomies,
     publicCatalogEventsSeeded: true,
+    siteContent: cloneSiteContent(DEFAULT_SITE_CONTENT),
+    siteContentUpdatedAt: new Date().toISOString(),
   };
 }
 
@@ -2901,6 +2956,12 @@ export function getDb(): HubDatabase {
           c.semesterBudgetAllocatedUsd = 500;
           migrated = true;
         }
+        if (!c.links) {
+          c.links = c.clubId === 'club-ai' ? createSeedAiClubLinks() : createDefaultClubLinks();
+          migrated = true;
+        } else {
+          c.links = normalizeClubLinks(c.links);
+        }
       }
       if (!cachedDb.resourceSubmissions.some((s) => s.submissionId === 'SUB-2026-103')) {
         const sub103 = createInitialResourceSubmissions().find(
@@ -2986,6 +3047,55 @@ export function getDb(): HubDatabase {
       for (const thr of cachedDb.forumThreads ?? []) {
         if (!Array.isArray(thr.subscriberUserIds)) {
           thr.subscriberUserIds = [thr.authorId];
+          migrated = true;
+        }
+      }
+      if (!cachedDb.siteContent || typeof cachedDb.siteContent !== 'object') {
+        cachedDb.siteContent = cloneSiteContent(DEFAULT_SITE_CONTENT);
+        cachedDb.siteContentUpdatedAt = new Date().toISOString();
+        migrated = true;
+      } else {
+        cachedDb.siteContent = normalizeSiteContent(cachedDb.siteContent);
+      }
+      if (!cachedDb.siteContentUpdatedAt) {
+        cachedDb.siteContentUpdatedAt = new Date().toISOString();
+        migrated = true;
+      }
+      // Backfill onboarding profile fields for existing users and ensure Part 4 demo users exist
+      for (const usr of cachedDb.users ?? []) {
+        if (!usr.displayName || usr.lastName === undefined) {
+          const { firstName, lastName } = splitFullName(usr.name);
+          if (!usr.displayName) usr.displayName = firstName;
+          if (usr.lastName === undefined) usr.lastName = lastName;
+          migrated = true;
+        }
+        if (usr.onboardingCompleted === undefined) {
+          usr.onboardingCompleted = true;
+          migrated = true;
+        }
+        if (usr.program === undefined) {
+          usr.program =
+            usr.systemRole === 'SL_SUPER_ADMIN' || usr.systemRole === 'SL_ADMIN'
+              ? 'CUNY SPS Student Life'
+              : usr.departmentOrMajor || '';
+          usr.programLocked = Boolean(usr.program);
+          migrated = true;
+        }
+        if (!Array.isArray(usr.interests)) {
+          usr.interests = [];
+          migrated = true;
+        }
+        if (usr.notificationsEnabled === undefined) {
+          usr.notificationsEnabled = usr.emailRemindersEnabled !== false;
+          migrated = true;
+        }
+      }
+      const seedNewUsers = createInitialDatabase().users.filter(
+        (u) => u.userId === 'usr-new-student' || u.userId === 'usr-pending-staff'
+      );
+      for (const seedUsr of seedNewUsers) {
+        if (!cachedDb.users.some((u) => u.userId === seedUsr.userId)) {
+          cachedDb.users.push(seedUsr);
           migrated = true;
         }
       }

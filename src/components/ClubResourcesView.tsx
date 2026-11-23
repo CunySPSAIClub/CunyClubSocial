@@ -64,7 +64,6 @@ const CATEGORY_ORDER: ClubResourceCategory[] = [
   'Financial Reimbursement Forms',
 ];
 
-const STORAGE_KEY = 'cuny_sps_hub_user_id';
 
 function isPdfExportableCategory(category: ClubResourceCategory): boolean {
   return (
@@ -283,9 +282,9 @@ export function ClubResourcesView({ clubs = [], activeClubId }: ClubResourcesVie
     setError('');
     setNotice('');
     try {
-      const userId = session?.user.userId ?? localStorage.getItem(STORAGE_KEY) ?? '';
       const response = await fetch(`/api/resources/${resource.resourceId}/download`, {
-        headers: userId ? { 'x-cuny-user-id': userId } : {},
+        credentials: 'include',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
       });
       if (!response.ok) {
         const errPayload = (await response.json().catch(() => ({}))) as { error?: string };
