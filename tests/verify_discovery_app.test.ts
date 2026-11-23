@@ -103,3 +103,10 @@ test('Screen 5 (Official School Forms) maps all 34 clubs to official CUNY SPS jo
   assert.ok(aiClub);
   assert.equal(aiClub.joinUrl, 'https://forms.office.com/r/jSfyJUzCqG', 'AI Club must link directly to its official Microsoft Join Form');
 });
+
+test('Screen 6 (Public Safety) verifies Officer Portal and Officer Login are completely removed', () => {
+  const html = renderToString(React.createElement(StudentDiscoveryApp));
+  assert.doesNotMatch(html, /Officer Portal/i, 'Officer Portal button must not exist in public UI');
+  assert.doesNotMatch(html, /Officer Login/i, 'Officer Login button must not exist in public UI');
+  assert.doesNotMatch(html, /Club Officer & Management Portal/i, 'Management Portal button must not exist in public UI');
+});
