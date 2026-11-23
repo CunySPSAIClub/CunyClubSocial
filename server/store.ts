@@ -825,10 +825,10 @@ function createInitialBudgetIncreaseRequests(): BudgetIncreaseRequest[] {
 }
 
 function createInitialClubBroadcasts(): ClubBroadcastMessage[] {
-  const aiInvite = 'https://chat.whatsapp.com/LiEAv8DRlII7pMqN60PGj6?s=cl&p=a&iam=2';
+  const aiInvite = 'https://chat.whatsapp.com/LiEAv8DRlII7pMqN60PGj6';
   const aiShareText =
     '[Artificial Intelligence Club — Broadcast]\n*Fall AI & Civic Tech Build Night — Logistics & Project Teams*\n\nHi everyone! Join us Thursday, Nov 19 at 6:30 PM ET (119 W 31st St Room 402 + Zoom). Reply right here in our workspace if you need a demo slot or team match!';
-  const msaInvite = 'https://chat.whatsapp.com/CunySpsMsaCommunity';
+  const msaInvite = 'https://chat.whatsapp.com/F8DqIiNLEv27IY9vXE09UZ';
   const msaShareText =
     '[Muslim Student Association (MSA) — Broadcast]\n*MSA Community Tea & Study Circle — Room & Dietary Notes*\n\nAs-salamu alaykum! Our Wed Nov 18 tea & study circle starts at 5:30 PM ET in the Student Lounge + Zoom. Reply here with tea/snack preferences or study topics!';
 
@@ -2187,7 +2187,7 @@ function createInitialDatabase(): HubDatabase {
       groupId: 'wa-grp-ai-community',
       clubId: 'club-ai',
       groupName: 'AI Club General Community',
-      inviteLink: 'https://chat.whatsapp.com/LiEAv8DRlII7pMqN60PGj6?s=cl&p=a&iam=2',
+      inviteLink: 'https://chat.whatsapp.com/LiEAv8DRlII7pMqN60PGj6',
       groupCategory: 'General Community',
       description: 'Main WhatsApp chat for build night reminders, Zoom room alerts, and peer AI study resources.',
       memberCountEstimate: 64,
@@ -2206,7 +2206,7 @@ function createInitialDatabase(): HubDatabase {
       groupId: 'wa-grp-msa-community',
       clubId: 'club-msa',
       groupName: 'Muslim Student Association (MSA) Alerts & Community',
-      inviteLink: 'https://chat.whatsapp.com/CunySpsMsaCommunity',
+      inviteLink: 'https://chat.whatsapp.com/F8DqIiNLEv27IY9vXE09UZ',
       groupCategory: 'Event Alerts',
       description: 'Official WhatsApp group for tea & study circles, Jummah updates, community service drives, and event reminders.',
       memberCountEstimate: 52,
@@ -2603,9 +2603,17 @@ export function getDb(): HubDatabase {
         const aiWaGroup = cachedDb.whatsappGroups.find((g) => g.groupId === 'wa-grp-ai-community');
         if (
           aiWaGroup &&
-          aiWaGroup.inviteLink === 'https://chat.whatsapp.com/CunySpsAiClubCommunity'
+          aiWaGroup.inviteLink !== 'https://chat.whatsapp.com/LiEAv8DRlII7pMqN60PGj6'
         ) {
-          aiWaGroup.inviteLink = 'https://chat.whatsapp.com/LiEAv8DRlII7pMqN60PGj6?s=cl&p=a&iam=2';
+          aiWaGroup.inviteLink = 'https://chat.whatsapp.com/LiEAv8DRlII7pMqN60PGj6';
+          migrated = true;
+        }
+        const msaWaGroup = cachedDb.whatsappGroups.find((g) => g.groupId === 'wa-grp-msa-community');
+        if (
+          msaWaGroup &&
+          msaWaGroup.inviteLink !== 'https://chat.whatsapp.com/F8DqIiNLEv27IY9vXE09UZ'
+        ) {
+          msaWaGroup.inviteLink = 'https://chat.whatsapp.com/F8DqIiNLEv27IY9vXE09UZ';
           migrated = true;
         }
       }
@@ -2620,6 +2628,17 @@ export function getDb(): HubDatabase {
       if (!Array.isArray(cachedDb.clubBroadcasts)) {
         cachedDb.clubBroadcasts = seedDb.clubBroadcasts;
         migrated = true;
+      } else {
+        for (const b of cachedDb.clubBroadcasts) {
+          if (b.clubId === 'club-ai' && b.whatsappInviteLink !== 'https://chat.whatsapp.com/LiEAv8DRlII7pMqN60PGj6') {
+            b.whatsappInviteLink = 'https://chat.whatsapp.com/LiEAv8DRlII7pMqN60PGj6';
+            migrated = true;
+          }
+          if (b.clubId === 'club-msa' && b.whatsappInviteLink !== 'https://chat.whatsapp.com/F8DqIiNLEv27IY9vXE09UZ') {
+            b.whatsappInviteLink = 'https://chat.whatsapp.com/F8DqIiNLEv27IY9vXE09UZ';
+            migrated = true;
+          }
+        }
       }
       if (!Array.isArray(cachedDb.blogPosts)) {
         cachedDb.blogPosts = seedDb.blogPosts;
