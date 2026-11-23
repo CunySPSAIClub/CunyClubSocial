@@ -26,6 +26,7 @@ import {
   FileText,
   FolderDown,
   Globe,
+  Home as HomeIcon,
   Inbox,
   KeyRound,
   LayoutDashboard,
@@ -1597,6 +1598,18 @@ export function AppShell() {
   const currentTabLabel = activeCustomPage
     ? activeCustomPage.title
     : navItems.find((item) => item.id === currentTabId)?.label ?? 'Overview';
+  const homeTabId = portalMode === 'ADMIN' ? 'dashboard' : 'overview';
+  const isHome = !activeCustomPage && currentTabId === homeTabId;
+
+  const handleHome = async () => {
+    if (!(await requestDraftDiscard())) return;
+    setActiveCustomPageId(null);
+    if (portalMode === 'ADMIN') setAdminTab('dashboard');
+    else setClubTab('overview');
+    setMobileMenuOpen(false);
+    setNotificationsOpen(false);
+    window.scrollTo(0, 0);
+  };
 
   const handleSelectNav = async (id: string) => {
     if (id === 'ask-club') setQuestionEvent(null);
@@ -1627,13 +1640,23 @@ export function AppShell() {
         }`}
       >
         <div className="px-4 py-3.5 border-b border-slate-200 flex items-center justify-between gap-2 bg-[#0B0B0F]">
-          <HubLogoLockup
-            theme="dark"
-            size="sm"
-            showSubtitle
-            subtitleField="sidebarSubtitle"
-            subtitle={content.settings.sidebarSubtitle}
-          />
+          <div className="relative min-w-0">
+            <HubLogoLockup
+              theme="dark"
+              size="sm"
+              showSubtitle
+              subtitleField="sidebarSubtitle"
+              subtitle={content.settings.sidebarSubtitle}
+            />
+            {!isEditActive && (
+              <button
+                type="button"
+                aria-label="Club Social Hub home"
+                onClick={() => void handleHome()}
+                className="absolute inset-0 cursor-pointer rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              />
+            )}
+          </div>
           <button
             type="button"
             onClick={() => setMobileMenuOpen(false)}
@@ -1731,6 +1754,17 @@ export function AppShell() {
         {/* Navigation Links & Signed-in Identity */}
         <div className="flex-1 overflow-y-auto">
           <nav className="p-3 space-y-0.5" aria-label="Portal Navigation">
+            <button
+              type="button"
+              onClick={() => void handleHome()}
+              aria-current={isHome ? 'page' : undefined}
+              className={`mb-2 flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm font-medium cursor-pointer ${
+                isHome ? 'bg-sky-50 text-[#004B87]' : 'text-slate-700 hover:bg-slate-100'
+              }`}
+            >
+              <HomeIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+              Home
+            </button>
             {navItems.map((item, idx) => {
               const Icon = item.icon;
               const active = !activeCustomPageId && currentTabId === item.id;
@@ -1947,8 +1981,8 @@ export function AppShell() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-14 bg-white border-b border-slate-200 px-6 flex items-center justify-between gap-8 shrink-0">
-          <div className="flex items-center gap-3 min-w-0">
+        <header className="h-14 bg-white border-b border-slate-200 px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-8 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
@@ -1956,6 +1990,18 @@ export function AppShell() {
               aria-label="Open navigation"
             >
               <Menu className="w-5 h-5" />
+            </button>
+            <button
+              type="button"
+              aria-label="Home"
+              title="Home"
+              aria-current={isHome ? 'page' : undefined}
+              onClick={() => void handleHome()}
+              className={`inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-md ${
+                isHome ? 'bg-sky-50 text-[#004B87]' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+              }`}
+            >
+              <HomeIcon aria-hidden="true" className="h-5 w-5" />
             </button>
             <nav className="flex items-center gap-1.5 text-xs text-slate-500 min-w-0" aria-label="Breadcrumb">
               <EditableText
@@ -1971,9 +2017,9 @@ export function AppShell() {
                     else d.pages.portal.clubPortalBreadcrumb = next;
                   })
                 }
-                className="whitespace-nowrap"
+                className="hidden whitespace-nowrap sm:inline"
               />
-              <ChevronRight className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+              <ChevronRight className="hidden w-3.5 h-3.5 shrink-0 text-slate-400 sm:block" />
               {portalMode === 'CLUB' && clubData && (
                 <>
                   <span className="inline-flex items-center gap-1.5 truncate max-w-[200px] text-slate-700 font-medium">
