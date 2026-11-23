@@ -81,23 +81,23 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
       {
         "platform": "facebook",
         "actionLabel": "Visit Facebook",
-        "url": "https://www.facebook.com/cunyspsaiclub",
+        "url": "https://www.facebook.com/cunysps/",
         "badge": "Verified Official Link",
-        "description": "Official CUNY SPS Artificial Intelligence Club Facebook page for announcements and recaps."
+        "description": "Official CUNY SPS Facebook page for school-wide updates, events, and club highlights."
       },
       {
         "platform": "instagram",
         "actionLabel": "Follow on Instagram",
-        "url": "https://www.instagram.com/cunysps.ai",
+        "url": "https://www.instagram.com/cuny_sps_ai_club/",
         "badge": "Verified Official Link",
-        "description": "Event announcements, student project spotlights, and campus AI news."
+        "description": "Official AI Club Instagram for workshop announcements, hackathon recaps, and AI project spotlights."
       },
       {
         "platform": "linkedin",
         "actionLabel": "Connect on LinkedIn",
-        "url": "https://www.linkedin.com/company/cunysps-ai-club",
+        "url": "https://www.linkedin.com/school/cuny-school-of-professional-studies/",
         "badge": "Verified Official Link",
-        "description": "Professional networking, alumni connections, and career opportunities."
+        "description": "CUNY SPS professional network, alumni connections, and institutional updates."
       },
       {
         "platform": "website",
@@ -137,15 +137,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes Black students and allies across all degree programs to celebrate Black culture, foster leadership, and build supportive academic and social networks.",
     "accentColor": "#D97706",
     "isFeatured": false,
-    "channels": [
-      {
-        "platform": "instagram",
-        "actionLabel": "Follow on Instagram",
-        "url": "https://www.instagram.com/cunysps_bsu",
-        "badge": "Verified Official Link",
-        "description": "Black Student Union event flyers, mixers, and community announcements."
-      }
-    ],
+    "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
@@ -286,22 +278,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Welcomes cinephiles, screenwriters, video creators, media studies majors, and anyone who loves discussing film, streaming, and television.",
     "accentColor": "#EA580C",
     "isFeatured": false,
-    "channels": [
-      {
-        "platform": "tiktok",
-        "actionLabel": "Watch on TikTok",
-        "url": "https://www.tiktok.com/@cunyspsfilm",
-        "badge": "Verified Official Link",
-        "description": "Student short films, scene breakdowns, and cinema meetups."
-      },
-      {
-        "platform": "instagram",
-        "actionLabel": "Follow on Instagram",
-        "url": "https://www.instagram.com/cunyspsfilm",
-        "badge": "Verified Official Link",
-        "description": "Screening announcements, film festivals, and club updates."
-      }
-    ],
+    "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
@@ -402,13 +379,6 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "isFeatured": false,
     "channels": [
       {
-        "platform": "linkedin",
-        "actionLabel": "Connect on LinkedIn",
-        "url": "https://www.linkedin.com/company/cuny-sps-melo",
-        "badge": "Verified Official Link",
-        "description": "MELO executive speaker series and entrepreneurial networking."
-      },
-      {
         "platform": "website",
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/spsmelo/",
@@ -475,13 +445,6 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "url": "https://cuny-msa-hub.pages.dev/",
         "badge": "Verified Official Link",
         "description": "CUNY SPS Muslim Student Association Centralized Community Hub."
-      },
-      {
-        "platform": "instagram",
-        "actionLabel": "Follow on Instagram",
-        "url": "https://www.instagram.com/cunysps.msa",
-        "badge": "Verified Official Link",
-        "description": "Follow for event flyers, meeting schedules, and club stories."
       }
     ],
     "logoUrl": "./club-logos/msa-club.png",
@@ -531,13 +494,6 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "isFeatured": false,
     "channels": [
       {
-        "platform": "instagram",
-        "actionLabel": "Follow on Instagram",
-        "url": "https://www.instagram.com/cunyspsphoto",
-        "badge": "Verified Official Link",
-        "description": "Monthly photo challenges and student gallery features."
-      },
-      {
         "platform": "website",
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/photography-club/",
@@ -561,6 +517,13 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "accentColor": "#A855F7",
     "isFeatured": false,
     "channels": [
+      {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/sps_prideclub/",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS Pride Club Instagram for community events, discussions, and LGBTQIA+ advocacy."
+      },
       {
         "platform": "website",
         "actionLabel": "Visit OpenLab Hub",
@@ -662,15 +625,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Open to changemakers, student advocates, and community organizers passionate about housing justice, environmental action, disability rights, and civic advocacy.",
     "accentColor": "#DC2626",
     "isFeatured": true,
-    "channels": [
-      {
-        "platform": "instagram",
-        "actionLabel": "Follow on Instagram",
-        "url": "https://www.instagram.com/cunysps_siac",
-        "badge": "Verified Official Link",
-        "description": "Civic initiatives, mutual aid drives, and policy advocacy."
-      }
-    ],
+    "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
@@ -700,15 +655,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Dedicated to student veterans, active duty service members, reservists, military spouses, and civilian allies navigating academic and civilian transitions.",
     "accentColor": "#4B5563",
     "isFeatured": false,
-    "channels": [
-      {
-        "platform": "facebook",
-        "actionLabel": "Visit Facebook",
-        "url": "https://www.facebook.com/cunyspsveterans",
-        "badge": "Verified Official Link",
-        "description": "Official CUNY SPS Student Veterans Organization Facebook page."
-      }
-    ],
+    "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
@@ -738,22 +685,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "whoItWelcomes": "Open to all women, non-binary students, and allies pursuing or interested in science, technology, engineering, mathematics, data analytics, and tech career pathways.",
     "accentColor": "#7C3AED",
     "isFeatured": true,
-    "channels": [
-      {
-        "platform": "tiktok",
-        "actionLabel": "Watch on TikTok",
-        "url": "https://www.tiktok.com/@cunysps_wstem",
-        "badge": "Verified Official Link",
-        "description": "STEM tutorials, student project showcases, and tech tips."
-      },
-      {
-        "platform": "linkedin",
-        "actionLabel": "Connect on LinkedIn",
-        "url": "https://www.linkedin.com/company/cunysps-women-in-stem",
-        "badge": "Verified Official Link",
-        "description": "Women in STEM professional network and career panels."
-      }
-    ],
+    "channels": [],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
