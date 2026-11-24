@@ -1741,7 +1741,7 @@ export function StudentDiscoveryApp() {
                         The official student-run news publication of CUNY SPS, reporting on campus life, student achievements, and academic news.
                       </p>
                     </div>
-                    <div className="pt-5 mt-5 border-t border-slate-100">
+                    <div className="pt-5 mt-5 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2">
                       <a
                         href="https://openlab.sps.cuny.edu/thekiosk/"
                         target="_blank"
@@ -1750,6 +1750,16 @@ export function StudentDiscoveryApp() {
                       >
                         <span>Read The Kiosk</span>
                         <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                      <a
+                        href="https://www.instagram.com/cunyspskiosk/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 hover:text-slate-900"
+                      >
+                        <InstagramIcon className="w-3 h-3 fill-slate-600" />
+                        <span>@cunyspskiosk</span>
+                        <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                       </a>
                     </div>
                   </div>
@@ -2105,6 +2115,16 @@ export function StudentDiscoveryApp() {
                   >
                     <FacebookIcon className="w-4 h-4 fill-white shrink-0" />
                     <span>SPS Facebook</span>
+                    <ExternalLink className="w-3 h-3 opacity-80" />
+                  </a>
+                  <a
+                    href="https://www.instagram.com/cunyspsstudentlife"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="col-span-2 flex items-center justify-center gap-1.5 px-3 py-2 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-95 text-white rounded-xl text-xs font-semibold shadow-xs transition-opacity"
+                  >
+                    <InstagramIcon className="w-3.5 h-3.5 fill-white shrink-0" />
+                    <span>Student Life Instagram (@cunyspsstudentlife)</span>
                     <ExternalLink className="w-3 h-3 opacity-80" />
                   </a>
                 </div>

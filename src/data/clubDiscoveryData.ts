@@ -56,7 +56,15 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "accentColor": "#DB2777",
     "joinUrl": "https://forms.office.com/r/jz9viSud7J",
     "isFeatured": false,
-    "channels": [],
+    "channels": [
+      {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/animeclubsps/",
+        "badge": "Verified Official Link",
+        "description": "Official Anime Club Instagram for watch party schedules, anime discussions, and creative fandom meetups."
+      }
+    ],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
@@ -121,7 +129,15 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "accentColor": "#D97706",
     "joinUrl": "https://forms.office.com/r/0Gsn6smjkk",
     "isFeatured": false,
-    "channels": [],
+    "channels": [
+      {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/bsu.sps/",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS Black Student Union Instagram for community gatherings, cultural celebrations, and leadership panels."
+      }
+    ],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
@@ -136,6 +152,13 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "joinUrl": "https://forms.office.com/r/0Mn4RgzeLr",
     "isFeatured": false,
     "channels": [
+      {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/sps.bookclub/",
+        "badge": "Verified Official Link",
+        "description": "Official SPS Book Club Instagram for monthly book selections, reading prompts, and discussion highlights."
+      },
       {
         "platform": "website",
         "actionLabel": "Visit OpenLab Hub",
@@ -187,6 +210,13 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "joinUrl": "https://forms.office.com/r/P3CieH7HML",
     "isFeatured": false,
     "channels": [
+      {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/laps.sps/",
+        "badge": "Verified Official Link",
+        "description": "Official Literary Arts & Publishing Society (LAPS) Instagram for student publications, writing prompts, and poetry circles."
+      },
       {
         "platform": "website",
         "actionLabel": "Visit OpenLab Hub",
@@ -350,6 +380,13 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "isFeatured": false,
     "channels": [
       {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/cunymelo/",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY MELO Instagram for executive speaker panels, startup pitch nights, and leadership workshops."
+      },
+      {
         "platform": "website",
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/spsmelo/",
@@ -385,7 +422,15 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "accentColor": "#78716C",
     "joinUrl": "https://forms.office.com/r/kkBaWxfDUV",
     "isFeatured": false,
-    "channels": [],
+    "channels": [
+      {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/museumstudiesclubcunysps/",
+        "badge": "Verified Official Link",
+        "description": "Official Museum Studies Club Instagram for NYC museum walks, curatorial panels, and exhibition highlights."
+      }
+    ],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
@@ -512,6 +557,13 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "isFeatured": false,
     "channels": [
       {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/psychologyclubsps/",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS Psychology Club Instagram for research spotlights, academic colloquia, and psychology meetups."
+      },
+      {
         "platform": "website",
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/groups/psychology-club/",
@@ -619,7 +671,15 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "accentColor": "#4B5563",
     "joinUrl": "https://forms.office.com/r/4EeeUD7LX2",
     "isFeatured": false,
-    "channels": [],
+    "channels": [
+      {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/cunyspsveterans/",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS Student Veterans Organization Instagram for military-connected student fellowship and community resources."
+      }
+    ],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   },
   {
@@ -661,7 +721,15 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "accentColor": "#0284C7",
     "joinUrl": "https://forms.office.com/pages/responsepage.aspx?id=s_BgbwZfCU6XFZiduozH2OUWoTTGNHdIl-sDDEQRP3xUNDgwSTVMSkVKRVMwS0s1WTlSQkQ1M0E0NC4u",
     "isFeatured": false,
-    "channels": [],
+    "channels": [
+      {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/cunysps_youthstudies/",
+        "badge": "Verified Official Link",
+        "description": "Official Youth Studies Club Instagram for youth advocacy initiatives, research colloquia, and student community events."
+      }
+    ],
     "logoSource": "Initials fallback displayed; awaiting official club logo submission"
   }
 ];
