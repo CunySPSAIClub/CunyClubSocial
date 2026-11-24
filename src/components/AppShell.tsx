@@ -1379,7 +1379,7 @@ export function AppShell() {
   const [requestedClubTab, setClubTab] = useState('overview');
   const currentMembershipRole = clubData?.club.clubId === activeClubId ? clubData.effectiveRole : session?.effectiveAdminRole || session?.memberships.find(m => m.clubId === activeClubId && m.status === 'Active')?.role;
   const isContributor = currentMembershipRole === 'CONTRIBUTOR';
-  const contributorPages = ['overview','club-announcements','upcoming-events','event-calendar','club-blog','club-forums','ask-club'];
+  const contributorPages = ['overview','club-announcements','upcoming-events','event-calendar','club-blog','club-forums','ask-club','campus-directory'];
   const clubTab = isContributor && !contributorPages.includes(requestedClubTab) ? 'overview' : requestedClubTab;
   const [questionEvent, setQuestionEvent] = useState<ClubEvent | null>(null);
   const [questionUnread, setQuestionUnread] = useState(0);
@@ -1595,6 +1595,7 @@ export function AppShell() {
 
   const baseNavItems = visibleConfiguredNav.filter(item => portalMode !== 'CLUB' || !isContributor || contributorPages.includes(item.id)).map((item) => ({
     ...item,
+    section: isContributor && item.id === 'campus-directory' ? 'Club Community' : item.section,
     icon: iconById.get(item.id) ?? (item.customUrl ? ExternalLink : Link2),
   }));
 
@@ -2436,7 +2437,24 @@ export function AppShell() {
             </>
           ) : portalMode === 'CLUB' && clubData && clubData.club.clubId === activeClubId ? (
             <>
-              {isContributor && clubTab === 'overview' && <section className="bg-white border rounded-lg p-6 space-y-4"><h1 className="text-xl font-bold">{clubData.club.name}</h1><p>{clubData.club.description}</p><span className="inline-block rounded bg-sky-100 text-sky-900 px-3 py-1 text-sm">{session.user.name} · Contributor</span><p className="text-sm text-slate-600">View club news, events, blog stories and forums. RSVP to events or contact your club team privately.</p><button className="block px-4 py-2 bg-[#004B87] text-white rounded" onClick={() => { setQuestionEvent(null); setClubTab('ask-club'); }}>Ask a question</button></section>}
+              {isContributor && clubTab === 'overview' && (
+                <section className="space-y-4 rounded-lg border bg-white p-6">
+                  <h1 className="text-xl font-bold">{clubData.club.name}</h1>
+                  <p>{clubData.club.description}</p>
+                  <span className="inline-block rounded bg-sky-100 px-3 py-1 text-sm text-sky-900">
+                    {session.user.name} · Contributor
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" className="rounded bg-[#004B87] px-4 py-2 text-white" onClick={() => {
+                      setQuestionEvent(null);
+                      setClubTab('ask-club');
+                    }}>Ask a question</button>
+                    <button type="button" className="rounded border border-sky-200 bg-sky-50 px-4 py-2 text-[#004B87]" onClick={() => setClubTab('campus-directory')}>
+                      Browse Campus Clubs
+                    </button>
+                  </div>
+                </section>
+              )}
               {(clubTab === 'ask-club' || clubTab === 'member-questions') && <MemberQuestionsView key={clubData.club.clubId} clubId={clubData.club.clubId} leader={!isContributor} event={isContributor && questionEvent && (questionEvent.clubId === activeClubId || questionEvent.coSponsorClubIds?.includes(activeClubId || '')) ? questionEvent : null} onChange={loadQuestionCount} />}
               {clubTab === 'overview' && !isContributor && (
                 <div className="space-y-8">

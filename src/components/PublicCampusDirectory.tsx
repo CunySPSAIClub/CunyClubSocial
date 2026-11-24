@@ -11,6 +11,7 @@ import {
   Download,
   ExternalLink,
   MapPin,
+  MessageCircle,
   Plus,
   RotateCcw,
   Rss,
@@ -42,9 +43,11 @@ interface PublicCampusDirectoryProps {
   onRequestLogin?: () => void;
 }
 
+type CampusEvent = ClubEvent & { canRsvp?: boolean };
+
 interface PublicCampusResponse {
   clubs: PublicClubSummary[];
-  publicEvents: ClubEvent[];
+  publicEvents: CampusEvent[];
   publicBlogPosts?: ClubBlogPost[];
   blogCategories?: string[];
   blogTags?: string[];
@@ -57,14 +60,18 @@ export function PublicCampusDirectory({
   onRefreshParent,
   onRequestLogin,
 }: PublicCampusDirectoryProps) {
-  const { session, apiFetch } = useAuth();
-  const { content, isEditActive, updateContent, mutateEntity } = useSiteContent();
+  const { session, apiFetch, activeClubId, refreshSession } = useAuth();
+  const { content, isEditActive: siteEditActive, updateContent, mutateEntity } = useSiteContent();
+  const isContributor = !session?.effectiveAdminRole && session?.memberships.some(
+    (m) => m.clubId === activeClubId && m.status === 'Active' && m.role === 'CONTRIBUTOR'
+  );
+  const isEditActive = siteEditActive && !isContributor;
   const pd = content.pages.publicDirectory;
   const [draggingEventId, setDraggingEventId] = useState<string | null>(null);
   const [draggingBlogId, setDraggingBlogId] = useState<string | null>(null);
   const [draggingClubId, setDraggingClubId] = useState<string | null>(null);
   const [clubs, setClubs] = useState<PublicClubSummary[]>([]);
-  const [publicEvents, setPublicEvents] = useState<ClubEvent[]>([]);
+  const [publicEvents, setPublicEvents] = useState<CampusEvent[]>([]);
   const [publicBlogPosts, setPublicBlogPosts] = useState<ClubBlogPost[]>([]);
   const [serverBlogCategories, setServerBlogCategories] = useState<string[]>([]);
   const [serverBlogTags, setServerBlogTags] = useState<string[]>([]);
@@ -101,6 +108,9 @@ export function PublicCampusDirectory({
   const [reasonInput, setReasonInput] = useState('');
   const [interestInput, setInterestInput] = useState('General Member & Event Volunteer');
   const [submitting, setSubmitting] = useState(false);
+  const [rsvpPendingId, setRsvpPendingId] = useState<string | null>(null);
+  const [rsvpModes, setRsvpModes] = useState<Record<string, 'In-Person' | 'Virtual'>>({});
+  const [rsvpMessage, setRsvpMessage] = useState('');
   const [feedCopied, setFeedCopied] = useState(false);
 
   const joinPanelRef = useRef<HTMLDivElement | null>(null);
@@ -123,11 +133,9 @@ export function PublicCampusDirectory({
   const loadDirectoryData = useCallback(async () => {
     setError('');
     try {
-      const pubRes = await fetch('/api/public/campus');
-      if (!pubRes.ok) {
-        throw new Error('Unable to load public CUNY SPS events and club directory.');
-      }
-      const pubData = (await pubRes.json()) as PublicCampusResponse;
+      const pubData = await apiFetch<PublicCampusResponse>(
+        session && mode === 'portal' ? '/api/campus-directory' : '/api/public/campus'
+      );
       setClubs(pubData.clubs ?? []);
       setPublicEvents(pubData.publicEvents ?? []);
       setPublicBlogPosts(pubData.publicBlogPosts ?? []);
@@ -320,6 +328,42 @@ export function PublicCampusDirectory({
     setTimeout(() => {
       joinPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }, 40);
+  };
+
+  const handleRsvp = async (event: CampusEvent) => {
+    if (!event.canRsvp || rsvpPendingId) return;
+    const attending = !event.userHasRsvped && !event.userOnWaitlist;
+    setRsvpPendingId(event.eventId);
+    setRsvpMessage('');
+    try {
+      const { event: updated } = await apiFetch<{ event: ClubEvent }>(
+        `/api/clubs/${event.clubId}/events/${event.eventId}/rsvp`,
+        {
+          method: 'POST',
+          body: JSON.stringify({ attending, mode: rsvpModes[event.eventId] }),
+        }
+      );
+      setPublicEvents((current) => current.map((item) => item.eventId === event.eventId ? {
+        ...item,
+        userHasRsvped: updated.userHasRsvped,
+        userOnWaitlist: updated.userOnWaitlist,
+        userRsvpMode: updated.userRsvpMode,
+        rsvpCount: updated.rsvpCount,
+        waitlistCount: updated.waitlistCount,
+        inPersonConfirmedCount: updated.inPersonConfirmedCount,
+      } : item));
+      setRsvpMessage(
+        updated.userOnWaitlist
+          ? `You’re on the waitlist for ${event.title}.`
+          : updated.userHasRsvped
+            ? `RSVP confirmed for ${event.title}.`
+            : `RSVP canceled for ${event.title}.`
+      );
+    } catch (err) {
+      setRsvpMessage(err instanceof Error ? err.message : 'Unable to update your RSVP.');
+    } finally {
+      setRsvpPendingId(null);
+    }
   };
 
   const handleSubmitJoinRequest = async (e: React.FormEvent, club: PublicClubSummary) => {
@@ -891,6 +935,37 @@ export function PublicCampusDirectory({
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2 shrink-0 self-end lg:self-center">
+                      {ev.canRsvp && (
+                        <>
+                          {!ev.userHasRsvped && !ev.userOnWaitlist && typeof ev.inPersonCapacity === 'number' && (
+                            <select
+                              aria-label={`Attendance format for ${ev.title}`}
+                              className="rounded-md border border-slate-300 bg-white px-2 py-1.5 text-xs"
+                              value={rsvpModes[ev.eventId] ?? 'In-Person'}
+                              onChange={(e) => setRsvpModes((current) => ({
+                                ...current,
+                                [ev.eventId]: e.target.value as 'In-Person' | 'Virtual',
+                              }))}
+                            >
+                              <option value="In-Person">In person</option>
+                              <option value="Virtual">Virtual</option>
+                            </select>
+                          )}
+                          <button
+                            type="button"
+                            disabled={rsvpPendingId !== null}
+                            aria-pressed={Boolean(ev.userHasRsvped || ev.userOnWaitlist)}
+                            onClick={() => void handleRsvp(ev)}
+                            className="rounded-md border border-sky-200 bg-sky-50 px-2.5 py-1.5 text-xs font-semibold text-[#004B87] hover:bg-sky-100 disabled:opacity-60"
+                          >
+                            {rsvpPendingId === ev.eventId ? 'Updating…' : ev.userOnWaitlist
+                              ? 'Waitlisted · Leave'
+                              : ev.userHasRsvped
+                                ? 'Attending · Cancel RSVP'
+                                : 'RSVP'}
+                          </button>
+                        </>
+                      )}
                       <button
                         type="button"
                         onClick={() => downloadEventIcs(ev)}
@@ -944,6 +1019,11 @@ export function PublicCampusDirectory({
     <div className="space-y-6">
       {pd.sectionOrder[0] === 'hero' && heroSectionEl}
 
+      {rsvpMessage && (
+        <p role="status" className="rounded-md border border-sky-200 bg-sky-50 p-3 text-sm text-[#004B87]">
+          {rsvpMessage}
+        </p>
+      )}
       {error && (
         <div role="alert" className="p-3.5 text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg">
           {error}
@@ -1122,9 +1202,23 @@ export function PublicCampusDirectory({
             <h2 className="text-sm font-bold text-slate-900">
               {session ? 'My Club Join Requests' : 'Submitted Request to Join Applications'}
             </h2>
-            <span className="text-xs font-mono-tabular text-slate-500">
-              {combinedMyRequests.length} application{combinedMyRequests.length === 1 ? '' : 's'}
-            </span>
+            {isContributor && mode === 'portal' ? (
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold text-[#004B87] hover:bg-sky-100"
+                onClick={async () => {
+                  await refreshSession();
+                  await onRefreshParent?.();
+                }}
+              >
+                <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
+                Refresh membership
+              </button>
+            ) : (
+              <span className="text-xs font-mono-tabular text-slate-500">
+                {combinedMyRequests.length} application{combinedMyRequests.length === 1 ? '' : 's'}
+              </span>
+            )}
           </div>
           <div className="divide-y divide-slate-200">
             {combinedMyRequests.map((jr) => (
@@ -1896,6 +1990,22 @@ export function PublicCampusDirectory({
                         </div>
 
                         <PublicClubLinksList links={club.links} />
+                        {club.whatsappInvites && club.whatsappInvites.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {club.whatsappInvites.map((invite) => (
+                              <a
+                                key={invite.url}
+                                href={invite.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-xs font-semibold text-emerald-800 hover:bg-emerald-100"
+                              >
+                                <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                                Join WhatsApp · {invite.name}
+                              </a>
+                            ))}
+                          </div>
+                        )}
                       </div>
 
                       {/* Membership / Join Request Action */}

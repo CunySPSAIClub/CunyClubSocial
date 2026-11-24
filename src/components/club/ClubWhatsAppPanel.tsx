@@ -115,6 +115,7 @@ export function ClubWhatsAppPanel({
   const [whatsappRecipientJid, setWhatsappRecipientJid] = useState('');
   const [apiToken, setApiToken] = useState('');
   const [showInviteToMembers, setShowInviteToMembers] = useState(true);
+  const [showInviteInCampusDirectory, setShowInviteInCampusDirectory] = useState(false);
   const [autoAlertNewEvents, setAutoAlertNewEvents] = useState(true);
   const [autoAlert24hReminders, setAutoAlert24hReminders] = useState(true);
   const [groupSaving, setGroupSaving] = useState(false);
@@ -168,6 +169,7 @@ export function ClubWhatsAppPanel({
     setWhatsappRecipientJid('');
     setApiToken('');
     setShowInviteToMembers(true);
+    setShowInviteInCampusDirectory(false);
     setAutoAlertNewEvents(true);
     setAutoAlert24hReminders(true);
     setShowGroupForm(false);
@@ -188,6 +190,7 @@ export function ClubWhatsAppPanel({
     setWhatsappRecipientJid(grp.whatsappRecipientJid ?? '');
     setApiToken('');
     setShowInviteToMembers(grp.showInviteToMembers);
+    setShowInviteInCampusDirectory(grp.showInviteInCampusDirectory === true);
     setAutoAlertNewEvents(grp.autoAlertNewEvents);
     setAutoAlert24hReminders(grp.autoAlert24hReminders);
     setShowGroupForm(true);
@@ -232,6 +235,7 @@ export function ClubWhatsAppPanel({
             ? apiToken.trim()
             : undefined,
         showInviteToMembers,
+        showInviteInCampusDirectory,
         autoAlertNewEvents,
         autoAlert24hReminders,
       };
@@ -692,6 +696,15 @@ export function ClubWhatsAppPanel({
                 className="rounded border-slate-300 text-[#004B87]"
               />
               <span>Show join invite link to active club members</span>
+            </label>
+            <label className="inline-flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showInviteInCampusDirectory}
+                onChange={(e) => setShowInviteInCampusDirectory(e.target.checked)}
+                className="rounded border-slate-300 text-[#004B87]"
+              />
+              <span>Let signed-in campus users join from the Campus Directory</span>
             </label>
             <label className="inline-flex items-center gap-2 cursor-pointer">
               <input

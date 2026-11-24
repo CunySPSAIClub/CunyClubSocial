@@ -31,6 +31,24 @@ store.memberships.push({
   authorizedAt: new Date().toISOString(),
 });
 store.memberships.push({membershipId:'qa-other-editor',userId:'qa-other-member',clubId:'club-msa',role:'EDITOR',status:'Active',authorizedBy:'QA',authorizedAt:new Date().toISOString()});
+const campusFixture = {
+  eventId: 'qa-campus-event',
+  clubId: 'club-msa',
+  title: 'QA Campus Event',
+  date: '2099-12-01',
+  time: '18:00',
+  location: 'Virtual',
+  description: 'Synthetic directory event',
+  isPublic: true,
+  approvalStatus: 'Approved',
+  checkInCode: 'qa-internal-code',
+  rsvpUserIds: ['usr-lead-msa'],
+};
+store.events.push(
+  campusFixture,
+  { ...campusFixture, eventId: 'qa-private-event', isPublic: false },
+  { ...campusFixture, eventId: 'qa-pending-event', approvalStatus: 'Pending Student Life Review' },
+);
 await mkdir(path.join(temp, ".data"));
 await writeFile(path.join(temp, ".data/hub-store.json"), JSON.stringify(store));
 const port = 5188,
@@ -105,7 +123,8 @@ try {
       ["/api/auth/login", "/api/auth/google", "/api/auth/logout"].includes(
         route,
       ) ||
-      route.endsWith("/rsvp")
+      route.endsWith("/rsvp") ||
+      route === "/api/clubs/:id/join-requests"
     )
       continue;
     const url = route
@@ -131,6 +150,62 @@ try {
   assert.equal(joined.data.memberships.find(m=>m.clubId==='club-ai').role, 'CONTRIBUTOR');
   status(await request(other, '/api/profile', 'PATCH', {displayName:'QA Other'}, {'X-Club-Id':'club-msa'}), 200, 'mixed club editor retains global profile access');
   status(await request(other, '/api/clubs/club-ai/posts', 'POST', {title:'Blocked',caption:'Blocked'}, {'X-Club-Id':'club-msa'}), 403, 'editor header cannot override Contributor target club');
+  const directory = await request(sofia, '/api/campus-directory');
+  status(directory, 200, 'Contributor can discover clubs outside her memberships');
+  assert.ok(directory.data.clubs.some((club) => club.clubId === 'club-msa'));
+  assert.match(directory.res.headers.get('cache-control'), /no-store/);
+  const campusRsvp = '/api/clubs/club-msa/events/qa-campus-event/rsvp';
+  const initialEvent = directory.data.publicEvents.find((event) => event.eventId === 'qa-campus-event');
+  assert.equal(initialEvent.canRsvp, true);
+  assert.equal(initialEvent.rsvpUserIds, undefined);
+  assert.equal(initialEvent.checkInCode, undefined);
+  assert.equal(directory.data.publicEvents.some((event) => event.eventId === 'qa-private-event' || event.eventId === 'qa-pending-event'), false);
+  status(await request(sofia, '/api/clubs/club-msa/events/qa-private-event/rsvp', 'POST', { attending: true }), 403, 'nonmember cannot RSVP to private event');
+  status(await request(sofia, '/api/clubs/club-msa/events/qa-pending-event/rsvp', 'POST', { attending: true }), 403, 'nonmember cannot RSVP to unapproved event');
+  const viewer = await login('usr-viewer-ai');
+  status(await request(viewer, campusRsvp, 'POST', { attending: true }), 403, 'existing nonmember viewer permissions are preserved');
+  const registered = await request(sofia, campusRsvp, 'POST', { attending: true });
+  status(registered, 200, 'Contributor RSVPs to campus event without host membership');
+  assert.equal(registered.data.event.userHasRsvped, true);
+  assert.equal(registered.data.event.rsvpUserIds, undefined);
+  assert.equal(registered.data.event.checkInCode, undefined);
+  const again = await request(sofia, '/api/campus-directory');
+  assert.equal(again.data.publicEvents.find((event) => event.eventId === 'qa-campus-event').userHasRsvped, true);
+  const canceled = await request(sofia, campusRsvp, 'POST', { attending: false });
+  status(canceled, 200, 'Contributor cancels own campus RSVP');
+  assert.equal(canceled.data.event.userHasRsvped, false);
+  assert.equal(canceled.data.event.rsvpCount, 1);
+
+  const ownRequest = await request(sofia, '/api/clubs/club-msa/join-requests', 'POST', {
+    reason: 'Synthetic cross-club participation',
+    userId: 'qa-other-member',
+    role: 'CLUB_LEAD',
+  });
+  status(ownRequest, 201, 'Contributor can request membership in another club');
+  assert.equal(ownRequest.data.joinRequest.userId, 'usr-contrib-ai');
+  const decisionPath = `/api/clubs/club-msa/join-requests/${ownRequest.data.joinRequest.joinRequestId}/decision`;
+  status(await request(sofia, decisionPath, 'POST', { decision: 'Approved' }), 403, 'Contributor cannot approve own request');
+  status(await request(sofia, '/api/clubs/club-msa/join-requests', 'POST', { reason: 'Duplicate' }), 400, 'pending request is not duplicated');
+
+  const groupRequest = await request(outsider, '/api/clubs/club-msa/whatsapp/groups', 'POST', {
+    groupName: 'QA Campus Invite',
+    inviteLink: 'https://chat.whatsapp.com/QATestOnlyFakeInvite',
+    showInviteToMembers: true,
+  });
+  status(groupRequest, 201, 'officer can link a members-only invite');
+  const groupPath = `/api/clubs/club-msa/whatsapp/groups/${groupRequest.data.group.groupId}`;
+  const seesInvite = (response) => response.data.clubs.find((club) => club.clubId === 'club-msa')
+    ?.whatsappInvites?.some((invite) => invite.name === 'QA Campus Invite') ?? false;
+  assert.equal(seesInvite(await request(sofia, '/api/campus-directory')), false);
+  status(await request(outsider, groupPath, 'PATCH', { showInviteInCampusDirectory: true }), 200, 'officer can opt into campus sharing');
+  assert.equal(seesInvite(await request(sofia, '/api/campus-directory')), true);
+  assert.equal(seesInvite(await request('', '/api/public/campus')), false);
+  status(await request(sofia, groupPath, 'PATCH', { showInviteInCampusDirectory: false }), 403, 'Contributor cannot manage invitations');
+  status(await request(outsider, groupPath, 'PATCH', { showInviteInCampusDirectory: false }), 200, 'officer can remove campus sharing');
+  assert.equal(seesInvite(await request(sofia, '/api/campus-directory')), false);
+  status(await request(outsider, decisionPath, 'POST', { decision: 'Approved' }), 200, 'club lead approves Contributor into their club');
+  const approved = await request(sofia, '/api/auth/session');
+  assert.equal(approved.data.memberships.find((m) => m.clubId === 'club-msa').role, 'CONTRIBUTOR');
   const seed = await request(sofia, "/api/clubs/club-ai/member-questions");
   status(seed, 200, "seed questions");
   assert.equal(seed.data.questions.length, 2);

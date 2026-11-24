@@ -833,6 +833,7 @@ export interface ClubJoinRequest {
 }
 
 export interface PublicClubSummary {
+  whatsappInvites?: { name: string; url: string }[];
   clubId: string;
   name: string;
   shortCode: string;
@@ -979,6 +980,7 @@ export interface WhatsAppGroupLink {
   hasApiToken?: boolean;
   status: 'Connected' | 'Paused' | 'Disconnected';
   showInviteToMembers: boolean;
+  showInviteInCampusDirectory?: boolean;
   autoAlertNewEvents: boolean;
   autoAlert24hReminders: boolean;
   linkedByUserId: string;

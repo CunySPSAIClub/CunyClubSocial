@@ -57,6 +57,7 @@ import {
   verifyEditorSessionToken,
 } from './server/siteContentAuth.ts';
 import { getDb, pushNotification, recordAudit, resetDb, saveDb } from './server/store.ts';
+import { campusDate } from './src/utils/calendarDates.ts';
 import {
   DEFAULT_SITE_CONTENT,
   cloneSiteContent,
@@ -566,6 +567,34 @@ function enrichEventForUser(ev: ClubEvent, userId?: string): ClubEvent {
   };
 }
 
+function campusEventView(event: ClubEvent, userId?: string): ClubEvent {
+  return {
+    ...enrichEventForUser(event, userId),
+    rsvpUserIds: undefined,
+    waitlistUserIds: undefined,
+    rsvpModes: undefined,
+    checkedInUserIds: undefined,
+    checkInCode: undefined,
+    feedbackResponses: undefined,
+    syncedAnalyticsRecordId: undefined,
+  };
+}
+
+function hasCampusContributorMembership(user: User): boolean {
+  return getDb().memberships.some(
+    (m) => m.userId === user.userId && m.status === 'Active' && m.role === 'CONTRIBUTOR'
+  );
+}
+
+function isApprovedPublicEvent(event: ClubEvent): boolean {
+  return event.isPublic !== false && (event.approvalStatus ?? 'Approved') === 'Approved';
+}
+
+function hasEventClubAccess(user: User, event: ClubEvent): boolean {
+  return canAccessClub(user, event.clubId) ||
+    Boolean(event.coSponsorClubIds?.some((id) => canAccessClub(user, id)));
+}
+
 function scanAndAlertExpiringTokens(): number {
   const db = getDb();
   const nowMs = Date.now();
@@ -849,10 +878,10 @@ async function startServer() {
     const pathClubId = apiPath.match(/^\/clubs\/([^/]+)/i)?.[1];
     const clubId = pathClubId || (typeof req.headers['x-club-id'] === 'string' ? req.headers['x-club-id'] : undefined);
     const role = clubId ? getUserEffectiveClubRole(user, clubId) : null;
-    const contributor = role === 'CONTRIBUTOR' || (!role && !isAdminUser(user) && getDb().memberships.some(m => m.userId === user.userId && m.status === 'Active' && m.role === 'CONTRIBUTOR'));
+    const contributor = role === 'CONTRIBUTOR' || (!role && !isAdminUser(user) && hasCampusContributorMembership(user));
     if (!contributor) return next();
     const lifecycle = /^\/auth\/(login|google|logout)$/.test(apiPath);
-    const ownMemberWrite = req.method === 'POST' && /^\/clubs\/[^/]+\/(events\/[^/]+\/rsvp|member-questions(?:\/[^/]+\/(messages|read))?)$/i.test(apiPath);
+    const ownMemberWrite = req.method === 'POST' && /^\/clubs\/[^/]+\/(join-requests|events\/[^/]+\/rsvp|member-questions(?:\/[^/]+\/(messages|read))?)$/i.test(apiPath);
     if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method) && !lifecycle && !ownMemberWrite) {
       res.status(403).json({ error: 'Not allowed for your role' }); return;
     }
@@ -2063,9 +2092,13 @@ async function startServer() {
     res.status(201).json({ request: newRequest });
   });
 
-  // Public Campus Club Directory & Upcoming Public Events (no auth required)
-  app.get('/api/public/campus', (_req, res) => {
+  // The signed-in directory adds personal RSVP status and authorized invitations.
+  app.get(['/api/public/campus', '/api/campus-directory'], (req: AuthedRequest, res) => {
     const db = getDb();
+    const user = req.currentUser;
+    const campusContributor = user ? hasCampusContributorMembership(user) : false;
+    const today = campusDate();
+    if (user) res.set('Cache-Control', 'private, no-store');
     const activeClubs = db.clubs.filter((c) => c.status === 'Active');
     const activeClubMap = new Map(activeClubs.map((c) => [c.clubId, c]));
 
@@ -2082,8 +2115,7 @@ async function startServer() {
       const upcomingPublicEventsCount = db.events.filter(
         (ev) =>
           ev.clubId === club.clubId &&
-          ev.isPublic !== false &&
-          (ev.approvalStatus ?? 'Approved') === 'Approved'
+          isApprovedPublicEvent(ev)
       ).length;
 
       return {
@@ -2103,6 +2135,17 @@ async function startServer() {
         contactEmail: club.contactEmail,
         websiteUrl: club.websiteUrl,
         links: sanitizeClubLinksForPublic(club.links),
+        whatsappInvites: user
+          ? (db.whatsappGroups ?? [])
+              .filter((group) =>
+                group.clubId === club.clubId &&
+                group.status === 'Connected' &&
+                /^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]+(?:[?#].*)?$/i.test(group.inviteLink) &&
+                (group.showInviteInCampusDirectory === true ||
+                  (group.showInviteToMembers && canViewClubWhatsAppLink(user, club.clubId)))
+              )
+              .map((group) => ({ name: group.groupName, url: group.inviteLink }))
+          : undefined,
       };
     });
 
@@ -2110,15 +2153,18 @@ async function startServer() {
       .filter(
         (ev) =>
           activeClubMap.has(ev.clubId) &&
-          ev.isPublic !== false &&
-          (ev.approvalStatus ?? 'Approved') === 'Approved'
+          isApprovedPublicEvent(ev)
       )
       .map((ev) => {
-        const enriched = enrichEventForUser(ev);
+        const enriched = campusEventView(ev, user?.userId);
         return {
           ...enriched,
           isPublic: true,
           approvalStatus: ev.approvalStatus ?? 'Approved',
+          canRsvp: Boolean(user && (
+            hasEventClubAccess(user, ev) ||
+            (campusContributor && (ev.date >= today || enriched.userHasRsvped || enriched.userOnWaitlist))
+          )),
         };
       })
       .sort((a, b) => `${a.date}T${a.time}`.localeCompare(`${b.date}T${b.time}`));
@@ -3816,12 +3862,12 @@ async function startServer() {
       return;
     }
 
-    const { reason, preferredInterest } = req.body as {
+    const { reason, preferredInterest } = (req.body ?? {}) as {
       reason?: string;
       preferredInterest?: string;
     };
-    if (!reason?.trim()) {
-      res.status(400).json({ error: 'Please share a brief note about why you would like to join.' });
+    if (typeof reason !== 'string' || !reason.trim() || reason.length > 2000) {
+      res.status(400).json({ error: 'Please share why you would like to join in 2,000 characters or fewer.' });
       return;
     }
 
@@ -3835,7 +3881,9 @@ async function startServer() {
       studentEmail: user.email,
       departmentOrMajor: user.departmentOrMajor,
       reason: reason.trim(),
-      preferredInterest: preferredInterest?.trim() || 'General Member',
+      preferredInterest: typeof preferredInterest === 'string'
+        ? preferredInterest.trim().slice(0, 200) || 'General Member'
+        : 'General Member',
       status: 'Pending',
       createdAt: new Date().toISOString(),
     };
@@ -5738,10 +5786,12 @@ async function startServer() {
       res.status(404).json({ error: 'Club event not found.' });
       return;
     }
-    const isCoSponsorMember = Boolean(ev.coSponsorClubIds?.some((cid) => canAccessClub(user, cid)));
-    if (!canAccessClub(user, clubId) && !isCoSponsorMember) {
+    const hasClubAccess = hasEventClubAccess(user, ev);
+    const canJoinPublicEvent = club?.status === 'Active' &&
+      isApprovedPublicEvent(ev) && hasCampusContributorMembership(user);
+    if (!hasClubAccess && !canJoinPublicEvent) {
       res.status(403).json({
-        error: 'Only authorized members of participating clubs or Student Life staff can RSVP.',
+        error: 'RSVP is available to participating clubs and to Contributors for approved public campus events.',
       });
       return;
     }
@@ -5758,6 +5808,10 @@ async function startServer() {
     };
     const nextAttending =
       typeof attending === 'boolean' ? attending : !(alreadyAttending || alreadyWaitlisted);
+    if (!hasClubAccess && nextAttending && ev.date < campusDate()) {
+      res.status(400).json({ error: 'RSVP is closed for this past event.' });
+      return;
+    }
     const requestedMode: 'In-Person' | 'Virtual' =
       mode === 'Virtual' ? 'Virtual' : ev.inPersonCapacity ? 'In-Person' : 'Virtual';
 
@@ -5796,7 +5850,7 @@ async function startServer() {
       delete modes[user.userId];
 
       // Auto-promote next student from waitlist when an In-Person seat opens
-      if (wasInPerson && waitlist.length > 0) {
+      if (alreadyAttending && wasInPerson && waitlist.length > 0) {
         const promotedId = waitlist.shift()!;
         currentList.push(promotedId);
         modes[promotedId] = 'In-Person';
@@ -5837,9 +5891,9 @@ async function startServer() {
 
     saveDb();
     res.json({
-      event: enrichEventForUser(ev, user.userId),
+      event: hasClubAccess ? enrichEventForUser(ev, user.userId) : campusEventView(ev, user.userId),
       waitlisted,
-      promotedUserName,
+      promotedUserName: hasClubAccess ? promotedUserName : undefined,
     });
   });
 
@@ -8287,6 +8341,7 @@ async function startServer() {
       whatsappRecipientJid,
       apiToken,
       showInviteToMembers,
+      showInviteInCampusDirectory,
       autoAlertNewEvents,
       autoAlert24hReminders,
     } = req.body as {
@@ -8301,6 +8356,7 @@ async function startServer() {
       whatsappRecipientJid?: string;
       apiToken?: string;
       showInviteToMembers?: boolean;
+      showInviteInCampusDirectory?: boolean;
       autoAlertNewEvents?: boolean;
       autoAlert24hReminders?: boolean;
     };
@@ -8348,6 +8404,7 @@ async function startServer() {
       whatsappRecipientJid: whatsappRecipientJid?.trim() || undefined,
       status: 'Connected',
       showInviteToMembers: showInviteToMembers !== false,
+      showInviteInCampusDirectory: showInviteInCampusDirectory === true,
       autoAlertNewEvents: autoAlertNewEvents !== false,
       autoAlert24hReminders: autoAlert24hReminders !== false,
       linkedByUserId: user.userId,
@@ -8428,6 +8485,9 @@ async function startServer() {
     }
     if (typeof body.showInviteToMembers === 'boolean') {
       group.showInviteToMembers = body.showInviteToMembers;
+    }
+    if (typeof body.showInviteInCampusDirectory === 'boolean') {
+      group.showInviteInCampusDirectory = body.showInviteInCampusDirectory;
     }
     if (typeof body.autoAlertNewEvents === 'boolean') {
       group.autoAlertNewEvents = body.autoAlertNewEvents;
