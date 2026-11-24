@@ -1703,7 +1703,7 @@ export function StudentDiscoveryApp() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {/* Card 1: OpenLab Student Organizations */}
+                  {/* Card 1: OpenLab Student Organizations Hub */}
                   <div className="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                     <div>
                       <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center mb-4">
@@ -1711,18 +1711,27 @@ export function StudentDiscoveryApp() {
                       </div>
                       <h3 className="font-bold text-slate-900 text-base">Student Organizations Hub</h3>
                       <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                        The central OpenLab group for all recognized CUNY SPS student organizations, community discussions, and student group blogs.
+                        The central OpenLab space for recognized CUNY SPS student organizations, community discussions, and active club spaces.
                       </p>
                     </div>
-                    <div className="pt-5 mt-5 border-t border-slate-100">
+                    <div className="pt-5 mt-5 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2">
                       <a
-                        href="https://openlab.sps.cuny.edu/groups/student-organizations/"
+                        href="https://openlab.sps.cuny.edu/groups/type/club/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-900 hover:text-black font-bold"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-900 hover:text-black"
                       >
                         <span>Visit Organizations Hub</span>
                         <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                      <a
+                        href="https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 hover:text-slate-900"
+                      >
+                        <span>Student Life Hub</span>
+                        <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                       </a>
                     </div>
                   </div>
@@ -1740,7 +1749,7 @@ export function StudentDiscoveryApp() {
                     </div>
                     <div className="pt-5 mt-5 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2">
                       <a
-                        href="https://openlab.sps.cuny.edu/thekiosk/"
+                        href="https://openlab.sps.cuny.edu/groups/the-kiosk/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-800"
@@ -1774,7 +1783,7 @@ export function StudentDiscoveryApp() {
                     </div>
                     <div className="pt-5 mt-5 border-t border-slate-100">
                       <a
-                        href="https://openlab.sps.cuny.edu/openroad/"
+                        href="https://openlab.sps.cuny.edu/sps-open-road/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-800"
@@ -1809,25 +1818,25 @@ export function StudentDiscoveryApp() {
                     </div>
                   </div>
 
-                  {/* Card 5: Official CUNY Login */}
+                  {/* Card 5: Official SPS Clubs Directory */}
                   <div className="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                     <div>
                       <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center mb-4">
-                        <Lock className="w-6 h-6 text-[#FFB71B]" />
+                        <Users className="w-6 h-6 text-[#0B0B0F]" />
                       </div>
-                      <h3 className="font-bold text-slate-900 text-base">CUNY Institutional Login</h3>
+                      <h3 className="font-bold text-slate-900 text-base">CUNY SPS Clubs Directory</h3>
                       <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                        Official single sign-on access to CUNYfirst, Brightspace, student email, DegreeWorks, and institutional portals.
+                        Official CUNY SPS directory listing every recognized student club, leadership contact, faculty advisor, and constitution.
                       </p>
                     </div>
                     <div className="pt-5 mt-5 border-t border-slate-100">
                       <a
-                        href="https://www.cuny.edu/cuny-login/"
+                        href="https://sps.cuny.edu/student-success/student-life/student-clubs-and-organizations"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-900 hover:text-black font-bold"
                       >
-                        <span>Sign in via CUNY Portal</span>
+                        <span>View Official Directory</span>
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>
@@ -2042,10 +2051,10 @@ export function StudentDiscoveryApp() {
                 </button>
               </div>
 
-              {/* Institutional Portals */}
+              {/* Campus & OpenLab Resources */}
               <div className="space-y-1.5 pt-2 border-t border-slate-100">
                 <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-2">
-                  Institutional Portals
+                  Campus &amp; OpenLab Resources
                 </p>
                 <a
                   href="https://openlab.sps.cuny.edu/help/"
@@ -2061,7 +2070,7 @@ export function StudentDiscoveryApp() {
                 </a>
 
                 <a
-                  href="https://openlab.sps.cuny.edu/thekiosk/"
+                  href="https://openlab.sps.cuny.edu/groups/the-kiosk/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
@@ -2074,7 +2083,7 @@ export function StudentDiscoveryApp() {
                 </a>
 
                 <a
-                  href="https://openlab.sps.cuny.edu/openroad/"
+                  href="https://openlab.sps.cuny.edu/sps-open-road/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
