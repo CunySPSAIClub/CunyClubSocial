@@ -247,12 +247,12 @@ export function StudentDiscoveryApp() {
               </a>
 
               <a
-                href="https://login.cuny.edu/"
+                href="https://www.cuny.edu/cuny-login/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Access official CUNY Login Portal"
                 className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-900/60 hover:bg-violet-800 text-white font-semibold text-xs transition-all duration-150 shadow-sm hover:shadow-md hover:scale-[1.03] active:scale-[0.98] group cursor-pointer border border-violet-400/30"
-                title="Sign into CUNY Institutional Portal"
+                title="Sign into CUNY Institutional Portal (CUNYfirst, Brightspace, SSO)"
               >
                 <Lock className="w-3.5 h-3.5 text-[#FFD100] shrink-0" />
                 <span className="font-semibold tracking-tight">CUNY Login</span>
@@ -734,7 +734,7 @@ export function StudentDiscoveryApp() {
 
                     <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                       <a
-                        href="https://login.cuny.edu/"
+                        href="https://www.cuny.edu/cuny-login/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-violet-400/40 transition-all flex items-start gap-3 group cursor-pointer"
@@ -747,7 +747,7 @@ export function StudentDiscoveryApp() {
                             <span>CUNY Login Portal</span>
                             <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                           </div>
-                          <div className="text-[11px] text-violet-300 mt-0.5">Institutional Single Sign-On</div>
+                          <div className="text-[11px] text-violet-300 mt-0.5">CUNYfirst, Brightspace & SSO</div>
                         </div>
                       </a>
 
