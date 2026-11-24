@@ -20,7 +20,11 @@ import {
   ChevronRight,
   Filter,
   Check,
-  Star
+  Star,
+  BookOpen,
+  Newspaper,
+  Compass,
+  HelpCircle
 } from 'lucide-react';
 import {
   CLUBS_DATA,
@@ -239,6 +243,19 @@ export function StudentDiscoveryApp() {
               >
                 <FacebookIcon className="w-3.5 h-3.5 fill-white shrink-0 group-hover:rotate-6 transition-transform" />
                 <span className="font-semibold tracking-tight">SPS Facebook</span>
+                <ExternalLink className="w-2.5 h-2.5 opacity-70 group-hover:opacity-100" />
+              </a>
+
+              <a
+                href="https://login.cuny.edu/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Access official CUNY Login Portal"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-900/60 hover:bg-violet-800 text-white font-semibold text-xs transition-all duration-150 shadow-sm hover:shadow-md hover:scale-[1.03] active:scale-[0.98] group cursor-pointer border border-violet-400/30"
+                title="Sign into CUNY Institutional Portal"
+              >
+                <Lock className="w-3.5 h-3.5 text-[#FFD100] shrink-0" />
+                <span className="font-semibold tracking-tight">CUNY Login</span>
                 <ExternalLink className="w-2.5 h-2.5 opacity-70 group-hover:opacity-100" />
               </a>
             </div>
@@ -465,6 +482,340 @@ export function StudentDiscoveryApp() {
                   <div>
                     <div className="text-2xl sm:text-3xl font-extrabold text-[#FFD100]">100%</div>
                     <div className="text-[11px] sm:text-xs text-violet-200/80 font-medium">Online Friendly</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* V0-STYLE BENTO GRID SHOWCASE */}
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* TILE 1: Spotlit Featured Organization: AI Club (8 cols) */}
+                <div className="lg:col-span-8 bg-gradient-to-br from-white via-violet-50/40 to-purple-50/20 rounded-3xl border border-violet-200/90 hover:border-violet-400 p-6 sm:p-8 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group flex flex-col justify-between">
+                  <div className="absolute top-0 right-0 w-72 h-72 bg-violet-400/10 rounded-full blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/3" />
+                  
+                  <div>
+                    <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-14 h-14 rounded-2xl bg-white border border-violet-200 p-1.5 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
+                          <img src="./club-logos/ai-club.jpg" alt="Artificial Intelligence Club logo" className="w-full h-full object-contain" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-violet-100 text-violet-800 border border-violet-200">
+                              <Sparkles className="w-3 h-3 text-violet-600 animate-pulse" />
+                              Spotlight Club
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+                              Active Verified
+                            </span>
+                          </div>
+                          <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
+                            Artificial Intelligence Club
+                          </h3>
+                        </div>
+                      </div>
+                      <span className="text-xs font-semibold px-3 py-1 bg-white border border-slate-200 rounded-full text-slate-600 shadow-2xs">
+                        Academic & Technology
+                      </span>
+                    </div>
+
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl">
+                      Student-led organization dedicated to helping CUNY SPS students of all backgrounds explore artificial intelligence, hands-on technical projects, and ethical innovation.
+                    </p>
+
+                    {/* Direct Social Channels on Bento Spotlight */}
+                    <div className="mt-5 flex flex-wrap items-center gap-2">
+                      <a
+                        href="https://chat.whatsapp.com/ED7Z2tY5s2W7v2O7b7Zq9A"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-xs transition-all shadow-sm hover:shadow-emerald-500/20 cursor-pointer"
+                      >
+                        <WhatsAppIcon className="w-3.5 h-3.5 fill-white" />
+                        <span>Join WhatsApp</span>
+                        <ExternalLink className="w-3 h-3 opacity-70" />
+                      </a>
+                      <a
+                        href="https://www.instagram.com/cunyspsaiclub"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 hover:opacity-95 text-white font-semibold text-xs transition-all shadow-sm cursor-pointer"
+                      >
+                        <InstagramIcon className="w-3.5 h-3.5 fill-white" />
+                        <span>Follow on Instagram</span>
+                        <ExternalLink className="w-3 h-3 opacity-70" />
+                      </a>
+                      <a
+                        href="https://openlab.sps.cuny.edu/groups/ai-club/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs transition-all cursor-pointer border border-slate-200"
+                      >
+                        <Globe className="w-3.5 h-3.5 text-slate-600" />
+                        <span>Visit OpenLab Hub</span>
+                        <ExternalLink className="w-3 h-3 opacity-70" />
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between flex-wrap gap-3">
+                    <span className="text-xs text-slate-500 flex items-center gap-1.5">
+                      <Users className="w-4 h-4 text-violet-600" />
+                      Welcomes all students · Zero prerequisites
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => navigateTo('club-profile', 'club-ai')}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-violet-700 hover:text-violet-800 bg-violet-100/80 hover:bg-violet-200/80 px-4 py-2 rounded-xl transition-all cursor-pointer"
+                    >
+                      <span>Explore AI Club Profile</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* TILE 2: Live Upcoming Event Radar (4 cols) */}
+                <div className="lg:col-span-4 bg-gradient-to-br from-[#0F0728] via-[#1B0A33] to-[#080314] rounded-3xl border border-violet-500/20 p-6 sm:p-7 text-white shadow-md relative overflow-hidden flex flex-col justify-between">
+                  <div className="absolute top-0 right-0 w-48 h-48 bg-violet-600/20 rounded-full blur-2xl pointer-events-none" />
+                  
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-violet-500/20 text-[#FFD100] border border-violet-400/20">
+                        <Clock className="w-3 h-3 text-[#FFD100]" />
+                        Next Up on Campus
+                      </span>
+                      <span className="text-xs font-mono text-violet-300">
+                        {upcomingPreviewEvents[0]?.date || 'Upcoming'}
+                      </span>
+                    </div>
+
+                    <h4 className="text-base sm:text-lg font-bold text-white leading-snug line-clamp-2">
+                      {upcomingPreviewEvents[0]?.title || 'Campus Event'}
+                    </h4>
+
+                    <p className="text-xs text-slate-300 mt-2 line-clamp-2 leading-relaxed">
+                      {upcomingPreviewEvents[0]?.description || 'Join student organizations on Zoom or in-person for our next gathering.'}
+                    </p>
+
+                    <div className="mt-4 space-y-1.5 text-xs text-violet-200">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-3.5 h-3.5 text-violet-400 shrink-0" />
+                        <span>{upcomingPreviewEvents[0]?.time} EST · {upcomingPreviewEvents[0]?.format}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-3.5 h-3.5 text-violet-400 shrink-0" />
+                        <span className="truncate">{upcomingPreviewEvents[0]?.location}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-5 pt-4 border-t border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => navigateTo('events')}
+                      className="w-full py-2.5 px-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <span>View All {EVENTS_DATA.length} Events</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* TILE 3: OpenLab Digital Commons (5 cols) */}
+                <div className="lg:col-span-5 bg-gradient-to-br from-white via-indigo-50/30 to-violet-50/20 rounded-3xl border border-violet-200/90 p-6 sm:p-7 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-100 text-indigo-900 border border-indigo-200">
+                        <Globe className="w-3 h-3 text-indigo-600" />
+                        CUNY SPS OpenLab Hub
+                      </span>
+                      <span className="text-[11px] font-medium text-slate-500">Official Student Platform</span>
+                    </div>
+
+                    <h4 className="text-lg font-extrabold text-slate-900 leading-snug">
+                      Digital Student Commons
+                    </h4>
+                    <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                      Connect, collaborate, and share creative and academic work across degree programs on CUNY SPS OpenLab.
+                    </p>
+
+                    <div className="mt-4 space-y-2.5">
+                      <a
+                        href="https://openlab.sps.cuny.edu/groups/type/club/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2.5 rounded-xl bg-white border border-slate-200/80 hover:border-violet-300 hover:bg-violet-50/40 transition-all flex items-center justify-between group cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-violet-100 text-violet-700 flex items-center justify-center shrink-0">
+                            <Compass className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="text-xs font-bold text-slate-900 group-hover:text-violet-700">OpenLab Student Organizations</div>
+                            <div className="text-[11px] text-slate-500">Browse official club groups and member directories</div>
+                          </div>
+                        </div>
+                        <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-violet-600 shrink-0" />
+                      </a>
+
+                      <a
+                        href="https://openlab.sps.cuny.edu/groups/the-kiosk/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2.5 rounded-xl bg-white border border-slate-200/80 hover:border-violet-300 hover:bg-violet-50/40 transition-all flex items-center justify-between group cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
+                            <Newspaper className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="text-xs font-bold text-slate-900 group-hover:text-violet-700">The Kiosk Student Publication</div>
+                            <div className="text-[11px] text-slate-500">Official student newspaper, creative articles & essays</div>
+                          </div>
+                        </div>
+                        <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-violet-600 shrink-0" />
+                      </a>
+
+                      <a
+                        href="https://openlab.sps.cuny.edu/sps-open-road/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2.5 rounded-xl bg-white border border-slate-200/80 hover:border-violet-300 hover:bg-violet-50/40 transition-all flex items-center justify-between group cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                            <BookOpen className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="text-xs font-bold text-slate-900 group-hover:text-violet-700">CUNY SPS Open Road</div>
+                            <div className="text-[11px] text-slate-500">Community news, spotlight stories & updates</div>
+                          </div>
+                        </div>
+                        <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-violet-600 shrink-0" />
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs">
+                    <span className="text-slate-500">Hosted by CUNY SPS</span>
+                    <a
+                      href="https://openlab.sps.cuny.edu/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold text-violet-700 hover:text-violet-800 inline-flex items-center gap-1 group"
+                    >
+                      <span>Visit OpenLab Main Site</span>
+                      <ExternalLink className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                    </a>
+                  </div>
+                </div>
+
+                {/* TILE 4: Office of Student Life & Institutional Gateways (7 cols) */}
+                <div className="lg:col-span-7 bg-gradient-to-br from-[#0F0728] via-[#1E0B38] to-[#0A0318] rounded-3xl border border-violet-500/25 p-6 sm:p-7 text-white shadow-md relative overflow-hidden flex flex-col justify-between">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/15 rounded-full blur-3xl pointer-events-none" />
+
+                  <div>
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-violet-500/20 text-[#FFD100] border border-violet-400/20">
+                        <Shield className="w-3 h-3 text-[#FFD100]" />
+                        Office of Student Life
+                      </span>
+                      <span className="text-xs text-violet-300/80">Co-Curricular & Leadership Hub</span>
+                    </div>
+
+                    <h4 className="text-lg sm:text-xl font-extrabold text-white leading-snug">
+                      Accessible Leadership & Community Engagement
+                    </h4>
+                    <p className="text-xs text-violet-200/90 mt-1.5 leading-relaxed max-w-2xl">
+                      Providing our diverse student population with accessible co-curricular and academic enrichment opportunities to develop leadership skills and community beyond the classroom.
+                    </p>
+
+                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      <a
+                        href="https://login.cuny.edu/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-violet-400/40 transition-all flex items-start gap-3 group cursor-pointer"
+                      >
+                        <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-[#FFD100] flex items-center justify-center shrink-0 border border-amber-400/30">
+                          <Lock className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-white group-hover:text-[#FFD100] flex items-center gap-1">
+                            <span>CUNY Login Portal</span>
+                            <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                          </div>
+                          <div className="text-[11px] text-violet-300 mt-0.5">Institutional Single Sign-On</div>
+                        </div>
+                      </a>
+
+                      <a
+                        href="https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-violet-400/40 transition-all flex items-start gap-3 group cursor-pointer"
+                      >
+                        <div className="w-8 h-8 rounded-xl bg-violet-500/20 text-violet-300 flex items-center justify-center shrink-0 border border-violet-400/30">
+                          <Calendar className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-white group-hover:text-violet-300 flex items-center gap-1">
+                            <span>Student Life Calendar</span>
+                            <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                          </div>
+                          <div className="text-[11px] text-violet-300 mt-0.5">Master schedule of all events</div>
+                        </div>
+                      </a>
+
+                      <a
+                        href="mailto:studentlife@sps.cuny.edu"
+                        className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-violet-400/40 transition-all flex items-start gap-3 group cursor-pointer"
+                      >
+                        <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0 border border-emerald-400/30">
+                          <Mail className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-white group-hover:text-emerald-300 flex items-center gap-1">
+                            <span>Contact Student Life</span>
+                            <ArrowRight className="w-2.5 h-2.5 opacity-60" />
+                          </div>
+                          <div className="text-[11px] text-violet-300 mt-0.5">studentlife@sps.cuny.edu</div>
+                        </div>
+                      </a>
+
+                      <a
+                        href="https://openlab.sps.cuny.edu/help-documentation/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-violet-400/40 transition-all flex items-start gap-3 group cursor-pointer"
+                      >
+                        <div className="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center shrink-0 border border-cyan-400/30">
+                          <HelpCircle className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-white group-hover:text-cyan-300 flex items-center gap-1">
+                            <span>Help & Student Guides</span>
+                            <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                          </div>
+                          <div className="text-[11px] text-violet-300 mt-0.5">OpenLab guides and FAQs</div>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-violet-300/80">
+                    <span>CUNY School of Professional Studies</span>
+                    <a
+                      href="https://sps.cuny.edu/student-services/student-life"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold text-[#FFD100] hover:underline inline-flex items-center gap-1"
+                    >
+                      <span>Official Student Life Page</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
                   </div>
                 </div>
               </div>
