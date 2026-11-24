@@ -266,6 +266,13 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
     "isFeatured": false,
     "channels": [
       {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/dacsps/",
+        "badge": "Verified Official Link",
+        "description": "Official Disability and Access Coalition Instagram (@dacsps) for disability advocacy, universal design workshops, and accessibility updates."
+      },
+      {
         "platform": "website",
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/disability-access-coalition/",
@@ -274,7 +281,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
       }
     ],
     "logoUrl": "./club-logos/disability-access.jpg",
-    "logoSource": "Official CUNY SPS OpenLab Disability & Access Coalition group avatar"
+    "logoSource": "Official Disability and Access Coalition Instagram profile avatar (@dacsps)"
   },
   {
     "clubId": "club-film-tv",

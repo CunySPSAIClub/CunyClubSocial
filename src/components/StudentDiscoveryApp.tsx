@@ -509,17 +509,6 @@ export function StudentDiscoveryApp() {
                         <Calendar className="w-4 h-4 text-white/80" />
                         <span>View upcoming events</span>
                       </button>
-                      <a
-                        href="https://missme2026.github.io/club-hub-demo/?v=23#welcome"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full sm:w-auto px-5 py-3.5 min-h-[48px] bg-[#0B0B0F]/70 hover:bg-[#0B0B0F] text-[#C4F500] font-semibold text-xs rounded-xl border border-[#C4F500]/30 transition-all flex items-center justify-center gap-2 group cursor-pointer backdrop-blur-md"
-                        title="Try the companion Club Social Hub interactive demo"
-                      >
-                        <Smartphone className="w-4 h-4 text-[#C4F500]" />
-                        <span>Interactive Mobile Demo</span>
-                        <ExternalLink className="w-3 h-3 opacity-70 group-hover:opacity-100" />
-                      </a>
                     </div>
 
                     {/* Trust & Engagement Stats */}
@@ -2209,25 +2198,6 @@ export function StudentDiscoveryApp() {
                     <ExternalLink className="w-3 h-3 opacity-80" />
                   </a>
                 </div>
-              </div>
-
-              {/* Companion Demo */}
-              <div className="pt-2 border-t border-slate-100">
-                <a
-                  href="https://missme2026.github.io/club-hub-demo/?v=23#welcome"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-3.5 rounded-xl bg-[#0B0B0F] border border-slate-800 text-white shadow-sm transition-colors text-xs font-bold"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Smartphone className="w-5 h-5 text-[#C4F500]" />
-                    <div className="text-left">
-                      <div>Interactive Mobile Demo</div>
-                      <div className="text-[10px] text-slate-400 font-normal">Open companion mobile web app</div>
-                    </div>
-                  </div>
-                  <ExternalLink className="w-4 h-4 text-slate-400" />
-                </a>
               </div>
 
               {/* Install PWA Option */}

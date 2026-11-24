@@ -31,6 +31,10 @@ test('Screen 1 (Home) renders required hero, CTA, featured clubs, and events', (
   assert.match(html, /https:\/\/www\.facebook\.com\/cunysps\//i, 'Top header must feature SPS Facebook link');
   assert.match(html, /Student LinkedIn/i, 'Must have Student LinkedIn action label');
   assert.match(html, /SPS Facebook/i, 'Must have SPS Facebook action label');
+
+  // 5. Removed external demo
+  assert.doesNotMatch(html, /missme2026/i, 'Companion mobile demo link must be removed');
+  assert.doesNotMatch(html, /Interactive Mobile Demo/i, 'Interactive mobile demo button must be removed');
 });
 
 test('Screen 2 (Directory Dataset) contains all 34 recognized clubs and metadata', () => {
@@ -78,6 +82,14 @@ test('Screen 3 (Club Profile & Channels) includes verified direct action links a
   for (const ch of aiClub.channels) {
     assert.equal(ch.badge, 'Verified Official Link');
   }
+
+  // Verify Disability and Access Coalition has verified Instagram and logo
+  const dacClub = CLUBS_DATA.find((c) => c.clubId === 'club-disability-access');
+  assert.ok(dacClub, 'Disability and Access Coalition must exist');
+  const dacInstagram = dacClub.channels.find((ch) => ch.platform === 'instagram');
+  assert.ok(dacInstagram, 'DAC Instagram channel must exist');
+  assert.equal(dacInstagram.url, 'https://www.instagram.com/dacsps/');
+  assert.equal(dacClub.logoUrl, './club-logos/disability-access.jpg');
 });
 
 test('Screen 4 (Events) contains event schedule and club linkage with 12-hour formatted times', () => {
