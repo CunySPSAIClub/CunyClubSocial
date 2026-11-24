@@ -219,64 +219,6 @@ export function StudentDiscoveryApp() {
 
   return (
     <div className="min-h-screen bg-slate-100/70 text-slate-900 flex flex-col font-sans selection:bg-[#FFB81C]/30 selection:text-slate-900 overflow-x-hidden">
-      {/* Top Community Utility Bar: Student & Alumni Social Networks */}
-      <div className="bg-gradient-to-r from-[#12072B] via-[#1E0B3C] to-[#12072B] text-white border-b border-violet-900/30 shadow-xs relative z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between gap-3 text-xs">
-          {/* Left Tagline & Badge */}
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-violet-950/60 text-[#FFD100] text-[10px] sm:text-[11px] font-bold tracking-wide uppercase shadow-2xs shrink-0 border border-violet-500/30">
-              <Sparkles className="w-3 h-3 text-[#FFD100] animate-pulse" />
-              <span>SPS Networks</span>
-            </span>
-            <p className="text-white/90 text-xs font-medium truncate hidden sm:block">
-              Connect with 25,000+ CUNY SPS students &amp; alumni on official school channels:
-            </p>
-          </div>
-
-          {/* Right Action Pills: Student LinkedIn & SPS Facebook */}
-          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-            <a
-              href="https://www.linkedin.com/school/cuny-school-of-professional-studies/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Connect on CUNY SPS Student & Alumni LinkedIn"
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0A66C2] hover:bg-[#004182] text-white font-semibold text-xs transition-all duration-150 shadow-sm hover:scale-[1.03] active:scale-[0.98] group cursor-pointer border border-white/20"
-              title="Connect with CUNY SPS on LinkedIn"
-            >
-              <LinkedInIcon className="w-3.5 h-3.5 fill-white shrink-0 group-hover:rotate-6 transition-transform" />
-              <span className="font-semibold tracking-tight">Student LinkedIn</span>
-              <ExternalLink className="w-2.5 h-2.5 opacity-70 group-hover:opacity-100" />
-            </a>
-
-            <a
-              href="https://www.facebook.com/cunysps/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Join CUNY SPS Student Facebook Community"
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1877F2] hover:bg-[#0d65d9] text-white font-semibold text-xs transition-all duration-150 shadow-sm hover:scale-[1.03] active:scale-[0.98] group cursor-pointer border border-white/20"
-              title="Follow CUNY SPS on Facebook"
-            >
-              <FacebookIcon className="w-3.5 h-3.5 fill-white shrink-0 group-hover:rotate-6 transition-transform" />
-              <span className="font-semibold tracking-tight">SPS Facebook</span>
-              <ExternalLink className="w-2.5 h-2.5 opacity-70 group-hover:opacity-100" />
-            </a>
-
-            <a
-              href="https://www.cuny.edu/cuny-login/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Access official CUNY Login Portal"
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-900/60 hover:bg-violet-800 text-white font-semibold text-xs transition-all duration-150 shadow-sm hover:scale-[1.03] active:scale-[0.98] group cursor-pointer border border-violet-400/30"
-              title="Sign into CUNY Institutional Portal (CUNYfirst, Brightspace, SSO)"
-            >
-              <Lock className="w-3.5 h-3.5 text-[#FFD100] shrink-0" />
-              <span className="font-semibold tracking-tight">CUNY Login</span>
-              <ExternalLink className="w-2.5 h-2.5 opacity-70 group-hover:opacity-100" />
-            </a>
-          </div>
-        </div>
-      </div>
-
       {/* Main Responsive Layout: Desktop Sidebar + Content Area */}
       <div className="flex-1 flex w-full relative">
         {/* DESKTOP SIDEBAR (Visible on lg: >= 1024px) */}
@@ -445,6 +387,33 @@ export function StudentDiscoveryApp() {
                 </div>
                 <ExternalLink className="w-3 h-3 text-slate-400" />
               </a>
+            </div>
+
+            {/* Official Student Networks */}
+            <div className="pt-3 border-t border-slate-200">
+              <p className="px-3.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                Student Networks
+              </p>
+              <div className="grid grid-cols-2 gap-1.5 px-2">
+                <a
+                  href="https://www.linkedin.com/school/cuny-school-of-professional-studies/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-[#0A66C2] hover:bg-[#004182] text-white rounded-lg text-[11px] font-semibold transition-colors"
+                >
+                  <LinkedInIcon className="w-3.5 h-3.5 fill-white shrink-0" />
+                  <span className="truncate">Student LinkedIn</span>
+                </a>
+                <a
+                  href="https://www.facebook.com/cunysps/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-[#1877F2] hover:bg-[#0d65d9] text-white rounded-lg text-[11px] font-semibold transition-colors"
+                >
+                  <FacebookIcon className="w-3.5 h-3.5 fill-white shrink-0" />
+                  <span className="truncate">SPS Facebook</span>
+                </a>
+              </div>
             </div>
           </nav>
 
