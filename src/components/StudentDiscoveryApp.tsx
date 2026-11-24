@@ -24,7 +24,8 @@ import {
   BookOpen,
   Newspaper,
   Compass,
-  HelpCircle
+  HelpCircle,
+  Smartphone
 } from 'lucide-react';
 import {
   CLUBS_DATA,
@@ -247,6 +248,19 @@ export function StudentDiscoveryApp() {
               </a>
 
               <a
+                href="https://missme2026.github.io/club-hub-demo/?v=23#welcome"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open Companion Mobile Demo"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFB71B]/20 hover:bg-[#FFB71B]/30 text-[#FFD100] font-semibold text-xs transition-all duration-150 shadow-sm border border-[#FFB71B]/40 group cursor-pointer"
+                title="Launch companion Club Social Hub mobile interactive demo"
+              >
+                <Smartphone className="w-3.5 h-3.5 text-[#FFB71B] shrink-0" />
+                <span className="font-semibold tracking-tight">Mobile Demo</span>
+                <ExternalLink className="w-2.5 h-2.5 opacity-70 group-hover:opacity-100" />
+              </a>
+
+              <a
                 href="https://www.cuny.edu/cuny-login/"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -423,7 +437,7 @@ export function StudentDiscoveryApp() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1">
+      <main className="flex-1 pb-20 md:pb-0">
         {/* ========================================================================= */}
         {/* SCREEN 1: HOME                                                            */}
         {/* ========================================================================= */}
@@ -437,16 +451,22 @@ export function StudentDiscoveryApp() {
 
               <div className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-violet-500/10 border border-violet-400/25 rounded-full text-xs font-semibold text-violet-200 backdrop-blur-md shadow-sm">
-                  <Sparkles className="w-3.5 h-3.5 text-[#FFB81C] animate-pulse" />
-                  <span>CUNY SPS Office of Student Life &amp; AI Club</span>
+                  <span className="w-2 h-2 rounded-full bg-[#FFB71B] animate-ping" />
+                  <span className="text-[#FFB71B] font-bold">Club Social Hub</span>
+                  <span className="text-violet-400">·</span>
+                  <span>CUNY SPS Student Life Platform</span>
                 </div>
 
                 <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-violet-200">
                   Find your next club at CUNY SPS
                 </h1>
 
-                <p className="text-sm sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed font-normal">
-                  Connect with fellow online and hybrid students, join active WhatsApp groups, participate in civic tech builds, and find your community across 30+ recognized organizations.
+                <p className="text-base sm:text-xl font-bold text-[#FFD100] tracking-tight">
+                  Your student life, all in one place.
+                </p>
+
+                <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed font-normal">
+                  Connect with fellow online and hybrid students, join active WhatsApp groups, participate in civic tech builds, and find your community across 34 recognized organizations.
                 </p>
 
                 {/* Primary Action Buttons */}
@@ -467,6 +487,17 @@ export function StudentDiscoveryApp() {
                     <Calendar className="w-4 h-4 text-violet-300" />
                     <span>View upcoming events</span>
                   </button>
+                  <a
+                    href="https://missme2026.github.io/club-hub-demo/?v=23#welcome"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto px-5 py-3.5 min-h-[48px] bg-[#FFB71B]/15 hover:bg-[#FFB71B]/25 text-[#FFB71B] font-semibold text-xs rounded-xl border border-[#FFB71B]/30 transition-all flex items-center justify-center gap-2 group cursor-pointer"
+                    title="Try the companion Club Social Hub interactive demo"
+                  >
+                    <Smartphone className="w-4 h-4 text-[#FFB71B]" />
+                    <span>Interactive Mobile Demo</span>
+                    <ExternalLink className="w-3 h-3 opacity-70 group-hover:opacity-100" />
+                  </a>
                 </div>
 
                 {/* Trust & Engagement Stats */}
@@ -1785,6 +1816,80 @@ export function StudentDiscoveryApp() {
           </div>
         </div>
       </footer>
+
+      {/* V23-INSPIRED MOBILE BOTTOM TAB BAR */}
+      <nav
+        id="tabbar"
+        aria-label="Mobile Navigation"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 py-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] flex items-center justify-around"
+        style={{ paddingBottom: 'max(6px, env(safe-area-inset-bottom, 6px))' }}
+      >
+        <button
+          type="button"
+          onClick={() => navigateTo('home')}
+          className={`flex flex-col items-center justify-center gap-0.5 py-1 px-2.5 rounded-xl transition-all cursor-pointer ${
+            currentTab === 'home' ? 'text-violet-700 font-bold' : 'text-slate-500 hover:text-slate-900 font-medium'
+          }`}
+        >
+          <Compass className={`w-5 h-5 ${currentTab === 'home' ? 'text-violet-600' : 'text-slate-400'}`} />
+          <span className="text-[11px] leading-tight">Home</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => navigateTo('clubs')}
+          className={`flex flex-col items-center justify-center gap-0.5 py-1 px-2.5 rounded-xl transition-all cursor-pointer relative ${
+            currentTab === 'clubs' ? 'text-violet-700 font-bold' : 'text-slate-500 hover:text-slate-900 font-medium'
+          }`}
+        >
+          <Users className={`w-5 h-5 ${currentTab === 'clubs' ? 'text-violet-600' : 'text-slate-400'}`} />
+          <span className="text-[11px] leading-tight">Clubs</span>
+          <span className="absolute -top-1 -right-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-violet-100 text-violet-800 border border-violet-200">
+            34
+          </span>
+        </button>
+
+        {/* Elevated Center Action Tab */}
+        <button
+          type="button"
+          onClick={() => navigateTo('events')}
+          className="flex flex-col items-center justify-center -mt-5 group cursor-pointer"
+          title="Browse Upcoming Events"
+        >
+          <div className={`w-12 h-10 rounded-2xl flex items-center justify-center shadow-md transition-all ${
+            currentTab === 'events'
+              ? 'bg-[#FFB71B] text-[#011D49] shadow-[#FFB71B]/40 scale-105'
+              : 'bg-gradient-to-tr from-violet-600 to-indigo-600 text-white shadow-violet-500/30 group-hover:scale-105'
+          }`}>
+            <Calendar className="w-5 h-5" />
+          </div>
+          <span className={`text-[10px] mt-1 font-bold ${
+            currentTab === 'events' ? 'text-violet-800' : 'text-slate-600'
+          }`}>
+            Events
+          </span>
+        </button>
+
+        <a
+          href="https://openlab.sps.cuny.edu/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-col items-center justify-center gap-0.5 py-1 px-2.5 rounded-xl text-slate-500 hover:text-violet-700 font-medium transition-all cursor-pointer"
+        >
+          <Globe className="w-5 h-5 text-slate-400" />
+          <span className="text-[11px] leading-tight">OpenLab</span>
+        </a>
+
+        <a
+          href="https://www.cuny.edu/cuny-login/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-col items-center justify-center gap-0.5 py-1 px-2.5 rounded-xl text-slate-600 hover:text-violet-800 font-medium transition-all cursor-pointer"
+        >
+          <Lock className="w-5 h-5 text-[#FFB71B]" />
+          <span className="text-[11px] leading-tight font-semibold">CUNY</span>
+        </a>
+      </nav>
     </div>
   );
 }
