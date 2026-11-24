@@ -88,6 +88,13 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "description": "Active student community chat for build night alerts, Zoom links, and peer project collaborations."
       },
       {
+        "platform": "instagram",
+        "actionLabel": "Follow on Instagram",
+        "url": "https://www.instagram.com/cuny_sps_ai_club/",
+        "badge": "Verified Official Link",
+        "description": "Official CUNY SPS AI Club Instagram for workshop announcements, hackathon recaps, and AI project spotlights."
+      },
+      {
         "platform": "website",
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/ai-club/",
@@ -96,7 +103,7 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
       }
     ],
     "logoUrl": "./club-logos/ai-club.jpg",
-    "logoSource": "Official CUNY SPS OpenLab AI Club avatar & team repository asset"
+    "logoSource": "Official AI Club Instagram profile avatar (@cuny_sps_ai_club)"
   },
   {
     "clubId": "club-arts-crafts",

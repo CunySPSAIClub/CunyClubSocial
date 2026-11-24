@@ -517,6 +517,16 @@ export function StudentDiscoveryApp() {
                           <ExternalLink className="w-3 h-3 opacity-80" />
                         </a>
                         <a
+                          href="https://www.instagram.com/cuny_sps_ai_club/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-95 text-white font-semibold text-xs transition-all shadow-sm cursor-pointer"
+                        >
+                          <InstagramIcon className="w-3.5 h-3.5 fill-white" />
+                          <span>Follow on Instagram</span>
+                          <ExternalLink className="w-3 h-3 opacity-80" />
+                        </a>
+                        <a
                           href="https://openlab.sps.cuny.edu/groups/ai-club/"
                           target="_blank"
                           rel="noopener noreferrer"

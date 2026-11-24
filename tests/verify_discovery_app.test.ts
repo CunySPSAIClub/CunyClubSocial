@@ -35,7 +35,7 @@ test('Screen 2 (Directory Dataset) contains all 34 recognized clubs and metadata
   assert.ok(aiClub, 'AI Club must exist');
   assert.equal(aiClub.name, 'Artificial Intelligence Club');
   assert.ok(aiClub.whoItWelcomes.length > 20, 'Who It Welcomes must be informative');
-  assert.ok(aiClub.channels.length >= 2, 'Must have verified WhatsApp and OpenLab Hub channels');
+  assert.ok(aiClub.channels.length >= 3, 'Must have WhatsApp, Instagram, and OpenLab Hub channels');
 });
 
 test('Screen 3 (Club Profile & Channels) includes verified direct action links and omits unverified channels', () => {
@@ -50,9 +50,9 @@ test('Screen 3 (Club Profile & Channels) includes verified direct action links a
   assert.ok(aiClub.logoUrl, 'AI club must have verified logoUrl');
   assert.equal(aiClub.logoUrl, './club-logos/ai-club.jpg');
 
-  // Inactive Instagram channel is omitted from AI club profile per user confirmation
   const instagram = aiClub.channels.find((ch) => ch.platform === 'instagram');
-  assert.equal(instagram, undefined, 'Inactive Instagram channel must be omitted from AI club profile');
+  assert.ok(instagram, 'Instagram channel must exist');
+  assert.equal(instagram.url, 'https://www.instagram.com/cuny_sps_ai_club/');
 
   const website = aiClub.channels.find((ch) => ch.platform === 'website');
   assert.ok(website, 'OpenLab website channel must exist');
