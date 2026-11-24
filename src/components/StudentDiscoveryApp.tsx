@@ -568,10 +568,7 @@ export function StudentDiscoveryApp() {
 
                   {/* TILE 2: Live Upcoming Event Radar (Dynamic next event) */}
                   <div className="bg-gradient-to-br from-[#0B0B0F] via-[#14141C] to-[#0B0B0F] rounded-3xl border border-white/10 p-6 sm:p-7 text-white shadow-md relative overflow-hidden flex flex-col justify-between">
-                    <div
-                      className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none mix-blend-luminosity"
-                      style={{ backgroundImage: 'url(./img/summer-at-cuny-students-campus.jpg)' }}
-                    />
+
                     <div className="absolute top-0 right-0 w-64 h-64 bg-[#C4F500]/10 rounded-full blur-3xl pointer-events-none" />
 
                     <div className="relative z-10">
@@ -1509,38 +1506,38 @@ export function StudentDiscoveryApp() {
                           key={ev.eventId}
                           className="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group flex flex-col"
                         >
-                          {/* Photo Banner with Floating Date Block */}
-                          <div
-                            className="relative h-44 sm:h-52 w-full bg-cover bg-center overflow-hidden"
-                            style={{ backgroundImage: 'url(./img/summer-at-cuny-students-campus.jpg)' }}
-                          >
-                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/30 to-transparent" />
+                          {/* Sleek Spotlight Banner (No AI Imagery) */}
+                          <div className="relative p-6 sm:p-8 bg-gradient-to-br from-[#0B0B0F] via-[#14141C] to-[#0A0A0E] text-white overflow-hidden border-b border-slate-200">
+                            {/* Ambient Cyber-Lime Glow */}
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-[#C4F500]/10 rounded-full blur-3xl pointer-events-none" />
 
-                            {/* Floating Date Block */}
-                            <div className="absolute top-4 left-4 w-16 h-16 rounded-2xl bg-white/95 backdrop-blur-md border border-white/40 flex flex-col items-center justify-center text-center shadow-lg">
-                              <span className="text-[10px] font-bold text-slate-950 uppercase tracking-wider">
-                                {new Date(ev.date + 'T12:00:00Z').toLocaleString('en-US', { month: 'short' })}
-                              </span>
-                              <span className="text-2xl font-extrabold text-slate-950 leading-none mt-0.5">
-                                {ev.date.split('-')[2]}
-                              </span>
+                            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                              {/* Date Block */}
+                              <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex flex-col items-center justify-center text-center shadow-lg shrink-0">
+                                <span className="text-[10px] font-bold text-[#C4F500] uppercase tracking-wider">
+                                  {new Date(ev.date + 'T12:00:00Z').toLocaleString('en-US', { month: 'short' })}
+                                </span>
+                                <span className="text-2xl font-extrabold text-white leading-none mt-0.5">
+                                  {ev.date.split('-')[2]}
+                                </span>
+                              </div>
+
+                              {/* Top Right Badges */}
+                              <div className="flex items-center gap-1.5 self-start sm:self-auto">
+                                <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-[#C4F500] text-slate-950 shadow-sm">
+                                  Next Spotlight Event
+                                </span>
+                              </div>
                             </div>
 
-                            {/* Top Right Badges */}
-                            <div className="absolute top-4 right-4 flex items-center gap-1.5">
-                              <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#C4F500] text-slate-950 font-extrabold shadow-sm">
-                                Next Spotlight Event
-                              </span>
-                            </div>
-
-                            {/* Bottom Overlay Info */}
-                            <div className="absolute bottom-4 left-4 right-4 text-white">
+                            {/* Header Info */}
+                            <div className="relative z-10 text-white">
                               <div className="flex items-center gap-2 mb-1">
                                 <span className="text-xs font-bold text-[#C4F500] uppercase tracking-wider">
                                   {ev.clubName}
                                 </span>
                                 <span className="opacity-60">·</span>
-                                <span className="text-xs text-slate-200 font-mono">{ev.time} EST</span>
+                                <span className="text-xs text-slate-300 font-mono">{ev.time} EST</span>
                               </div>
                               <h2 className="text-xl sm:text-2xl font-extrabold text-white leading-tight line-clamp-2">
                                 {ev.title}
