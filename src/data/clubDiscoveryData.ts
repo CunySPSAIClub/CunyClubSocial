@@ -87,13 +87,6 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "description": "Active student community chat for build night alerts, Zoom links, and peer project collaborations."
       },
       {
-        "platform": "instagram",
-        "actionLabel": "Follow on Instagram",
-        "url": "https://www.instagram.com/cuny_sps_ai_club/",
-        "badge": "Verified Official Link",
-        "description": "Official AI Club Instagram for workshop announcements, hackathon recaps, and AI project spotlights."
-      },
-      {
         "platform": "website",
         "actionLabel": "Visit OpenLab Hub",
         "url": "https://openlab.sps.cuny.edu/ai-club/",
