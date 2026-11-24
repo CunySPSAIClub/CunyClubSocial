@@ -1,6 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import React from 'react';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import { renderToString } from 'react-dom/server';
 import { StudentDiscoveryApp } from '../src/components/StudentDiscoveryApp';
 import { CLUBS_DATA, EVENTS_DATA } from '../src/data/clubDiscoveryData';
@@ -156,4 +161,53 @@ test('Screen 8 (Prototype Removal) verifies prototype Faculty Advisors and Meeti
     assert.equal(club.facultyAdvisor, undefined, `Club ${club.name} must not contain prototype facultyAdvisor`);
     assert.equal(club.meetingSchedule, undefined, `Club ${club.name} must not contain prototype meetingSchedule`);
   }
+});
+
+test('Screen 9 (Progressive Web App - PWA) validates manifest, service worker, icons, and install UI', () => {
+  const rootDir = path.resolve(__dirname, '..');
+
+  // 1. Web App Manifest
+  const manifestPath = path.join(rootDir, 'public', 'manifest.webmanifest');
+  assert.ok(fs.existsSync(manifestPath), 'manifest.webmanifest must exist in public directory');
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  assert.equal(manifest.name, 'CUNY SPS Club Social Hub');
+  assert.equal(manifest.short_name, 'ClubSocialHub');
+  assert.equal(manifest.display, 'standalone');
+  assert.equal(manifest.theme_color, '#0B0B0F');
+  assert.equal(manifest.background_color, '#0B0B0F');
+  assert.ok(manifest.icons && manifest.icons.length >= 3, 'Must contain at least 192x192, 512x512, and maskable icons');
+
+  // 2. Icon files exist on disk
+  for (const icon of manifest.icons) {
+    const cleanSrc = icon.src.replace(/^\.\//, '');
+    const iconFilePath = path.join(rootDir, 'public', cleanSrc);
+    assert.ok(fs.existsSync(iconFilePath), `Icon file ${icon.src} must exist at ${iconFilePath}`);
+    const stat = fs.statSync(iconFilePath);
+    assert.ok(stat.size > 500, `Icon file ${icon.src} must have valid non-empty byte size`);
+  }
+
+  // 3. Apple Touch Icon exists
+  const appleIconPath = path.join(rootDir, 'public', 'apple-touch-icon.png');
+  assert.ok(fs.existsSync(appleIconPath), 'apple-touch-icon.png must exist in public directory');
+
+  // 4. Service Worker script
+  const swPath = path.join(rootDir, 'public', 'sw.js');
+  assert.ok(fs.existsSync(swPath), 'sw.js must exist in public directory');
+  const swContent = fs.readFileSync(swPath, 'utf8');
+  assert.match(swContent, /addEventListener\(['"]install['"]/i, 'sw.js must handle install event');
+  assert.match(swContent, /addEventListener\(['"]activate['"]/i, 'sw.js must handle activate event');
+  assert.match(swContent, /addEventListener\(['"]fetch['"]/i, 'sw.js must handle fetch event for offline support');
+
+  // 5. HTML Entry Points
+  const indexHtmlPath = path.join(rootDir, 'index.html');
+  const indexHtml = fs.readFileSync(indexHtmlPath, 'utf8');
+  assert.match(indexHtml, /<link\s+rel=["']manifest["']\s+href=["']\.\/manifest\.webmanifest["']/i, 'index.html must link to manifest.webmanifest');
+  assert.match(indexHtml, /<meta\s+name=["']theme-color["']\s+content=["']#0B0B0F["']/i, 'index.html must set theme-color to #0B0B0F');
+  assert.match(indexHtml, /<link\s+rel=["']apple-touch-icon["']/i, 'index.html must set apple-touch-icon');
+  assert.match(indexHtml, /navigator\.serviceWorker\.register/i, 'index.html must register service worker');
+
+  // 6. Component Install Prompt UI
+  const appHtml = renderToString(React.createElement(StudentDiscoveryApp));
+  assert.match(appHtml, /Install App/i, 'StudentDiscoveryApp must render install action');
+  assert.match(appHtml, /PWA/i, 'Must display PWA badge');
 });

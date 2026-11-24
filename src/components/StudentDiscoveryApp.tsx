@@ -110,6 +110,63 @@ export function StudentDiscoveryApp() {
   const [eventSearch, setEventSearch] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
 
+  // PWA beforeinstallprompt handler & install state
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
+  const [showIosPrompt, setShowIosPrompt] = useState(false);
+
+  useEffect(() => {
+    // Check if running in standalone mode (already installed)
+    const isStandalone = typeof window !== 'undefined' && (
+      window.matchMedia('(display-mode: standalone)').matches ||
+      (window.navigator as any).standalone === true
+    );
+    if (isStandalone) {
+      setIsInstalled(true);
+    }
+
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      setIsInstallable(false);
+      setDeferredPrompt(null);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choiceResult = await deferredPrompt.userChoice;
+      if (choiceResult && choiceResult.outcome === 'accepted') {
+        setIsInstalled(true);
+      }
+      setDeferredPrompt(null);
+      setIsInstallable(false);
+    } else {
+      const userAgent = typeof window !== 'undefined' ? window.navigator.userAgent.toLowerCase() : '';
+      const isIos = /iphone|ipad|ipod/.test(userAgent);
+      if (isIos) {
+        setShowIosPrompt(true);
+      } else {
+        alert('To install CUNY SPS Club Social Hub:\n\n• On Chrome/Edge (Desktop): Click the Install icon in your browser address bar.\n• On Android: Tap menu (⋮) and select "Add to Home screen" or "Install app".\n• On iOS (Safari): Tap Share (⎋) and select "Add to Home Screen".');
+      }
+    }
+  };
+
 
   // Sync hash routing on mount
   useEffect(() => {
@@ -335,7 +392,7 @@ export function StudentDiscoveryApp() {
             </button>
           </nav>
 
-          {/* Right: Search, CUNY Login, and Student Networks */}
+          {/* Right: Search, Install App, and Student Networks */}
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -345,6 +402,21 @@ export function StudentDiscoveryApp() {
               <Search className="w-3.5 h-3.5 text-slate-500" />
               <span>Find Clubs</span>
             </button>
+
+            {/* PWA Install Button */}
+            {!isInstalled && (
+              <button
+                type="button"
+                onClick={handleInstallClick}
+                className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#0B0B0F] hover:bg-slate-800 text-[#C4F500] text-xs font-bold shadow-2xs transition-colors cursor-pointer border border-slate-800"
+                title="Install Progressive Web App on Phone or Desktop"
+                aria-label="Install App as PWA"
+              >
+                <Smartphone className="w-3.5 h-3.5 text-[#C4F500]" />
+                <span className="hidden xs:inline">Install App</span>
+                <span className="px-1 py-0.2 rounded text-[9px] font-black uppercase tracking-wider bg-[#C4F500] text-slate-950">PWA</span>
+              </button>
+            )}
 
 
 
@@ -2143,6 +2215,31 @@ export function StudentDiscoveryApp() {
                   <ExternalLink className="w-4 h-4 text-slate-400" />
                 </a>
               </div>
+
+              {/* Install PWA Option */}
+              <div className="pt-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => { setMobileMenuOpen(false); handleInstallClick(); }}
+                  className="w-full flex items-center justify-between p-3 rounded-xl bg-[#0B0B0F] hover:bg-slate-800 text-[#C4F500] shadow-sm transition-all cursor-pointer group text-left border border-slate-800"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-[#C4F500]/15 flex items-center justify-center text-[#C4F500] group-hover:scale-105 transition-transform">
+                      <Smartphone className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                        <span>{isInstalled ? 'App Installed (PWA)' : 'Install Club Hub App'}</span>
+                        <span className="px-1.5 py-0.2 rounded text-[9px] font-black uppercase tracking-wider bg-[#C4F500] text-slate-950">PWA</span>
+                      </div>
+                      <div className="text-[10px] text-slate-400 font-normal">
+                        {isInstalled ? 'Running standalone PWA' : 'Add to home screen for offline access'}
+                      </div>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
+                </button>
+              </div>
             </div>
           </aside>
         </div>
@@ -2217,6 +2314,54 @@ export function StudentDiscoveryApp() {
           <span className="text-[10px] leading-tight font-semibold">Sections</span>
         </button>
       </nav>
+
+      {/* iOS PWA Installation Guide Modal */}
+      {showIosPrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-slate-200 text-slate-900 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-[#0B0B0F] flex items-center justify-center text-[#C4F500]">
+                  <Smartphone className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-slate-900">Install on iPhone / iPad</h3>
+                  <p className="text-[11px] text-slate-500">Add to Home Screen as PWA</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowIosPrompt(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer"
+                aria-label="Close installation guide"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="space-y-2.5 text-xs text-slate-600 bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+              <p className="flex items-start gap-2">
+                <span className="font-bold text-slate-900 bg-white border border-slate-200 rounded px-1.5 py-0.5 text-[10px]">1</span>
+                <span>Open this page in <strong>Safari</strong> on iOS.</span>
+              </p>
+              <p className="flex items-start gap-2">
+                <span className="font-bold text-slate-900 bg-white border border-slate-200 rounded px-1.5 py-0.5 text-[10px]">2</span>
+                <span>Tap the <strong>Share</strong> button at the bottom of the screen (the square icon with an arrow pointing up).</span>
+              </p>
+              <p className="flex items-start gap-2">
+                <span className="font-bold text-slate-900 bg-white border border-slate-200 rounded px-1.5 py-0.5 text-[10px]">3</span>
+                <span>Scroll down and tap <strong>Add to Home Screen</strong>.</span>
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowIosPrompt(false)}
+              className="w-full py-2.5 bg-[#0B0B0F] hover:bg-slate-800 text-[#C4F500] font-bold text-xs rounded-xl transition-colors cursor-pointer"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
