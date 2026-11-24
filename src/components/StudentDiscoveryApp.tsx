@@ -357,17 +357,7 @@ export function StudentDiscoveryApp() {
               <span>Find Clubs</span>
             </button>
 
-            <a
-              href="https://www.cuny.edu/cuny-login/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0B0B0F] hover:bg-slate-800 text-[#C4F500] border border-black text-xs font-bold transition-colors"
-              title="Official CUNY Login"
-            >
-              <Lock className="w-3.5 h-3.5 text-[#C4F500]" />
-              <span className="hidden xs:inline">CUNY Login</span>
-              <ExternalLink className="w-3 h-3 opacity-70" />
-            </a>
+
 
             {/* Official Student Networks on Desktop Header */}
             <div className="hidden lg:flex items-center gap-1.5 pl-2 border-l border-slate-200">
@@ -817,20 +807,20 @@ export function StudentDiscoveryApp() {
 
                       <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <a
-                          href="https://www.cuny.edu/cuny-login/"
+                          href="https://sps.cuny.edu/student-success/student-life/student-clubs-and-organizations"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all flex items-start gap-3 group cursor-pointer"
                         >
-                          <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-[#C4F500] flex items-center justify-center shrink-0 border border-amber-400/30">
-                            <Lock className="w-4 h-4" />
+                          <div className="w-8 h-8 rounded-xl bg-[#C4F500]/15 text-[#C4F500] flex items-center justify-center shrink-0 border border-[#C4F500]/30">
+                            <Users className="w-4 h-4" />
                           </div>
                           <div>
                             <div className="text-xs sm:text-sm font-bold text-white group-hover:text-[#C4F500] flex items-center gap-1">
-                              <span>CUNY Login Portal</span>
+                              <span>Student Clubs &amp; Orgs Directory</span>
                               <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                             </div>
-                            <div className="text-[11px] sm:text-xs text-slate-400 mt-0.5">CUNYfirst, Brightspace &amp; SSO</div>
+                            <div className="text-[11px] sm:text-xs text-slate-400 mt-0.5">Official Student Life Recognized Orgs</div>
                           </div>
                         </a>
 
@@ -2050,19 +2040,6 @@ export function StudentDiscoveryApp() {
                 <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-2">
                   Institutional Portals
                 </p>
-                <a
-                  href="https://www.cuny.edu/cuny-login/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-800 bg-slate-50 hover:bg-slate-100 hover:text-slate-900 transition-colors border border-slate-200"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Lock className="w-4 h-4 text-[#FFB71B]" />
-                    <span>CUNY Login Portal</span>
-                  </div>
-                  <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-                </a>
-
                 <a
                   href="https://openlab.sps.cuny.edu/help/"
                   target="_blank"
