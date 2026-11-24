@@ -1,5 +1,5 @@
 // CUNY SPS Club Social Hub Service Worker (PWA Offline Support)
-const CACHE_NAME = 'cuny-club-social-hub-v3';
+const CACHE_NAME = 'cuny-club-social-hub-v4';
 const CORE_ASSETS = [
   './',
   './index.html',

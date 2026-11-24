@@ -2187,16 +2187,6 @@ export function StudentDiscoveryApp() {
                     <span>Student Life Instagram (@cunyspsstudentlife)</span>
                     <ExternalLink className="w-3 h-3 opacity-80" />
                   </a>
-                  <a
-                    href="https://www.instagram.com/cuny_sps_ai_club/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="col-span-2 flex items-center justify-center gap-1.5 px-3 py-2 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-95 text-white rounded-xl text-xs font-semibold shadow-xs transition-opacity"
-                  >
-                    <InstagramIcon className="w-3.5 h-3.5 fill-white shrink-0" />
-                    <span>AI Club Instagram (@cuny_sps_ai_club)</span>
-                    <ExternalLink className="w-3 h-3 opacity-80" />
-                  </a>
                 </div>
               </div>
 
