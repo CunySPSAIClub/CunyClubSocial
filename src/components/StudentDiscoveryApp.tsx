@@ -680,7 +680,7 @@ export function StudentDiscoveryApp() {
                     {/* Direct Social Channels on Bento Spotlight */}
                     <div className="mt-5 flex flex-wrap items-center gap-2">
                       <a
-                        href="https://chat.whatsapp.com/ED7Z2tY5s2W7v2O7b7Zq9A"
+                        href="https://chat.whatsapp.com/LiEAv8DRlII7pMqN60PGj6"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-xs transition-all shadow-sm hover:shadow-emerald-500/20 cursor-pointer"
@@ -918,7 +918,7 @@ export function StudentDiscoveryApp() {
                             <span>Student Life Calendar</span>
                             <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                           </div>
-                          <div className="text-[11px] text-violet-300 mt-0.5">Master schedule of all events</div>
+                          <div className="text-[11px] text-violet-300 mt-0.5">Official schedule of all student life events</div>
                         </div>
                       </a>
 
@@ -1041,41 +1041,41 @@ export function StudentDiscoveryApp() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {/* Photo 1: Summer at CUNY */}
+                {/* Photo 1: AI Club Innovation Sprint */}
                 <div 
                   onClick={() => navigateTo('gallery')}
                   className="group relative rounded-2xl overflow-hidden border border-slate-200/80 shadow-xs hover:shadow-md transition-all cursor-pointer"
                 >
                   <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100">
                     <img
-                      src="./img/summer-at-cuny-students-campus.jpg"
-                      alt="Students talking together outside on a CUNY campus in summer"
+                      src="./img/cuny-ai-club-spotlight.jpg"
+                      alt="CUNY SPS Artificial Intelligence Club hands-on workshop and hackathon spotlight"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"
                     />
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex flex-col justify-end p-4 text-white">
-                    <span className="text-[10px] font-bold text-[#FFB71B] uppercase tracking-wider">Campus Life</span>
-                    <span className="text-sm font-bold">Summer Community Sessions</span>
+                    <span className="text-[10px] font-bold text-[#FFB71B] uppercase tracking-wider">Tech &amp; Innovation</span>
+                    <span className="text-sm font-bold">AI Club Hackathons &amp; Sprints</span>
                   </div>
                 </div>
 
-                {/* Photo 2: Skaters Circle */}
+                {/* Photo 2: Black Student Union */}
                 <div 
                   onClick={() => navigateTo('gallery')}
                   className="group relative rounded-2xl overflow-hidden border border-slate-200/80 shadow-xs hover:shadow-md transition-all cursor-pointer"
                 >
                   <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100">
                     <img
-                      src="./img/splash-skate-circle.jpg"
-                      alt="CUNY students in a circle holding skateboards, looking down at the camera"
+                      src="./img/cuny-bsu-grads.jpg"
+                      alt="CUNY SPS Black Student Union celebrating student leadership and community"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"
                     />
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex flex-col justify-end p-4 text-white">
-                    <span className="text-[10px] font-bold text-[#FFB71B] uppercase tracking-wider">Student Clubs</span>
-                    <span className="text-sm font-bold">Recreation &amp; Affinity Groups</span>
+                    <span className="text-[10px] font-bold text-[#FFB71B] uppercase tracking-wider">Student Leadership</span>
+                    <span className="text-sm font-bold">Black Student Union Celebrations</span>
                   </div>
                 </div>
 
@@ -1090,7 +1090,7 @@ export function StudentDiscoveryApp() {
                     </div>
                     <h3 className="font-bold text-base text-white">Explore Full Campus Gallery</h3>
                     <p className="text-xs text-violet-200/90 mt-1.5 leading-relaxed">
-                      Browse all 6 authentic photo moments, student club portraits, and official community seals.
+                      Browse all 6 authentic CUNY SPS club spotlights, student leadership celebrations, and campus initiatives.
                     </p>
                   </div>
                   <div className="pt-4 flex items-center gap-1.5 text-xs font-bold text-[#FFD100] group-hover:translate-x-1 transition-transform">
@@ -2086,136 +2086,28 @@ export function StudentDiscoveryApp() {
 
             {/* Gallery Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Photo 1: Summer at CUNY */}
+              {/* Photo 1: AI Club Innovation & Hackathons */}
               <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
                 <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
                   <img
-                    src="./img/summer-at-cuny-students-campus.jpg"
-                    alt="Students talking together outside on a CUNY campus in summer"
+                    src="./img/cuny-ai-club-spotlight.jpg"
+                    alt="CUNY SPS Artificial Intelligence Club hands-on workshop and hackathon spotlight"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     loading="lazy"
                   />
                   <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
-                    Campus Life
+                    Tech &amp; Innovation
                   </div>
                 </div>
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
-                    <h3 className="font-bold text-slate-900 text-base">Summer Community Sessions</h3>
+                    <h3 className="font-bold text-slate-900 text-base">AI Club Innovation &amp; Sprints</h3>
                     <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                      CUNY students gathering outside between classes to connect, study, and organize student initiatives.
+                      Artificial Intelligence Club members participating in hands-on workshops, IBM SkillsBuild hackathons, and generative AI research at CUNY SPS.
                     </p>
                   </div>
                   <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                    <span>Campus Gathering</span>
-                    <span className="font-semibold text-violet-600">New York</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Photo 2: Skaters Circle */}
-              <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-                <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
-                  <img
-                    src="./img/splash-skate-circle.jpg"
-                    alt="CUNY students in a circle holding skateboards, looking down at the camera"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                  <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
-                    Student Clubs
-                  </div>
-                </div>
-                <div className="p-5 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-bold text-slate-900 text-base">Recreation &amp; Affinity Groups</h3>
-                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                      CUNY students building active outdoor communities, sports networks, and creative clubs across NYC.
-                    </p>
-                  </div>
-                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                    <span>Student Affinity</span>
-                    <span className="font-semibold text-violet-600">Recreation</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Photo 3: Skates Club Group */}
-              <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-                <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
-                  <img
-                    src="./img/cuny-skates-club-group.jpg"
-                    alt="Members of the CUNY Skates Club posing together with their skateboards"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                  <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
-                    Peer Community
-                  </div>
-                </div>
-                <div className="p-5 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-bold text-slate-900 text-base">CUNY Skates Club Meetup</h3>
-                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                      Collaborative club meetups bring students together across boroughs to share common hobbies and skills.
-                    </p>
-                  </div>
-                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                    <span>Club Meetup</span>
-                    <span className="font-semibold text-violet-600">Active Group</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Photo 4: Student Portrait */}
-              <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-                <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
-                  <img
-                    src="./img/cuny-student-portrait-msa.jpg"
-                    alt="Portrait of a smiling CUNY student"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                  <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
-                    Student Voices
-                  </div>
-                </div>
-                <div className="p-5 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-bold text-slate-900 text-base">Empowering Adult Learners</h3>
-                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                      CUNY SPS students represent diverse backgrounds, career journeys, and cultures across the nation and globe.
-                    </p>
-                  </div>
-                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                    <span>Community Spotlight</span>
-                    <span className="font-semibold text-violet-600">Student Body</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Photo 5: AI Club Seal */}
-              <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-                <div className="aspect-[16/10] w-full overflow-hidden bg-slate-900 flex items-center justify-center p-6 relative">
-                  <img
-                    src="./img/ai-club-seal.jpg"
-                    alt="Official seal of the Artificial Intelligence Club"
-                    className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300 rounded-full shadow-lg"
-                    loading="lazy"
-                  />
-                  <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
-                    Official Seal
-                  </div>
-                </div>
-                <div className="p-5 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-bold text-slate-900 text-base">AI Club Official Insignia</h3>
-                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                      The verified organizational seal of the Artificial Intelligence Club, leading hands-on tech projects at CUNY SPS.
-                    </p>
-                  </div>
-                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                    <span>Verified Organization</span>
+                    <span>Student Club</span>
                     <button
                       type="button"
                       onClick={() => navigateTo('club-profile', 'club-ai')}
@@ -2227,29 +2119,161 @@ export function StudentDiscoveryApp() {
                 </div>
               </div>
 
-              {/* Photo 6: Hub Icon Badge */}
+              {/* Photo 2: Black Student Union Community Milestone */}
               <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-                <div className="aspect-[16/10] w-full overflow-hidden bg-gradient-to-br from-violet-900 via-indigo-900 to-slate-950 flex items-center justify-center p-6 relative">
+                <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
                   <img
-                    src="./img/hub-icon-180.png"
-                    alt="Club Social Hub official app icon"
-                    className="w-24 h-24 object-contain rounded-2xl shadow-xl group-hover:scale-105 transition-transform duration-300"
+                    src="./img/cuny-bsu-grads.jpg"
+                    alt="CUNY SPS Black Student Union celebrating graduating leaders and community milestones"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     loading="lazy"
                   />
                   <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
-                    Platform Brand
+                    Student Leadership
                   </div>
                 </div>
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
-                    <h3 className="font-bold text-slate-900 text-base">Club Social Hub Badge</h3>
+                    <h3 className="font-bold text-slate-900 text-base">Black Student Union Celebrations</h3>
                     <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                      Unified design system uniting desktop web, mobile web, and campus communications under one cohesive platform.
+                      CUNY SPS Black Student Union honoring graduating leaders, academic excellence, and student community initiatives across NYC.
                     </p>
                   </div>
                   <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                    <span>CUNY SPS Student Life</span>
-                    <span className="font-semibold text-emerald-600">Official Badge</span>
+                    <span>Cultural Affinity</span>
+                    <button
+                      type="button"
+                      onClick={() => navigateTo('club-profile', 'club-bsu')}
+                      className="font-bold text-violet-600 hover:underline cursor-pointer"
+                    >
+                      View BSU Profile →
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Photo 3: Film & Television Club */}
+              <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
+                <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
+                  <img
+                    src="./img/cuny-film-television-club.jpg"
+                    alt="CUNY SPS Film and Television Club spotlight and student screening discussion"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
+                    Arts &amp; Media
+                  </div>
+                </div>
+                <div className="p-5 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-base">Film &amp; Television Club Screenings</h3>
+                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                      Online and hybrid film screenings, script analyses, and digital storytelling workshops hosted by the CUNY SPS Film &amp; TV Club.
+                    </p>
+                  </div>
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                    <span>Creative Arts</span>
+                    <button
+                      type="button"
+                      onClick={() => navigateTo('club-profile', 'club-film-tv')}
+                      className="font-bold text-violet-600 hover:underline cursor-pointer"
+                    >
+                      View Film &amp; TV Club →
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Photo 4: Museum Studies Club */}
+              <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
+                <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
+                  <img
+                    src="./img/cuny-museum-studies-club.png"
+                    alt="CUNY SPS Museum Studies Club curatorial exhibition and archives tour"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
+                    Museum &amp; Heritage
+                  </div>
+                </div>
+                <div className="p-5 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-base">Museum Studies Cultural Tours</h3>
+                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                      Museum Studies Club members exploring virtual gallery exhibitions, curatorial workshops, and public history archives across New York.
+                    </p>
+                  </div>
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                    <span>Academic Society</span>
+                    <button
+                      type="button"
+                      onClick={() => navigateTo('club-profile', 'club-museum')}
+                      className="font-bold text-violet-600 hover:underline cursor-pointer"
+                    >
+                      View Museum Studies →
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Photo 5: Mental Health & Wellness Club */}
+              <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
+                <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
+                  <img
+                    src="./img/cuny-mental-health-club.png"
+                    alt="CUNY SPS Mental Health and Wellness Club community spotlight"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
+                    Wellness &amp; Advocacy
+                  </div>
+                </div>
+                <div className="p-5 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-base">Mental Health &amp; Wellness Circles</h3>
+                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                      Peer-led wellness circles, mental health advocacy webinars, and mindfulness spaces designed for adult and distance learners.
+                    </p>
+                  </div>
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                    <span>Campus Wellness</span>
+                    <button
+                      type="button"
+                      onClick={() => navigateTo('club-profile', 'club-mental-health')}
+                      className="font-bold text-violet-600 hover:underline cursor-pointer"
+                    >
+                      View Wellness Club →
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Photo 6: Student Life Photo Contest Winner */}
+              <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
+                <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
+                  <img
+                    src="./img/cuny-photo-contest-winner.jpg"
+                    alt="Winning photograph from CUNY SPS Student Life Photo Contest by Latoya Duncan"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
+                    Student Life Showcase
+                  </div>
+                </div>
+                <div className="p-5 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-base">Student Life Photo Showcase</h3>
+                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                      Award-winning student photography capturing urban perspective and campus resilience, celebrated by the CUNY SPS Office of Student Life.
+                    </p>
+                  </div>
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                    <span>Office of Student Life</span>
+                    <span className="font-semibold text-violet-600">Latoya Duncan</span>
                   </div>
                 </div>
               </div>
@@ -2349,13 +2373,13 @@ export function StudentDiscoveryApp() {
                 </div>
               </div>
 
-              {/* Card 4: Master Student Life Calendar */}
+              {/* Card 4: Student Life Calendar */}
               <div className="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                 <div>
                   <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center mb-4">
                     <Calendar className="w-6 h-6" />
                   </div>
-                  <h3 className="font-bold text-slate-900 text-base">Master Student Life Calendar</h3>
+                  <h3 className="font-bold text-slate-900 text-base">Student Life Calendar</h3>
                   <p className="text-xs text-slate-600 mt-2 leading-relaxed">
                     View the centralized campus events schedule maintained by the CUNY SPS Office of Student Life on OpenLab.
                   </p>
@@ -2367,7 +2391,7 @@ export function StudentDiscoveryApp() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-700 hover:text-rose-800"
                   >
-                    <span>Open Master Calendar</span>
+                    <span>Open Student Life Calendar</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>
