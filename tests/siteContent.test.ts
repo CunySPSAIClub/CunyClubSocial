@@ -27,6 +27,19 @@ test('normalizeSiteContent falls back to defaults when input is empty or malform
   assert.equal(normalized.footer.contactEmail, DEFAULT_SITE_CONTENT.footer.contactEmail);
 });
 
+test('saved club navigation drops retired publishing pages and keeps the event calendar', () => {
+  const normalized = normalizeSiteContent({
+    navigation: {
+      clubNav: [
+        { id: 'create-post', label: 'Compose' },
+        { id: 'calendar', label: 'Social Schedule' },
+        { id: 'event-calendar', label: 'Club Event Calendar' },
+      ],
+    },
+  });
+  assert.deepEqual(normalized.navigation.clubNav.map((item) => item.id), ['event-calendar']);
+});
+
 test('normalizeSiteContent validates hex colors and restricts fonts to allowlist', () => {
   const normalized = normalizeSiteContent({
     settings: {

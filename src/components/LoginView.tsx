@@ -443,7 +443,7 @@ export function LoginView() {
                   className="inline-flex items-center justify-center gap-1.5 rounded-md border border-sky-200 bg-sky-50 px-3 py-2 text-xs font-semibold text-[#004B87] hover:bg-sky-100 sm:col-span-2"
                 >
                   <UserRound aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
-                  Contributor Workspace · {contributorPersona.user.name}
+                  Contributor / Club Member Workspace
                 </button>
               )}
             </div>

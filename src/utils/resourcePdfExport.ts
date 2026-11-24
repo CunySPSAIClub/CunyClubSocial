@@ -240,7 +240,7 @@ export function buildEventProposalPdf(input: EventProposalPdfInput): jsPDF {
     'WCAG Alt-Text Prepared',
     input.altTextPrepared
       ? '[X] Yes — Promotional media includes descriptive alt-text & CamelCase hashtags'
-      : '[ ] Pending — Will finalize prior to Content Studio scheduling'
+      : '[ ] Pending — Will finalize before social promotion'
   );
   y += 8;
 

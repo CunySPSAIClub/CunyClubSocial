@@ -188,7 +188,6 @@ export interface ClubOverviewPageContent {
   editProfileBtnLabel: string;
   charterPdfBtnLabel: string;
   charterCsvBtnLabel: string;
-  createPostBtnLabel: string;
   scheduledPostsHeading: string;
   draftsHeading: string;
   activityHeading: string;
@@ -349,8 +348,6 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     clubNav: [
       { id: 'overview', label: 'Overview', section: 'Workspace', visible: true },
       { id: 'club-announcements', label: 'Club Announcements', section: 'Workspace', visible: true },
-      { id: 'create-post', label: 'Create Post', section: 'Social Publishing', visible: true },
-      { id: 'calendar', label: 'Content Calendar', section: 'Social Publishing', visible: true },
       { id: 'social-accounts', label: 'My Social Accounts', section: 'Social Publishing', visible: true },
       { id: 'ai-assistant', label: 'AI Assistant', section: 'Social Publishing', visible: true },
       { id: 'inbox', label: 'Inbox', section: 'Social Publishing', visible: true },
@@ -489,7 +486,6 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       editProfileBtnLabel: 'Edit Profile & Picture',
       charterPdfBtnLabel: 'Charter Renewal PDF',
       charterCsvBtnLabel: 'CSV',
-      createPostBtnLabel: 'Create Post',
       scheduledPostsHeading: 'Upcoming Scheduled Posts',
       draftsHeading: 'Drafts & Peer Review Queue',
       activityHeading: 'Recorded Publishing Activity',
@@ -745,7 +741,8 @@ export function normalizeSiteContent(raw?: unknown): SiteContent {
     });
   };
   def.navigation.adminNav = normalizePortalNav(nav.adminNav, def.navigation.adminNav);
-  def.navigation.clubNav = normalizePortalNav(nav.clubNav, def.navigation.clubNav);
+  def.navigation.clubNav = normalizePortalNav(nav.clubNav, def.navigation.clubNav)
+    .filter((item) => item.id !== 'create-post' && item.id !== 'calendar');
 
   // Footer
   const ft = (src.footer && typeof src.footer === 'object' ? src.footer : {}) as Record<string, unknown>;
@@ -881,7 +878,6 @@ export function normalizeSiteContent(raw?: unknown): SiteContent {
     editProfileBtnLabel: safeString(co.editProfileBtnLabel, def.pages.clubOverview.editProfileBtnLabel, 60),
     charterPdfBtnLabel: safeString(co.charterPdfBtnLabel, def.pages.clubOverview.charterPdfBtnLabel, 60),
     charterCsvBtnLabel: safeString(co.charterCsvBtnLabel, def.pages.clubOverview.charterCsvBtnLabel, 40),
-    createPostBtnLabel: safeString(co.createPostBtnLabel, def.pages.clubOverview.createPostBtnLabel, 60),
     scheduledPostsHeading: safeString(co.scheduledPostsHeading, def.pages.clubOverview.scheduledPostsHeading, 120),
     draftsHeading: safeString(co.draftsHeading, def.pages.clubOverview.draftsHeading, 120),
     activityHeading: safeString(co.activityHeading, def.pages.clubOverview.activityHeading, 120),

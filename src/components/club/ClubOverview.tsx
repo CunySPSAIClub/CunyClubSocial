@@ -2,7 +2,6 @@ import { notificationText } from '../../utils/workspacePresentation';
 import { integrationStatus } from '../../utils/integrationStatus';
 import { useCallback, useEffect, useState } from 'react';
 import {
-  ArrowRight,
   Bell,
   BookOpen,
   CalendarClock,
@@ -12,7 +11,6 @@ import {
   FileEdit,
   FileText,
   Pencil,
-  PenSquare,
   Plus,
   Send,
   ShieldCheck,
@@ -60,7 +58,6 @@ interface ClubOverviewProps {
   whatsappMessages?: WhatsAppAlertMessage[];
   budgetIncreaseRequests?: BudgetIncreaseRequest[];
   onNavigate: (tab: string) => void;
-  onEditPost: (post: Post) => void;
   onRefresh?: () => Promise<void>;
 }
 
@@ -76,7 +73,6 @@ export function ClubOverview({
   whatsappMessages = [],
   budgetIncreaseRequests = [],
   onNavigate,
-  onEditPost,
   onRefresh,
 }: ClubOverviewProps) {
   const { apiFetch, session } = useAuth();
@@ -106,7 +102,6 @@ export function ClubOverview({
   const draftPosts = posts.filter((p) => p.status === 'Draft' || p.status === 'In Review');
   const recentPublished = posts.filter((p) => p.status === 'Published' || p.status === 'Failed');
 
-  const canCreate = effectiveRole !== 'VIEWER';
   const canEditLinks =
     Boolean(session?.effectiveAdminRole) ||
     effectiveRole === 'CLUB_LEAD' ||
@@ -466,24 +461,6 @@ export function ClubOverview({
               }
             />
           </button>
-          {canCreate && (
-            <button
-              type="button"
-              onClick={() => onNavigate('create-post')}
-              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-medium text-white bg-[#004B87] hover:bg-[#003865] rounded-md whitespace-nowrap cursor-pointer"
-            >
-              <PenSquare className="w-4 h-4" />
-              <EditableText
-                as="span"
-                value={co.createPostBtnLabel}
-                onChange={(next) =>
-                  updateContent((d) => {
-                    d.pages.clubOverview.createPostBtnLabel = next;
-                  })
-                }
-              />
-            </button>
-          )}
         </div>
       </div>
 
@@ -567,17 +544,15 @@ export function ClubOverview({
               <div className="p-5 text-xs text-slate-500">No upcoming scheduled posts.</div>
             ) : (
               scheduledPosts.slice(0, 3).map((post) => (
-                <button
+                <div
                   key={post.postId}
-                  type="button"
-                  onClick={() => onEditPost(post)}
-                  className="w-full text-left px-5 py-3.5 hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="w-full text-left px-5 py-3.5"
                 >
                   <div className="text-sm font-medium text-slate-900 truncate">{post.title}</div>
                   <div className="text-xs font-mono-tabular text-slate-500 mt-1">
                     {post.scheduledAt ? new Date(post.scheduledAt).toLocaleString('en-US', { timeZone: 'America/New_York', timeZoneName: 'short' }) : ''}
                   </div>
-                </button>
+                </div>
               ))
             )}
           </div>
@@ -604,11 +579,9 @@ export function ClubOverview({
               <div className="p-5 text-xs text-slate-500">No pending drafts.</div>
             ) : (
               draftPosts.slice(0, 3).map((post) => (
-                <button
+                <div
                   key={post.postId}
-                  type="button"
-                  onClick={() => onEditPost(post)}
-                  className="w-full text-left px-5 py-3.5 hover:bg-slate-50 transition-colors flex items-center justify-between gap-2 cursor-pointer"
+                  className="w-full text-left px-5 py-3.5 flex items-center justify-between gap-2"
                 >
                   <div className="min-w-0">
                     <div className="text-sm font-medium text-slate-900 truncate">{post.title}</div>
@@ -617,7 +590,7 @@ export function ClubOverview({
                     </div>
                   </div>
                   <StatusText status={post.status} />
-                </button>
+                </div>
               ))
             )}
           </div>
@@ -644,11 +617,9 @@ export function ClubOverview({
               <div className="p-5 text-xs text-slate-500">No publishing history recorded yet.</div>
             ) : (
               recentPublished.slice(0, 3).map((post) => (
-                <button
+                <div
                   key={post.postId}
-                  type="button"
-                  onClick={() => onEditPost(post)}
-                  className="w-full text-left px-5 py-3.5 hover:bg-slate-50 transition-colors flex items-center justify-between gap-3 cursor-pointer"
+                  className="w-full text-left px-5 py-3.5 flex items-center justify-between gap-3"
                 >
                   <div className="min-w-0">
                     <div className="text-sm font-medium text-slate-900 truncate">{post.title}</div>
@@ -657,13 +628,13 @@ export function ClubOverview({
                     </div>
                   </div>
                   <StatusText status={post.status} />
-                </button>
+                </div>
               ))
             )}
           </div>
         </section>
       </div>
-      <p className="text-xs text-slate-500 mt-3">Showing up to 3 items per list. <button type="button" onClick={() => onNavigate('calendar')} className="text-[#004B87] underline">View all in Content Calendar</button>. Recorded statuses may include simulation.</p>
+      <p className="text-xs text-slate-500 mt-3">Showing up to 3 items per list. Recorded statuses may include simulation.</p>
       </EditableSectionShell>
 
       <EditableSectionShell
@@ -1238,14 +1209,6 @@ export function ClubOverview({
             <Bell className="w-4 h-4 text-slate-400" />
             <span>Relevant Workspace Notifications</span>
           </h2>
-          <button
-            type="button"
-            onClick={() => onNavigate('calendar')}
-            className="inline-flex items-center gap-1 text-xs font-medium text-[#004B87] hover:underline cursor-pointer"
-          >
-            <span>Open Content Calendar</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
         </div>
         {notifications.length === 0 ? (
           <div className="p-5 text-xs text-slate-500">No workspace notifications.</div>

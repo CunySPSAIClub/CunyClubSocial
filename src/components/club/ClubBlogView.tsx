@@ -15,7 +15,6 @@ import {
   Plus,
   Search,
   Send,
-  Share2,
   SlidersHorizontal,
   Star,
   Tag,
@@ -43,7 +42,6 @@ interface ClubBlogViewProps {
   events?: ClubEvent[];
   clubOptions?: { clubId: string; name: string; shortCode: string }[];
   onSelectClub?: (clubId: string) => void;
-  onShareToSocialStudio?: (post: ClubBlogPost) => void;
   onRefreshParent?: () => Promise<void>;
 }
 
@@ -247,7 +245,6 @@ export function ClubBlogView({
   events = [],
   clubOptions,
   onSelectClub,
-  onShareToSocialStudio,
   onRefreshParent,
 }: ClubBlogViewProps) {
   const { apiFetch, session } = useAuth();
@@ -1631,16 +1628,6 @@ export function ClubBlogView({
                     </option>
                   ))}
                 </select>
-              )}
-              {onShareToSocialStudio && activePost.status === 'Published' && canPublish && (
-                <button
-                  type="button"
-                  onClick={() => onShareToSocialStudio(activePost)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#004B87] bg-white border border-[#004B87] hover:bg-sky-50 rounded-md whitespace-nowrap cursor-pointer"
-                >
-                  <Share2 className="w-3.5 h-3.5" />
-                  <span>Promote to Social Post</span>
-                </button>
               )}
               {canModifyPost(activePost) && (
                 <button

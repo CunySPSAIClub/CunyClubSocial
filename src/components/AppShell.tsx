@@ -39,7 +39,6 @@ import {
   Menu,
   MessageCircle,
   MessageSquare,
-  PenSquare,
   Plus,
   QrCode,
   Repeat,
@@ -131,8 +130,6 @@ import { ClubSettingsView } from './club/ClubSettingsView';
 import { ClubSocialAccounts } from './club/ClubSocialAccounts';
 import { ClubTeamView } from './club/ClubTeamView';
 import { ClubWhatsAppPanel } from './club/ClubWhatsAppPanel';
-import { ContentCalendar } from './club/ContentCalendar';
-import { ContentStudio } from './club/ContentStudio';
 import { CustomPageView } from './cms/CustomPageView';
 import { EditableText } from './cms/EditablePrimitives';
 import { CustomSectionsList } from './cms/SectionBuilder';
@@ -192,8 +189,6 @@ const ADMIN_NAV = [
 const CLUB_NAV = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard, section: 'Workspace' },
   { id: 'club-announcements', label: 'Club Announcements', icon: Megaphone, section: 'Workspace' },
-  { id: 'create-post', label: 'Create Post', icon: PenSquare, section: 'Social Publishing' },
-  { id: 'calendar', label: 'Content Calendar', icon: CalendarDays, section: 'Social Publishing' },
   { id: 'social-accounts', label: 'My Social Accounts', icon: Share2, section: 'Social Publishing' },
   { id: 'ai-assistant', label: 'AI Assistant', icon: Sparkles, section: 'Social Publishing' },
   { id: 'inbox', label: 'Inbox', icon: Inbox, section: 'Social Publishing' },
@@ -427,7 +422,6 @@ interface UpcomingClubEventsProps {
   activeClubId: string | null;
   portalMode: 'ADMIN' | 'CLUB';
   onRefresh: () => Promise<void>;
-  onDraftPostForEvent?: (event: ClubEvent) => void;
 }
 
 export function UpcomingClubEvents({
@@ -436,7 +430,6 @@ export function UpcomingClubEvents({
   activeClubId,
   portalMode,
   onRefresh,
-  onDraftPostForEvent,
 }: UpcomingClubEventsProps) {
   const { apiFetch, session } = useAuth();
   const { content, updateContent } = useSiteContent();
@@ -1233,16 +1226,6 @@ export function UpcomingClubEvents({
                       <ExternalLink className="w-3 h-3 text-slate-400" />
                     </a>
 
-                    {onDraftPostForEvent && (
-                      <button
-                        type="button"
-                        onClick={() => onDraftPostForEvent(ev)}
-                        className="inline-flex items-center gap-1 text-xs font-medium text-[#004B87] hover:underline whitespace-nowrap cursor-pointer"
-                      >
-                        <span>Draft Social Post</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    )}
 
                     {canDelete && (
                       <>
@@ -1369,7 +1352,6 @@ export function AppShell() {
     setPortalMode,
     activeClubId,
     setActiveClubId,
-    setDraftHandoff,
     logout,
     apiFetch,
   } = useAuth();
@@ -1405,7 +1387,6 @@ export function AppShell() {
   const [globalNotifications, setGlobalNotifications] = useState<NotificationItem[]>([]);
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const workspaceRequest = useRef(0);
   const refreshRequest = useRef(0);
@@ -1527,7 +1508,7 @@ export function AppShell() {
         setClubTab('messaging-center');
       } else if (n.type === 'Forum Mention' || n.type === 'Forum Reply') setClubTab('club-forums');
       else if (n.type === 'Peer Review' || n.type === 'Reshare Request' || n.type === 'Publishing')
-        setClubTab('create-post');
+        setClubTab('overview');
       else if (n.type === 'Resource Submission' || n.type === 'Advisor Sign-Off')
         setClubTab('club-resources');
       else if (n.type === 'Join Request' || n.type === 'Membership')
@@ -1546,25 +1527,6 @@ export function AppShell() {
     }
   };
 
-  const handleDraftPostFromEvent = async (ev: ClubEvent) => {
-    if (!(await requestDraftDiscard())) return;
-    setActiveClubId(ev.clubId);
-    setPortalMode('CLUB');
-    setEditingPost(null);
-    setDraftHandoff({
-      title: ev.title,
-      caption: `${ev.title}\n\n${ev.description}\n\nDate: ${ev.date} at ${ev.time}\nLocation: ${ev.location}`,
-      hashtags: [
-        '#CUNYSPS',
-        ev.clubShortCode ? `#${ev.clubShortCode.replace(/[^A-Z0-9]/gi, '')}` : '#StudentLife',
-      ],
-      callToAction: 'RSVP via Student Life Portal',
-      relatedEvent: ev.title,
-      eventDate: ev.date,
-      aiAssisted: false,
-    });
-    setClubTab('create-post');
-  };
 
   const handleOpenClubWorkspace = async (clubId: string) => {
     if (!(await requestDraftDiscard())) return;
@@ -1734,7 +1696,6 @@ export function AppShell() {
                     const nextClub = e.target.value;
                     if (!(await requestDraftDiscard())) return;
                     setActiveClubId(nextClub);
-                    setEditingPost(null);
                   }}
                   className="w-full px-2.5 py-1.5 text-xs font-medium text-slate-900 bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:border-[#004B87]"
                 >
@@ -2272,7 +2233,6 @@ export function AppShell() {
                     activeClubId={activeClubId}
                     portalMode={portalMode}
                     onRefresh={refreshAll}
-                    onDraftPostForEvent={handleDraftPostFromEvent}
                   />
                 </div>
               )}
@@ -2306,7 +2266,6 @@ export function AppShell() {
                   activeClubId={activeClubId}
                   portalMode={portalMode}
                   onRefresh={refreshAll}
-                  onDraftPostForEvent={handleDraftPostFromEvent}
                 />
               )}
               {adminTab === 'event-calendar' && (
@@ -2315,7 +2274,6 @@ export function AppShell() {
                   clubs={authorizedClubs}
                   activeClubId={activeClubId}
                   onRefresh={refreshAll}
-                  onDraftPostForEvent={handleDraftPostFromEvent}
                 />
               )}
               {adminTab === 'event-analytics' && (
@@ -2382,27 +2340,6 @@ export function AppShell() {
                       })
                     )}
                     onSelectClub={setActiveClubId}
-                    onShareToSocialStudio={(blogPost) => {
-                      setActiveClubId(blogPost.clubId);
-                      setPortalMode('CLUB');
-                      setEditingPost(null);
-                      setDraftHandoff({
-                        title: blogPost.title,
-                        caption: `${blogPost.title}\n\n${blogPost.excerpt}\n\nRead the full story on the ${blogPost.clubName} blog inside CUNY SPS Club Social Hub.`,
-                        hashtags: [
-                          '#CUNYSPS',
-                          `#${blogPost.clubShortCode.replace(/[^A-Z0-9]/gi, '')}`,
-                          ...blogPost.tags
-                            .slice(0, 2)
-                            .map((t) => `#${t.replace(/[^A-Z0-9]/gi, '')}`)
-                            .filter((t) => t.length > 1),
-                        ],
-                        callToAction: 'Read Full Blog Post in Club Hub',
-                        relatedEvent: blogPost.linkedEventTitle ?? '',
-                        aiAssisted: false,
-                      });
-                      setClubTab('create-post');
-                    }}
                     onRefreshParent={refreshAll}
                   />
                 );
@@ -2492,10 +2429,6 @@ export function AppShell() {
                     whatsappMessages={clubData.whatsappMessages ?? []}
                     budgetIncreaseRequests={clubData.budgetIncreaseRequests ?? []}
                     onNavigate={setClubTab}
-                    onEditPost={(post) => {
-                      setEditingPost(post);
-                      setClubTab('create-post');
-                    }}
                     onRefresh={refreshAll}
                   />
                 </div>
@@ -2530,9 +2463,6 @@ export function AppShell() {
                   activeClubId={activeClubId}
                   portalMode={portalMode}
                   onRefresh={refreshAll}
-                  onDraftPostForEvent={
-                    !['VIEWER','CONTRIBUTOR'].includes(clubData.effectiveRole || '') ? handleDraftPostFromEvent : undefined
-                  }
                 />
               )}
               {clubTab === 'event-calendar' && (
@@ -2541,9 +2471,6 @@ export function AppShell() {
                   clubs={communityClubs}
                   activeClubId={activeClubId}
                   onRefresh={refreshAll}
-                  onDraftPostForEvent={
-                    !['VIEWER','CONTRIBUTOR'].includes(clubData.effectiveRole || '') ? handleDraftPostFromEvent : undefined
-                  }
                 />
               )}
               {clubTab === 'event-analytics' && (
@@ -2622,55 +2549,13 @@ export function AppShell() {
                   club={clubData.club}
                   effectiveRole={clubData.effectiveRole}
                   events={clubData.events}
-                  onShareToSocialStudio={(blogPost) => {
-                    setEditingPost(null);
-                    setDraftHandoff({
-                      title: blogPost.title,
-                      caption: `${blogPost.title}\n\n${blogPost.excerpt}\n\nRead the full story on the ${blogPost.clubName} blog inside CUNY SPS Club Social Hub.`,
-                      hashtags: [
-                        '#CUNYSPS',
-                        `#${blogPost.clubShortCode.replace(/[^A-Z0-9]/gi, '')}`,
-                        ...blogPost.tags
-                          .slice(0, 2)
-                          .map((t) => `#${t.replace(/[^A-Z0-9]/gi, '')}`)
-                          .filter((t) => t.length > 1),
-                      ],
-                      callToAction: 'Read Full Blog Post in Club Hub',
-                      relatedEvent: blogPost.linkedEventTitle ?? '',
-                      aiAssisted: false,
-                    });
-                    setClubTab('create-post');
-                  }}
                   onRefreshParent={refreshAll}
-                />
-              )}
-              {clubTab === 'create-post' && (
-                <ContentStudio
-                  club={clubData.club}
-                  effectiveRole={clubData.effectiveRole}
-                  accounts={clubData.socialAccounts}
-                  posts={clubData.posts}
-                  editingPost={editingPost}
-                  onClearEditing={() => setEditingPost(null)}
-                  onRefresh={refreshAll}
-                />
-              )}
-              {clubTab === 'calendar' && (
-                <ContentCalendar
-                  posts={clubData.posts}
-                  events={clubData.events}
-                  accounts={clubData.socialAccounts}
-                  onSelectPost={(post) => {
-                    setEditingPost(post);
-                    setClubTab('create-post');
-                  }}
                 />
               )}
               {clubTab === 'ai-assistant' && (
                 <AiAssistantView
                   club={clubData.club}
                   effectiveRole={clubData.effectiveRole}
-                  onSendDraftToStudio={() => setClubTab('create-post')}
                 />
               )}
               {clubTab === 'inbox' && (

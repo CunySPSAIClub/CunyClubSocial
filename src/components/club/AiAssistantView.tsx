@@ -1,7 +1,6 @@
 import { userFacingAiError } from '../../utils/userFacingError';
 import React, { useState } from 'react';
 import {
-  ArrowRight,
   CheckCircle2,
   ExternalLink,
   Globe,
@@ -18,7 +17,6 @@ import { GeminiChatPanel } from '../GeminiChatPanel';
 interface AiAssistantViewProps {
   club: Club;
   effectiveRole: RoleName | null;
-  onSendDraftToStudio: () => void;
 }
 
 type AiTab =
@@ -33,9 +31,8 @@ type AiTab =
 export function AiAssistantView({
   club,
   effectiveRole,
-  onSendDraftToStudio,
 }: AiAssistantViewProps) {
-  const { apiFetch, setDraftHandoff } = useAuth();
+  const { apiFetch } = useAuth();
   const [activeTab, setActiveTab] = useState<AiTab>('chat');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -195,19 +192,6 @@ export function AiAssistantView({
     }
   };
 
-  const sendCaptionToStudio = () => {
-    if (!captionResult) return;
-    setDraftHandoff({
-      title: eventName,
-      caption: captionResult.caption,
-      hashtags: captionResult.hashtags,
-      callToAction: captionResult.callToAction,
-      relatedEvent: eventName,
-      eventDate: date,
-      aiAssisted: true,
-    });
-    onSendDraftToStudio();
-  };
 
   return (
     <div className="space-y-6">
@@ -274,15 +258,6 @@ export function AiAssistantView({
             <GeminiChatPanel
               club={club}
               effectiveRole={effectiveRole}
-              onSendReplyToStudio={(replyText) => {
-                setDraftHandoff({
-                  title: `${club.shortCode} AI Chat Draft`,
-                  caption: replyText,
-                  hashtags: ['#CUNYSPS', `#${club.shortCode.replace(/[^A-Z0-9]/gi, '')}`],
-                  aiAssisted: true,
-                });
-                onSendDraftToStudio();
-              }}
             />
           )}
 
@@ -348,24 +323,6 @@ export function AiAssistantView({
                       </ul>
                     </div>
                   )}
-                  <div className="flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setDraftHandoff({
-                          title: `${club.shortCode} Research Post`,
-                          caption: searchResult.answer,
-                          hashtags: ['#CUNYSPS', `#${club.shortCode.replace(/[^A-Z0-9]/gi, '')}`],
-                          aiAssisted: true,
-                        });
-                        onSendDraftToStudio();
-                      }}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-white bg-[#004B87] hover:bg-[#003865] rounded-md cursor-pointer"
-                    >
-                      <span>Send Findings to Content Studio</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
                 </div>
               )}
             </div>
@@ -415,22 +372,6 @@ export function AiAssistantView({
                     className="px-3 py-1.5 text-xs text-slate-600 border border-slate-300 rounded-md hover:bg-slate-50 cursor-pointer"
                   >
                     Clear
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setDraftHandoff({
-                        title: `${club.shortCode} Voice Note Draft`,
-                        caption: transcriptText,
-                        hashtags: ['#CUNYSPS', `#${club.shortCode.replace(/[^A-Z0-9]/gi, '')}`],
-                        aiAssisted: true,
-                      });
-                      onSendDraftToStudio();
-                    }}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-white bg-[#004B87] hover:bg-[#003865] rounded-md cursor-pointer"
-                  >
-                    <span>Send Transcript to Content Studio</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               )}
@@ -590,14 +531,6 @@ export function AiAssistantView({
                       >
                         Reject Draft
                       </button>
-                      <button
-                        type="button"
-                        onClick={sendCaptionToStudio}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-white bg-[#004B87] hover:bg-[#003865] rounded-md cursor-pointer"
-                      >
-                        <span>Send to Content Studio Draft</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
                     </div>
                   </div>
                 )}
@@ -688,21 +621,6 @@ export function AiAssistantView({
                       <div className="text-xs text-slate-500 pt-1">
                         Suggested Hook: {idea.hook}
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setDraftHandoff({
-                            title: idea.title,
-                            caption: `${idea.hook}\n\n${idea.summary}`,
-                            hashtags: ['#CUNYSPS', `#${club.shortCode.replace(/[^A-Z0-9]/gi, '')}`],
-                            aiAssisted: true,
-                          });
-                          onSendDraftToStudio();
-                        }}
-                        className="text-xs font-medium text-[#004B87] hover:underline pt-1 cursor-pointer"
-                      >
-                        Draft this idea in Content Studio
-                      </button>
                     </div>
                   ))}
                 </div>

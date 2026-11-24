@@ -1,7 +1,6 @@
 import { AskQuestionButton } from './club/MemberQuestionsView';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  ArrowRight,
   Calendar as CalendarIcon,
   CalendarCheck,
   CalendarDays,
@@ -40,7 +39,6 @@ interface ClubEventCalendarProps {
   clubs: Club[];
   activeClubId: string | null;
   onRefresh: () => Promise<void>;
-  onDraftPostForEvent?: (event: ClubEvent) => void;
 }
 
 const MONTH_NAMES = [
@@ -74,7 +72,6 @@ export function ClubEventCalendar({
   clubs,
   activeClubId,
   onRefresh,
-  onDraftPostForEvent,
 }: ClubEventCalendarProps) {
   const { apiFetch, session } = useAuth();
 
@@ -1151,16 +1148,6 @@ export function ClubEventCalendar({
                             <ExternalLink className="w-3 h-3 text-slate-400" />
                           </a>
 
-                          {onDraftPostForEvent && (
-                            <button
-                              type="button"
-                              onClick={() => onDraftPostForEvent(ev)}
-                              className="inline-flex items-center gap-1 text-xs font-medium text-[#004B87] hover:underline whitespace-nowrap cursor-pointer"
-                            >
-                              <span>Draft Social Post</span>
-                              <ArrowRight className="w-3.5 h-3.5" />
-                            </button>
-                          )}
 
                           {canDelete && (
                             <button
@@ -1415,16 +1402,6 @@ export function ClubEventCalendar({
                           <ExternalLink className="w-3 h-3 text-slate-400" />
                         </a>
 
-                        {onDraftPostForEvent && (
-                          <button
-                            type="button"
-                            onClick={() => onDraftPostForEvent(ev)}
-                            className="inline-flex items-center gap-1 text-xs font-medium text-[#004B87] hover:underline whitespace-nowrap cursor-pointer"
-                          >
-                            <span>Draft Social Post</span>
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          </button>
-                        )}
                         {canDelete && (
                           <button
                             type="button"

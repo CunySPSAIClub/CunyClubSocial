@@ -9,8 +9,8 @@ test('legacy reminder claims are qualified without rewriting unrelated or verifi
   assert.equal(notificationText('delivery status: Delivered (SMTP)'), 'delivery status: Delivered (SMTP)');
 });
 test('search uses aliases, multiple terms and only supplied portal pages', () => {
-  const pages = [{id:'create-post',label:'Create Post',section:'Social Publishing'}, {id:'member-directory',label:'Member Directory'}];
-  assert.equal(searchWorkspacePages(pages, 'social draft')[0].id, 'create-post');
+  const pages = [{id:'social-accounts',label:'My Social Accounts',section:'Social Publishing'}, {id:'member-directory',label:'Member Directory'}];
+  assert.equal(searchWorkspacePages(pages, 'social instagram')[0].id, 'social-accounts');
   assert.equal(searchWorkspacePages(pages, 'roster')[0].id, 'member-directory');
   assert.deepEqual(searchWorkspacePages(pages, 'admin secrets'), []);
   assert.deepEqual(searchWorkspacePages(pages, '   '), []);

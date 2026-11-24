@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  ArrowRight,
   ExternalLink,
   Globe,
   Loader2,
@@ -15,7 +14,6 @@ import { AudioRecorderButton } from './AudioRecorderButton';
 interface GeminiChatPanelProps {
   club?: Club | null;
   effectiveRole?: RoleName | null;
-  onSendReplyToStudio?: (text: string) => void;
 }
 
 const ADMIN_PROMPTS = [
@@ -33,7 +31,6 @@ const CLUB_PROMPTS = [
 export function GeminiChatPanel({
   club,
   effectiveRole,
-  onSendReplyToStudio,
 }: GeminiChatPanelProps) {
   const { apiFetch, session } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -245,18 +242,6 @@ export function GeminiChatPanel({
                   </div>
                 )}
 
-                {msg.role === 'model' && onSendReplyToStudio && (
-                  <div className="mt-2.5 pt-2 border-t border-slate-200 flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => onSendReplyToStudio(msg.text)}
-                      className="inline-flex items-center gap-1 text-[11px] font-medium text-[#004B87] hover:underline cursor-pointer"
-                    >
-                      <span>Use in Content Studio Draft</span>
-                      <ArrowRight className="w-3 h-3" />
-                    </button>
-                  </div>
-                )}
               </div>
             </div>
           ))

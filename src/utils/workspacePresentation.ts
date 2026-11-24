@@ -5,7 +5,6 @@ export function notificationText(message: string): string {
 }
 
 const SEARCH_TERMS: Record<string, string> = {
-  'create-post': 'compose draft publish caption posts', calendar: 'schedule social posts',
   'social-accounts': 'connections integrations meta facebook instagram',
   'member-directory': 'roster students members', team: 'invitations roles officers',
   'event-reminders': 'email reminders mail', 'club-resources': 'forms documents budget',
