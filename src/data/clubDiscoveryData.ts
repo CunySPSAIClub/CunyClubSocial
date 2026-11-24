@@ -65,7 +65,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "description": "Official Anime Club Instagram for watch party schedules, anime discussions, and creative fandom meetups."
       }
     ],
-    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
+    "logoUrl": "./club-logos/anime-club.jpg",
+    "logoSource": "Official Anime Club Instagram profile avatar (@animeclubsps)"
   },
   {
     "clubId": "club-ai",
@@ -131,7 +132,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "description": "Official CUNY SPS Black Student Union Instagram for community gatherings, cultural celebrations, and leadership panels."
       }
     ],
-    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
+    "logoUrl": "./club-logos/bsu.jpg",
+    "logoSource": "Official Black Student Union Instagram profile avatar (@bsu.sps)"
   },
   {
     "clubId": "club-book",
@@ -424,7 +426,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "description": "Official Museum Studies Club Instagram for NYC museum walks, curatorial panels, and exhibition highlights."
       }
     ],
-    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
+    "logoUrl": "./club-logos/museum-studies.jpg",
+    "logoSource": "Official Museum Studies Club Instagram profile avatar (@museumstudiesclubcunysps)"
   },
   {
     "clubId": "club-msa",
@@ -673,7 +676,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "description": "Official CUNY SPS Student Veterans Organization Instagram for military-connected student fellowship and community resources."
       }
     ],
-    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
+    "logoUrl": "./club-logos/veterans.jpg",
+    "logoSource": "Official Student Veterans Organization Instagram profile avatar (@cunyspsveterans)"
   },
   {
     "clubId": "club-study-lounge",
@@ -723,7 +727,8 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
         "description": "Official Youth Studies Club Instagram for youth advocacy initiatives, research colloquia, and student community events."
       }
     ],
-    "logoSource": "Initials fallback displayed; awaiting official club logo submission"
+    "logoUrl": "./club-logos/youth-studies.jpg",
+    "logoSource": "Official Youth Studies Club Instagram profile avatar (@cunysps_youthstudies)"
   }
 ];
 
