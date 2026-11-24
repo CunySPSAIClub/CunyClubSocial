@@ -26,8 +26,7 @@ import {
   Newspaper,
   Compass,
   HelpCircle,
-  Smartphone,
-  Camera
+  Smartphone
 } from 'lucide-react';
 import {
   CLUBS_DATA,
@@ -100,8 +99,8 @@ function getGoogleCalendarUrl(ev: DiscoveryEvent): string {
 }
 
 export function StudentDiscoveryApp() {
-  // Navigation: 'home' | 'clubs' | 'events' | 'club-profile' | 'gallery' | 'resources'
-  const [currentTab, setCurrentTab] = useState<'home' | 'clubs' | 'events' | 'club-profile' | 'gallery' | 'resources'>('home');
+  // Navigation: 'home' | 'clubs' | 'events' | 'club-profile' | 'resources'
+  const [currentTab, setCurrentTab] = useState<'home' | 'clubs' | 'events' | 'club-profile' | 'resources'>('home');
   const [selectedClubId, setSelectedClubId] = useState<string>('club-ai');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -128,8 +127,6 @@ export function StudentDiscoveryApp() {
         setCurrentTab('clubs');
       } else if (hash === 'events') {
         setCurrentTab('events');
-      } else if (hash === 'gallery') {
-        setCurrentTab('gallery');
       } else if (hash === 'resources') {
         setCurrentTab('resources');
       } else if (hash === 'home' || hash === '') {
@@ -152,7 +149,7 @@ export function StudentDiscoveryApp() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const navigateTo = (tab: 'home' | 'clubs' | 'events' | 'club-profile' | 'gallery' | 'resources', clubId?: string) => {
+  const navigateTo = (tab: 'home' | 'clubs' | 'events' | 'club-profile' | 'resources', clubId?: string) => {
     if (tab === 'club-profile' && clubId) {
       setSelectedClubId(clubId);
       window.location.hash = `club/${clubId}`;
@@ -379,23 +376,6 @@ export function StudentDiscoveryApp() {
 
               <button
                 type="button"
-                onClick={() => navigateTo('gallery')}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${currentTab === 'gallery'
-                  ? 'bg-violet-600 text-white shadow-sm shadow-violet-500/25'
-                  : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
-              >
-                <div className="flex items-center gap-3">
-                  <Camera className={`w-4 h-4 shrink-0 ${currentTab === 'gallery' ? 'text-white' : 'text-rose-500'}`} />
-                  <span>Student Life Gallery</span>
-                </div>
-                <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                  Photos
-                </span>
-              </button>
-
-              <button
-                type="button"
                 onClick={() => navigateTo('resources')}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${currentTab === 'resources'
                   ? 'bg-violet-600 text-white shadow-sm shadow-violet-500/25'
@@ -511,15 +491,6 @@ export function StudentDiscoveryApp() {
               >
                 <Calendar className="w-5 h-5" />
                 <span className="absolute -top-1 -right-1 text-[9px] font-bold bg-amber-500 text-white rounded-full w-4 h-4 flex items-center justify-center">{EVENTS_DATA.length}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => navigateTo('gallery')}
-                className={`p-2.5 rounded-xl transition-all cursor-pointer ${currentTab === 'gallery' ? 'bg-violet-600 text-white shadow-sm' : 'text-slate-700 hover:bg-slate-100'
-                  }`}
-                title="Student Life Gallery"
-              >
-                <Camera className="w-5 h-5" />
               </button>
               <button
                 type="button"
@@ -657,7 +628,6 @@ export function StudentDiscoveryApp() {
                     {currentTab === 'clubs' && 'Student Organizations Directory (34 Clubs)'}
                     {currentTab === 'events' && 'Campus & Club Events Calendar'}
                     {currentTab === 'club-profile' && `Club Profile · ${selectedClub.name}`}
-                    {currentTab === 'gallery' && 'Student Life in Action · Photo Gallery'}
                     {currentTab === 'resources' && 'CUNY SPS OpenLab & Campus Resources'}
                   </span>
                 </div>
@@ -1998,221 +1968,6 @@ export function StudentDiscoveryApp() {
               </div>
             )}
 
-            {/* ========================================================================= */}
-            {/* SCREEN 5: STUDENT LIFE GALLERY                                            */}
-            {/* ========================================================================= */}
-            {currentTab === 'gallery' && (
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-200">
-                {/* Header */}
-                <div>
-                  <div className="inline-flex items-center gap-2 text-xs font-semibold px-2.5 py-1 bg-violet-100 text-violet-800 rounded-full mb-2">
-                    <Camera className="w-3.5 h-3.5 text-violet-600" />
-                    <span>Campus Visual Archive</span>
-                  </div>
-                  <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                    Student Life in Action
-                  </h1>
-                  <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
-                    Authentic moments from CUNY SPS student organizations, community build sessions, recreation, and academic collaboration across New York.
-                  </p>
-                </div>
-
-                {/* Gallery Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {/* Photo 1: AI Club Innovation & Hackathons */}
-                  <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-                    <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
-                      <img
-                        src="./img/cuny-ai-club-spotlight.jpg"
-                        alt="CUNY SPS Artificial Intelligence Club hands-on workshop and hackathon spotlight"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
-                        Tech &amp; Innovation
-                      </div>
-                    </div>
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <h3 className="font-bold text-slate-900 text-base">AI Club Innovation &amp; Sprints</h3>
-                        <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                          Artificial Intelligence Club members participating in hands-on workshops, IBM SkillsBuild hackathons, and generative AI research at CUNY SPS.
-                        </p>
-                      </div>
-                      <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                        <span>Student Club</span>
-                        <button
-                          type="button"
-                          onClick={() => navigateTo('club-profile', 'club-ai')}
-                          className="font-bold text-violet-600 hover:underline cursor-pointer"
-                        >
-                          View AI Club Profile →
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Photo 2: Black Student Union Community Milestone */}
-                  <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-                    <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
-                      <img
-                        src="./img/cuny-bsu-grads.jpg"
-                        alt="CUNY SPS Black Student Union celebrating graduating leaders and community milestones"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
-                        Student Leadership
-                      </div>
-                    </div>
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <h3 className="font-bold text-slate-900 text-base">Black Student Union Celebrations</h3>
-                        <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                          CUNY SPS Black Student Union honoring graduating leaders, academic excellence, and student community initiatives across NYC.
-                        </p>
-                      </div>
-                      <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                        <span>Cultural Affinity</span>
-                        <button
-                          type="button"
-                          onClick={() => navigateTo('club-profile', 'club-bsu')}
-                          className="font-bold text-violet-600 hover:underline cursor-pointer"
-                        >
-                          View BSU Profile →
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Photo 3: Film & Television Club */}
-                  <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-                    <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
-                      <img
-                        src="./img/cuny-film-television-club.jpg"
-                        alt="CUNY SPS Film and Television Club spotlight and student screening discussion"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
-                        Arts &amp; Media
-                      </div>
-                    </div>
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <h3 className="font-bold text-slate-900 text-base">Film &amp; Television Club Screenings</h3>
-                        <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                          Online and hybrid film screenings, script analyses, and digital storytelling workshops hosted by the CUNY SPS Film &amp; TV Club.
-                        </p>
-                      </div>
-                      <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                        <span>Creative Arts</span>
-                        <button
-                          type="button"
-                          onClick={() => navigateTo('club-profile', 'club-film-tv')}
-                          className="font-bold text-violet-600 hover:underline cursor-pointer"
-                        >
-                          View Film &amp; TV Club →
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Photo 4: Museum Studies Club */}
-                  <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-                    <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
-                      <img
-                        src="./img/cuny-museum-studies-club.png"
-                        alt="CUNY SPS Museum Studies Club curatorial exhibition and archives tour"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
-                        Museum &amp; Heritage
-                      </div>
-                    </div>
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <h3 className="font-bold text-slate-900 text-base">Museum Studies Cultural Tours</h3>
-                        <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                          Museum Studies Club members exploring virtual gallery exhibitions, curatorial workshops, and public history archives across New York.
-                        </p>
-                      </div>
-                      <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                        <span>Academic Society</span>
-                        <button
-                          type="button"
-                          onClick={() => navigateTo('club-profile', 'club-museum')}
-                          className="font-bold text-violet-600 hover:underline cursor-pointer"
-                        >
-                          View Museum Studies →
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Photo 5: Mental Health & Wellness Club */}
-                  <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-                    <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
-                      <img
-                        src="./img/cuny-mental-health-club.png"
-                        alt="CUNY SPS Mental Health and Wellness Club community spotlight"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
-                        Wellness &amp; Advocacy
-                      </div>
-                    </div>
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <h3 className="font-bold text-slate-900 text-base">Mental Health &amp; Wellness Circles</h3>
-                        <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                          Peer-led wellness circles, mental health advocacy webinars, and mindfulness spaces designed for adult and distance learners.
-                        </p>
-                      </div>
-                      <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                        <span>Campus Wellness</span>
-                        <button
-                          type="button"
-                          onClick={() => navigateTo('club-profile', 'club-mental-health')}
-                          className="font-bold text-violet-600 hover:underline cursor-pointer"
-                        >
-                          View Wellness Club →
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Photo 6: Student Life Photo Contest Winner */}
-                  <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-                    <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
-                      <img
-                        src="./img/cuny-photo-contest-winner.jpg"
-                        alt="Winning photograph from CUNY SPS Student Life Photo Contest by Latoya Duncan"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/70 text-[#FFD100] text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
-                        Student Life Showcase
-                      </div>
-                    </div>
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <h3 className="font-bold text-slate-900 text-base">Student Life Photo Showcase</h3>
-                        <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                          Award-winning student photography capturing urban perspective and campus resilience, celebrated by the CUNY SPS Office of Student Life.
-                        </p>
-                      </div>
-                      <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                        <span>Office of Student Life</span>
-                        <span className="font-semibold text-violet-600">Latoya Duncan</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* ========================================================================= */}
             {/* SCREEN 6: OPENLAB & RESOURCES                                            */}
@@ -2437,13 +2192,6 @@ export function StudentDiscoveryApp() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => navigateTo('gallery')}
-                  className="hover:text-slate-900 cursor-pointer"
-                >
-                  Photo Gallery
-                </button>
-                <button
-                  type="button"
                   onClick={() => navigateTo('resources')}
                   className="hover:text-slate-900 cursor-pointer"
                 >
@@ -2551,24 +2299,6 @@ export function StudentDiscoveryApp() {
                     </div>
                   </div>
                   <span className="px-2 py-0.5 text-[10px] font-extrabold bg-violet-100 text-violet-800 rounded-full">{EVENTS_DATA.length}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => { navigateTo('gallery'); setMobileMenuOpen(false); }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${currentTab === 'gallery'
-                    ? 'bg-violet-50 text-violet-700 font-bold border-l-4 border-violet-600 shadow-xs'
-                    : 'text-slate-700 hover:bg-slate-50'
-                    }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <Camera className="w-4 h-4 text-rose-500" />
-                    <div className="text-left">
-                      <div>Student Life Gallery</div>
-                      <div className="text-[10px] text-slate-500 font-normal">Authentic Campus Moments</div>
-                    </div>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400" />
                 </button>
 
                 <button
@@ -2725,12 +2455,12 @@ export function StudentDiscoveryApp() {
 
         <button
           type="button"
-          onClick={() => navigateTo('gallery')}
-          className={`flex flex-col items-center justify-center gap-0.5 py-1 px-2 rounded-xl transition-all cursor-pointer ${currentTab === 'gallery' ? 'text-violet-700 font-bold' : 'text-slate-500 hover:text-slate-900 font-medium'
+          onClick={() => navigateTo('resources')}
+          className={`flex flex-col items-center justify-center gap-0.5 py-1 px-2 rounded-xl transition-all cursor-pointer ${currentTab === 'resources' ? 'text-violet-700 font-bold' : 'text-slate-500 hover:text-slate-900 font-medium'
             }`}
         >
-          <Camera className={`w-5 h-5 ${currentTab === 'gallery' ? 'text-violet-600' : 'text-slate-400'}`} />
-          <span className="text-[10px] leading-tight">Gallery</span>
+          <Globe className={`w-5 h-5 ${currentTab === 'resources' ? 'text-violet-600' : 'text-slate-400'}`} />
+          <span className="text-[10px] leading-tight">Resources</span>
         </button>
 
         <button
