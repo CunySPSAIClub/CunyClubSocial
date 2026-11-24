@@ -208,7 +208,7 @@ export function StudentDiscoveryApp() {
   }, []);
 
   // Dynamic upcoming event (Screen 2: Next Up on Campus)
-  // Advances after 9:00 PM EST or midnight on 2026-11-23 to tomorrow's event (2026-11-24: Sigma Beta Delta Honor Society)
+  // Automatically picks the next upcoming event on or after today in New York time
   const liveNextEvent = useMemo(() => {
     try {
       const now = new Date();
@@ -218,20 +218,9 @@ export function StudentDiscoveryApp() {
         month: '2-digit',
         day: '2-digit',
       }).format(now);
-      const nyHour = parseInt(
-        new Intl.DateTimeFormat('en-US', {
-          timeZone: 'America/New_York',
-          hour: 'numeric',
-          hourCycle: 'h23',
-        }).format(now),
-        10
-      );
 
-      // If past 9 PM (21) today or on/after tomorrow, advance to tomorrow's event
-      if (nyDateStr > '2026-11-23' || (nyDateStr === '2026-11-23' && nyHour >= 21)) {
-        const tomorrowEv = EVENTS_DATA.find((e) => e.date > '2026-11-23');
-        if (tomorrowEv) return tomorrowEv;
-      }
+      const nextEv = EVENTS_DATA.find((e) => e.date >= nyDateStr);
+      if (nextEv) return nextEv;
     } catch {
       // Fallback
     }

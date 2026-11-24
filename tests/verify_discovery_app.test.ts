@@ -100,8 +100,8 @@ test('Screen 4 (Events) contains event schedule and club linkage with 12-hour fo
     assert.match(ev.time, /^(0?[1-9]|1[0-2]):[0-5][0-9]\s*(AM|PM)$/i, `Event "${ev.title}" time must be in 12-hour format (e.g. 7:00 PM), got: ${ev.time}`);
     const matchedClub = CLUBS_DATA.find((c) => c.clubId === ev.clubId);
     assert.ok(matchedClub, `Event "${ev.title}" must link to an existing club`);
-    // Verify that passed events (September, October, etc.) are excluded
-    assert.ok(ev.date >= '2026-11-23', `Passed event "${ev.title}" on ${ev.date} must not be included`);
+    // Verify that passed events (September, October, Nov 23 past events, etc.) are excluded
+    assert.ok(ev.date >= '2026-11-24', `Passed event "${ev.title}" on ${ev.date} must not be included`);
   }
 });
 

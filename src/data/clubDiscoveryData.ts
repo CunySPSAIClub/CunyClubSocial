@@ -729,18 +729,6 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
 
 export const EVENTS_DATA: DiscoveryEvent[] = [
   {
-    "clubId": "club-film-tv",
-    "clubName": "Film & Television Club",
-    "title": "Film Club Movie Night: Planes, Trains, and Automobiles",
-    "description": "Upcoming event hosted by Film & Television Club on CUNY SPS OpenLab. Join online or check the event link for full agenda and meeting details.",
-    "date": "2026-11-23",
-    "time": "7:00 PM",
-    "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "url": "https://openlab.sps.cuny.edu/events/event/film-club-movie-night-planes-trains-and-automobiles/",
-    "eventId": "evt-film-tv-20261123-1"
-  },
-  {
     "clubId": "club-sigma-beta-delta",
     "clubName": "Sigma Beta Delta Honor Society",
     "title": "Sigma Beta Delta Honor Society",
