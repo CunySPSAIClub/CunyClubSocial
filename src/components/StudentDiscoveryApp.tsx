@@ -248,7 +248,7 @@ export function StudentDiscoveryApp() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100/70 text-slate-900 flex flex-col font-sans selection:bg-[#FFB81C]/30 selection:text-slate-900 overflow-x-hidden">
+    <div className="min-h-screen bg-slate-100/70 text-slate-900 flex flex-col font-sans selection:bg-[#C4F500] selection:text-slate-950 overflow-x-hidden">
       {/* Main Responsive Layout: Desktop Sidebar + Content Area */}
       <div className="flex-1 flex w-full relative">
         {/* DESKTOP SIDEBAR (Visible on lg: >= 1024px, Shrinkable / Expandable) */}
@@ -263,7 +263,7 @@ export function StudentDiscoveryApp() {
                 <button
                   type="button"
                   onClick={() => navigateTo('home')}
-                  className="flex items-center gap-3 text-left group cursor-pointer focus-visible:outline-2 focus-visible:outline-[#7c3aed] rounded-lg p-1 min-w-0"
+                  className="flex items-center gap-3 text-left group cursor-pointer focus-visible:outline-2 focus-visible:outline-[#C4F500] rounded-lg p-1 min-w-0"
                   aria-label="CUNY SPS Club Social Hub Home"
                 >
                   <img
@@ -307,7 +307,7 @@ export function StudentDiscoveryApp() {
                 <button
                   type="button"
                   onClick={() => setIsSidebarCollapsed(false)}
-                  className="p-1.5 rounded-lg text-violet-700 hover:bg-violet-50 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
                   title="Expand sidebar menu"
                   aria-label="Expand sidebar menu"
                 >
@@ -328,12 +328,12 @@ export function StudentDiscoveryApp() {
                 type="button"
                 onClick={() => navigateTo('home')}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${currentTab === 'home'
-                  ? 'bg-violet-600 text-white shadow-sm shadow-violet-500/25'
+                  ? 'bg-[#0B0B0F] text-[#C4F500] font-bold shadow-xs border border-black'
                   : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                   }`}
               >
                 <div className="flex items-center gap-3">
-                  <Compass className={`w-4 h-4 shrink-0 ${currentTab === 'home' ? 'text-white' : 'text-violet-600'}`} />
+                  <Compass className={`w-4 h-4 shrink-0 ${currentTab === 'home' ? 'text-[#C4F500]' : 'text-slate-500'}`} />
                   <span>Home / Overview</span>
                 </div>
               </button>
@@ -342,15 +342,15 @@ export function StudentDiscoveryApp() {
                 type="button"
                 onClick={() => navigateTo('clubs')}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${currentTab === 'clubs' || currentTab === 'club-profile'
-                  ? 'bg-violet-600 text-white shadow-sm shadow-violet-500/25'
+                  ? 'bg-[#0B0B0F] text-[#C4F500] font-bold shadow-xs border border-black'
                   : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                   }`}
               >
                 <div className="flex items-center gap-3">
-                  <Users className={`w-4 h-4 shrink-0 ${currentTab === 'clubs' || currentTab === 'club-profile' ? 'text-white' : 'text-indigo-600'}`} />
+                  <Users className={`w-4 h-4 shrink-0 ${currentTab === 'clubs' || currentTab === 'club-profile' ? 'text-[#C4F500]' : 'text-slate-500'}`} />
                   <span>Explore Clubs</span>
                 </div>
-                <span className={`px-2 py-0.5 text-[10px] font-extrabold rounded-full ${currentTab === 'clubs' || currentTab === 'club-profile' ? 'bg-white/20 text-white' : 'bg-indigo-100 text-indigo-800'
+                <span className={`px-2 py-0.5 text-[10px] font-extrabold rounded-full ${currentTab === 'clubs' || currentTab === 'club-profile' ? 'bg-[#C4F500]/20 text-[#C4F500]' : 'bg-slate-100 text-slate-700'
                   }`}>
                   34
                 </span>
@@ -360,15 +360,15 @@ export function StudentDiscoveryApp() {
                 type="button"
                 onClick={() => navigateTo('events')}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${currentTab === 'events'
-                  ? 'bg-violet-600 text-white shadow-sm shadow-violet-500/25'
+                  ? 'bg-[#0B0B0F] text-[#C4F500] font-bold shadow-xs border border-black'
                   : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                   }`}
               >
                 <div className="flex items-center gap-3">
-                  <Calendar className={`w-4 h-4 shrink-0 ${currentTab === 'events' ? 'text-white' : 'text-violet-600'}`} />
+                  <Calendar className={`w-4 h-4 shrink-0 ${currentTab === 'events' ? 'text-[#C4F500]' : 'text-slate-500'}`} />
                   <span>Campus Events</span>
                 </div>
-                <span className={`px-2 py-0.5 text-[10px] font-extrabold rounded-full ${currentTab === 'events' ? 'bg-white/20 text-white' : 'bg-amber-100 text-amber-800'
+                <span className={`px-2 py-0.5 text-[10px] font-extrabold rounded-full ${currentTab === 'events' ? 'bg-[#C4F500]/20 text-[#C4F500]' : 'bg-slate-100 text-slate-700'
                   }`}>
                   {EVENTS_DATA.length}
                 </span>
@@ -378,12 +378,12 @@ export function StudentDiscoveryApp() {
                 type="button"
                 onClick={() => navigateTo('resources')}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${currentTab === 'resources'
-                  ? 'bg-violet-600 text-white shadow-sm shadow-violet-500/25'
+                  ? 'bg-[#0B0B0F] text-[#C4F500] font-bold shadow-xs border border-black'
                   : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                   }`}
               >
                 <div className="flex items-center gap-3">
-                  <Globe className={`w-4 h-4 shrink-0 ${currentTab === 'resources' ? 'text-white' : 'text-teal-600'}`} />
+                  <Globe className={`w-4 h-4 shrink-0 ${currentTab === 'resources' ? 'text-[#C4F500]' : 'text-slate-500'}`} />
                   <span>OpenLab &amp; Resources</span>
                 </div>
               </button>
@@ -397,7 +397,7 @@ export function StudentDiscoveryApp() {
                   href="https://www.cuny.edu/cuny-login/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-violet-50 hover:text-violet-800 transition-colors"
+                  className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
                     <Lock className="w-3.5 h-3.5 text-[#FFB71B]" />
@@ -410,7 +410,7 @@ export function StudentDiscoveryApp() {
                   href="https://openlab.sps.cuny.edu/thekiosk/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-violet-50 hover:text-violet-800 transition-colors"
+                  className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
                     <Newspaper className="w-3.5 h-3.5 text-emerald-600" />
@@ -423,7 +423,7 @@ export function StudentDiscoveryApp() {
                   href="https://openlab.sps.cuny.edu/openroad/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-violet-50 hover:text-violet-800 transition-colors"
+                  className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
                     <BookOpen className="w-3.5 h-3.5 text-amber-600" />
@@ -466,7 +466,7 @@ export function StudentDiscoveryApp() {
               <button
                 type="button"
                 onClick={() => navigateTo('home')}
-                className={`p-2.5 rounded-xl transition-all cursor-pointer ${currentTab === 'home' ? 'bg-violet-600 text-white shadow-sm' : 'text-slate-700 hover:bg-slate-100'
+                className={`p-2.5 rounded-xl transition-all cursor-pointer ${currentTab === 'home' ? 'bg-[#0B0B0F] text-[#C4F500] shadow-xs border border-black' : 'text-slate-700 hover:bg-slate-100'
                   }`}
                 title="Home / Overview"
               >
@@ -475,27 +475,27 @@ export function StudentDiscoveryApp() {
               <button
                 type="button"
                 onClick={() => navigateTo('clubs')}
-                className={`p-2.5 rounded-xl transition-all cursor-pointer relative ${currentTab === 'clubs' || currentTab === 'club-profile' ? 'bg-violet-600 text-white shadow-sm' : 'text-slate-700 hover:bg-slate-100'
+                className={`p-2.5 rounded-xl transition-all cursor-pointer relative ${currentTab === 'clubs' || currentTab === 'club-profile' ? 'bg-[#0B0B0F] text-[#C4F500] shadow-xs border border-black' : 'text-slate-700 hover:bg-slate-100'
                   }`}
                 title="Explore Clubs (34)"
               >
                 <Users className="w-5 h-5" />
-                <span className="absolute -top-1 -right-1 text-[9px] font-bold bg-indigo-600 text-white rounded-full w-4 h-4 flex items-center justify-center">34</span>
+                <span className="absolute -top-1 -right-1 text-[9px] font-bold bg-[#0B0B0F] text-[#C4F500] border border-black rounded-full w-4 h-4 flex items-center justify-center">34</span>
               </button>
               <button
                 type="button"
                 onClick={() => navigateTo('events')}
-                className={`p-2.5 rounded-xl transition-all cursor-pointer relative ${currentTab === 'events' ? 'bg-violet-600 text-white shadow-sm' : 'text-slate-700 hover:bg-slate-100'
+                className={`p-2.5 rounded-xl transition-all cursor-pointer relative ${currentTab === 'events' ? 'bg-[#0B0B0F] text-[#C4F500] shadow-xs border border-black' : 'text-slate-700 hover:bg-slate-100'
                   }`}
                 title="Campus Events"
               >
                 <Calendar className="w-5 h-5" />
-                <span className="absolute -top-1 -right-1 text-[9px] font-bold bg-amber-500 text-white rounded-full w-4 h-4 flex items-center justify-center">{EVENTS_DATA.length}</span>
+                <span className="absolute -top-1 -right-1 text-[9px] font-bold bg-[#0B0B0F] text-[#C4F500] border border-black rounded-full w-4 h-4 flex items-center justify-center">{EVENTS_DATA.length}</span>
               </button>
               <button
                 type="button"
                 onClick={() => navigateTo('resources')}
-                className={`p-2.5 rounded-xl transition-all cursor-pointer ${currentTab === 'resources' ? 'bg-violet-600 text-white shadow-sm' : 'text-slate-700 hover:bg-slate-100'
+                className={`p-2.5 rounded-xl transition-all cursor-pointer ${currentTab === 'resources' ? 'bg-[#0B0B0F] text-[#C4F500] shadow-xs border border-black' : 'text-slate-700 hover:bg-slate-100'
                   }`}
                 title="OpenLab &amp; Resources"
               >
@@ -562,11 +562,11 @@ export function StudentDiscoveryApp() {
                 href="https://missme2026.github.io/club-hub-demo/?v=23#welcome"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-2.5 rounded-xl bg-gradient-to-r from-violet-900 to-indigo-900 text-white shadow-xs hover:opacity-95 transition-opacity text-xs font-bold"
+                className="flex items-center justify-between p-2.5 rounded-xl bg-[#0B0B0F] text-white border border-slate-800 shadow-xs hover:border-slate-700 transition-colors text-xs font-bold"
                 title="Open companion mobile web app demo"
               >
                 <div className="flex items-center gap-2">
-                  <Smartphone className="w-4 h-4 text-[#FFD100]" />
+                  <Smartphone className="w-4 h-4 text-[#C4F500]" />
                   <span>Mobile Web Demo</span>
                 </div>
                 <ExternalLink className="w-3 h-3 opacity-70" />
@@ -588,7 +588,7 @@ export function StudentDiscoveryApp() {
                   className="lg:hidden p-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-xl border border-slate-200 shadow-2xs cursor-pointer flex items-center gap-1.5"
                   aria-label="Open sidebar sections menu"
                 >
-                  <Menu className="w-5 h-5 text-violet-600" />
+                  <Menu className="w-5 h-5 text-slate-800" />
                   <span className="text-xs font-bold text-slate-700 hidden xs:inline">Sections</span>
                 </button>
 
@@ -596,11 +596,11 @@ export function StudentDiscoveryApp() {
                 <button
                   type="button"
                   onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                  className="hidden lg:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 text-slate-700 hover:text-violet-700 hover:bg-violet-50 transition-colors shadow-2xs cursor-pointer font-bold text-xs"
+                  className="hidden lg:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors shadow-2xs cursor-pointer font-bold text-xs"
                   title={isSidebarCollapsed ? "Expand sidebar menu" : "Shrink sidebar menu"}
                   aria-label="Toggle sidebar menu"
                 >
-                  <Menu className="w-4 h-4 text-violet-600" />
+                  <Menu className="w-4 h-4 text-slate-800" />
                   <span>{isSidebarCollapsed ? 'Open Menu' : 'Close Menu'}</span>
                 </button>
 
@@ -638,7 +638,7 @@ export function StudentDiscoveryApp() {
                 <button
                   type="button"
                   onClick={() => navigateTo('clubs')}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-violet-50 hover:text-violet-700 text-slate-700 text-xs font-bold border border-slate-200/80 transition-colors cursor-pointer"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-100 hover:text-slate-900 text-slate-700 text-xs font-bold border border-slate-200/80 transition-colors cursor-pointer"
                 >
                   <Search className="w-3.5 h-3.5 text-slate-500" />
                   <span>Find Clubs</span>
@@ -648,10 +648,10 @@ export function StudentDiscoveryApp() {
                   href="https://www.cuny.edu/cuny-login/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-100 hover:bg-violet-200 text-violet-900 text-xs font-bold transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0B0B0F] hover:bg-slate-800 text-[#C4F500] border border-black text-xs font-bold transition-colors"
                   title="Official CUNY Login"
                 >
-                  <Lock className="w-3.5 h-3.5 text-violet-700" />
+                  <Lock className="w-3.5 h-3.5 text-[#C4F500]" />
                   <span className="hidden xs:inline">CUNY Login</span>
                   <ExternalLink className="w-3 h-3 opacity-70" />
                 </a>
@@ -662,7 +662,7 @@ export function StudentDiscoveryApp() {
                   onClick={() => setMobileMenuOpen(true)}
                   className="inline-flex lg:hidden items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-colors cursor-pointer"
                 >
-                  <Menu className="w-4 h-4 text-[#FFD100]" />
+                  <Menu className="w-4 h-4 text-[#C4F500]" />
                   <span>Sections</span>
                 </button>
               </div>
@@ -687,13 +687,13 @@ export function StudentDiscoveryApp() {
 
                   {/* Ambient Golden & Violet Glow Orbs */}
                   <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none -translate-y-1/2" />
-                  <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none translate-y-1/3" />
+                  <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#C4F500]/10 rounded-full blur-3xl pointer-events-none translate-y-1/3" />
 
                   <div className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
-                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-violet-500/20 border border-violet-400/30 rounded-full text-xs font-semibold text-violet-200 backdrop-blur-md shadow-sm">
-                      <span className="w-2 h-2 rounded-full bg-[#FFB71B] animate-ping" />
-                      <span className="text-[#FFB71B] font-bold">Club Social Hub</span>
-                      <span className="text-violet-400">·</span>
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#0B0B0F]/80 border border-[#C4F500]/30 rounded-full text-xs font-semibold text-[#C4F500] backdrop-blur-md shadow-sm">
+                      <span className="w-2 h-2 rounded-full bg-[#C4F500] animate-ping" />
+                      <span className="text-[#C4F500] font-bold">Club Social Hub</span>
+                      <span className="text-slate-400">·</span>
                       <span>CUNY SPS Student Life Platform</span>
                     </div>
 
@@ -701,7 +701,7 @@ export function StudentDiscoveryApp() {
                       Find your next club at CUNY SPS
                     </h1>
 
-                    <p className="text-base sm:text-xl font-bold text-[#FFD100] tracking-tight drop-shadow-sm">
+                    <p className="text-base sm:text-xl font-bold text-[#C4F500] tracking-tight drop-shadow-sm">
                       Your student life, all in one place.
                     </p>
 
@@ -714,7 +714,7 @@ export function StudentDiscoveryApp() {
                       <button
                         type="button"
                         onClick={() => navigateTo('clubs')}
-                        className="w-full sm:w-auto px-7 py-3.5 min-h-[48px] bg-gradient-to-r from-amber-500 via-amber-400 to-[#FFB71B] hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-amber-900/40 hover:shadow-amber-900/60 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2 group border border-amber-300/40"
+                        className="w-full sm:w-auto px-7 py-3.5 min-h-[48px] bg-[#C4F500] hover:bg-[#b8e800] text-slate-950 font-extrabold text-base rounded-xl shadow-lg shadow-[#C4F500]/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2 group border border-[#d4ff1a]"
                       >
                         <span>Explore clubs</span>
                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -724,17 +724,17 @@ export function StudentDiscoveryApp() {
                         onClick={() => navigateTo('events')}
                         className="w-full sm:w-auto px-6 py-3.5 min-h-[48px] bg-white/15 hover:bg-white/20 text-white font-semibold text-sm rounded-xl border border-white/25 hover:border-white/40 backdrop-blur-md transition-all cursor-pointer flex items-center justify-center gap-2"
                       >
-                        <Calendar className="w-4 h-4 text-violet-300" />
+                        <Calendar className="w-4 h-4 text-white/80" />
                         <span>View upcoming events</span>
                       </button>
                       <a
                         href="https://missme2026.github.io/club-hub-demo/?v=23#welcome"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full sm:w-auto px-5 py-3.5 min-h-[48px] bg-[#FFB71B]/20 hover:bg-[#FFB71B]/30 text-[#FFD100] font-semibold text-xs rounded-xl border border-[#FFB71B]/40 transition-all flex items-center justify-center gap-2 group cursor-pointer backdrop-blur-md"
+                        className="w-full sm:w-auto px-5 py-3.5 min-h-[48px] bg-[#0B0B0F]/70 hover:bg-[#0B0B0F] text-[#C4F500] font-semibold text-xs rounded-xl border border-[#C4F500]/30 transition-all flex items-center justify-center gap-2 group cursor-pointer backdrop-blur-md"
                         title="Try the companion Club Social Hub interactive demo"
                       >
-                        <Smartphone className="w-4 h-4 text-[#FFD100]" />
+                        <Smartphone className="w-4 h-4 text-[#C4F500]" />
                         <span>Interactive Mobile Demo</span>
                         <ExternalLink className="w-3 h-3 opacity-70 group-hover:opacity-100" />
                       </a>
@@ -744,15 +744,15 @@ export function StudentDiscoveryApp() {
                     <div className="pt-8 grid grid-cols-3 gap-2 border-t border-white/15 max-w-lg mx-auto text-center">
                       <div>
                         <div className="text-2xl sm:text-3xl font-extrabold text-white">34</div>
-                        <div className="text-[11px] sm:text-xs text-amber-200/90 font-medium">Active Clubs</div>
+                        <div className="text-[11px] sm:text-xs text-slate-300 font-medium">Active Clubs</div>
                       </div>
                       <div>
                         <div className="text-2xl sm:text-3xl font-extrabold text-white">{EVENTS_DATA.length}</div>
-                        <div className="text-[11px] sm:text-xs text-amber-200/90 font-medium">Upcoming Events</div>
+                        <div className="text-[11px] sm:text-xs text-slate-300 font-medium">Upcoming Events</div>
                       </div>
                       <div>
-                        <div className="text-2xl sm:text-3xl font-extrabold text-[#FFD100]">100%</div>
-                        <div className="text-[11px] sm:text-xs text-amber-200/90 font-medium">Online Friendly</div>
+                        <div className="text-2xl sm:text-3xl font-extrabold text-[#C4F500]">100%</div>
+                        <div className="text-[11px] sm:text-xs text-slate-300 font-medium">Online Friendly</div>
                       </div>
                     </div>
                   </div>
@@ -765,24 +765,24 @@ export function StudentDiscoveryApp() {
                   <h2 className="sr-only">Featured Student Clubs</h2>
 
                   {/* TILE 1: Spotlit Featured Organization: AI Club */}
-                  <div className="bg-gradient-to-br from-white via-violet-50/40 to-purple-50/20 rounded-3xl border border-violet-200/90 hover:border-violet-400 p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+                  <div className="bg-white rounded-3xl border border-slate-200/90 hover:border-slate-300 p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
                     <div>
                       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-14 h-14 rounded-2xl bg-white border border-violet-200 p-1.5 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
+                          <div className="w-14 h-14 rounded-2xl bg-white border border-slate-200 p-1.5 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
                             <img src="./club-logos/ai-club.jpg" alt="Artificial Intelligence Club logo" className="w-full h-full object-contain" />
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-violet-100 text-violet-800 border border-violet-200">
-                                <Sparkles className="w-3 h-3 text-violet-600 animate-pulse" />
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#0B0B0F] text-[#C4F500] border border-black">
+                                <Sparkles className="w-3 h-3 text-[#C4F500] animate-pulse" />
                                 Spotlight Club
                               </span>
                               <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                                 Active Verified
                               </span>
-                              <img src="./img/ai-club-seal.jpg" alt="AI Club Seal" className="w-5 h-5 rounded-full border border-violet-200 shadow-2xs inline-block" />
+                              <img src="./img/ai-club-seal.jpg" alt="AI Club Seal" className="w-5 h-5 rounded-full border border-slate-200 shadow-2xs inline-block" />
                             </div>
                             <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
                               Artificial Intelligence Club
@@ -835,13 +835,13 @@ export function StudentDiscoveryApp() {
 
                     <div className="mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between flex-wrap gap-3">
                       <span className="text-xs text-slate-500 flex items-center gap-1.5">
-                        <Users className="w-4 h-4 text-violet-600" />
+                        <Users className="w-4 h-4 text-slate-700" />
                         Welcomes all students · Zero prerequisites
                       </span>
                       <button
                         type="button"
                         onClick={() => navigateTo('club-profile', 'club-ai')}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-violet-700 hover:text-violet-800 bg-violet-100/80 hover:bg-violet-200/80 px-4 py-2 rounded-xl transition-all cursor-pointer"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-[#0B0B0F] hover:bg-slate-800 px-4 py-2 rounded-xl transition-all cursor-pointer"
                       >
                         <span>Explore AI Club Profile</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -850,20 +850,20 @@ export function StudentDiscoveryApp() {
                   </div>
 
                   {/* TILE 2: Live Upcoming Event Radar (Dynamic next event) */}
-                  <div className="bg-gradient-to-br from-[#0F0728] via-[#1B0A33] to-[#080314] rounded-3xl border border-violet-500/20 p-6 sm:p-7 text-white shadow-md relative overflow-hidden flex flex-col justify-between">
+                  <div className="bg-gradient-to-br from-[#0B0B0F] via-[#14141C] to-[#0B0B0F] rounded-3xl border border-white/10 p-6 sm:p-7 text-white shadow-md relative overflow-hidden flex flex-col justify-between">
                     <div
                       className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none mix-blend-luminosity"
                       style={{ backgroundImage: 'url(./img/summer-at-cuny-students-campus.jpg)' }}
                     />
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/20 rounded-full blur-3xl pointer-events-none" />
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-[#C4F500]/10 rounded-full blur-3xl pointer-events-none" />
 
                     <div className="relative z-10">
                       <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-violet-500/20 text-[#FFD100] border border-violet-400/20">
-                          <Clock className="w-3 h-3 text-[#FFD100]" />
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#C4F500]/15 text-[#C4F500] border border-[#C4F500]/30">
+                          <Clock className="w-3 h-3 text-[#C4F500]" />
                           Next Up on Campus
                         </span>
-                        <span className="text-xs font-mono text-violet-300">
+                        <span className="text-xs font-mono text-slate-300">
                           {liveNextEvent?.date || 'Upcoming'}
                         </span>
                       </div>
@@ -876,13 +876,13 @@ export function StudentDiscoveryApp() {
                         Upcoming event hosted by {liveNextEvent?.clubName || 'CUNY SPS'} on CUNY SPS OpenLab. Join online or check the event link for full agenda and meeting details.
                       </p>
 
-                      <div className="mt-4 space-y-1.5 text-xs text-violet-200">
+                      <div className="mt-4 space-y-1.5 text-xs text-slate-300">
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-3.5 h-3.5 text-violet-400 shrink-0" />
+                          <Calendar className="w-3.5 h-3.5 text-[#C4F500] shrink-0" />
                           <span>{liveNextEvent?.time} EST · {liveNextEvent?.format}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <MapPin className="w-3.5 h-3.5 text-violet-400 shrink-0" />
+                          <MapPin className="w-3.5 h-3.5 text-[#C4F500] shrink-0" />
                           <span className="truncate">{liveNextEvent?.location}</span>
                         </div>
                       </div>
@@ -892,7 +892,7 @@ export function StudentDiscoveryApp() {
                       <button
                         type="button"
                         onClick={() => navigateTo('events')}
-                        className="w-full py-2.5 px-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                        className="w-full py-2.5 px-3 bg-[#C4F500] hover:bg-[#b8e800] text-slate-950 font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                       >
                         <span>View All {EVENTS_DATA.length} Events</span>
                         <ChevronRight className="w-4 h-4" />
@@ -905,10 +905,10 @@ export function StudentDiscoveryApp() {
                 {/* SCREENSHOT 4: CALENDAR HIGHLIGHTS                                         */}
                 {/* ========================================================================= */}
                 <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <div className="bg-gradient-to-br from-[#0F0728] via-[#1B0A33] to-[#080314] rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-xl border border-violet-900/30">
+                  <div className="bg-gradient-to-br from-[#0B0B0F] via-[#14141C] to-[#0B0B0F] rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-xl border border-white/10">
                     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
                       <div>
-                        <span className="text-xs font-bold uppercase tracking-wider text-[#FFB81C]">
+                        <span className="text-xs font-bold uppercase tracking-wider text-[#C4F500]">
                           Calendar Highlights
                         </span>
                         <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">Upcoming Campus Events</h2>
@@ -920,7 +920,7 @@ export function StudentDiscoveryApp() {
                         <button
                           type="button"
                           onClick={() => navigateTo('events')}
-                          className="text-xs sm:text-sm font-semibold text-[#FFB81C] hover:underline flex items-center gap-1 cursor-pointer"
+                          className="text-xs sm:text-sm font-semibold text-[#C4F500] hover:underline flex items-center gap-1 cursor-pointer"
                         >
                           <span>View all events ({EVENTS_DATA.length})</span>
                           <ArrowRight className="w-4 h-4" />
@@ -931,7 +931,7 @@ export function StudentDiscoveryApp() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/20 transition-all cursor-pointer"
                         >
-                          <Calendar className="w-3.5 h-3.5 text-[#FFB81C]" />
+                          <Calendar className="w-3.5 h-3.5 text-[#C4F500]" />
                           <span>Student Life Calendar</span>
                           <ExternalLink className="w-3 h-3 opacity-80" />
                         </a>
@@ -945,7 +945,7 @@ export function StudentDiscoveryApp() {
                           className="bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:bg-white/10 transition-all"
                         >
                           <div>
-                            <div className="flex items-center justify-between text-xs text-sky-200 mb-2 font-mono">
+                            <div className="flex items-center justify-between text-xs text-[#C4F500] mb-2 font-mono">
                               <span>{ev.date}</span>
                               <span>{ev.time} EST</span>
                             </div>
@@ -954,7 +954,7 @@ export function StudentDiscoveryApp() {
                               Hosted by {ev.clubName}
                             </p>
                             <div className="flex items-center gap-1.5 text-xs text-slate-300 mt-2">
-                              <MapPin className="w-3.5 h-3.5 text-[#FFB81C] shrink-0" />
+                              <MapPin className="w-3.5 h-3.5 text-[#C4F500] shrink-0" />
                               <span>{ev.format} · {ev.location}</span>
                             </div>
                           </div>
@@ -963,7 +963,7 @@ export function StudentDiscoveryApp() {
                             <button
                               type="button"
                               onClick={() => navigateTo('club-profile', ev.clubId)}
-                              className="text-xs font-semibold text-[#FFB81C] hover:underline flex items-center gap-1 cursor-pointer"
+                              className="text-xs font-semibold text-[#C4F500] hover:underline flex items-center gap-1 cursor-pointer"
                             >
                               <span>View {ev.clubName.split(' ')[0]} Profile</span>
                               <ArrowRight className="w-3.5 h-3.5" />
@@ -980,11 +980,11 @@ export function StudentDiscoveryApp() {
                 {/* ========================================================================= */}
                 <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
                   {/* Digital Student Commons Card */}
-                  <div className="bg-gradient-to-br from-white via-indigo-50/20 to-violet-50/10 rounded-3xl border border-violet-200/90 p-6 sm:p-8 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                  <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-100 text-indigo-900 border border-indigo-200">
-                          <Globe className="w-3 h-3 text-indigo-600" />
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#0B0B0F] text-[#C4F500] border border-black">
+                          <Globe className="w-3 h-3 text-[#C4F500]" />
                           CUNY SPS OpenLab Hub
                         </span>
                         <span className="text-[11px] font-medium text-slate-500">Official Student Platform</span>
@@ -1002,54 +1002,54 @@ export function StudentDiscoveryApp() {
                           href="https://openlab.sps.cuny.edu/groups/type/club/"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-3 rounded-2xl bg-white border border-slate-200/80 hover:border-violet-300 hover:bg-violet-50/40 transition-all flex items-center justify-between group cursor-pointer shadow-2xs"
+                          className="p-3 rounded-2xl bg-white border border-slate-200/80 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-between group cursor-pointer shadow-2xs"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center shrink-0">
+                            <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center shrink-0">
                               <Compass className="w-4 h-4" />
                             </div>
                             <div>
-                              <div className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-violet-700">OpenLab Student Organizations</div>
+                              <div className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-slate-900">OpenLab Student Organizations</div>
                               <div className="text-[11px] sm:text-xs text-slate-500">Browse official club groups and member directories</div>
                             </div>
                           </div>
-                          <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-violet-600 shrink-0" />
+                          <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700 shrink-0" />
                         </a>
 
                         <a
                           href="https://openlab.sps.cuny.edu/groups/the-kiosk/"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-3 rounded-2xl bg-white border border-slate-200/80 hover:border-violet-300 hover:bg-violet-50/40 transition-all flex items-center justify-between group cursor-pointer shadow-2xs"
+                          className="p-3 rounded-2xl bg-white border border-slate-200/80 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-between group cursor-pointer shadow-2xs"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
+                            <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center shrink-0">
                               <Newspaper className="w-4 h-4" />
                             </div>
                             <div>
-                              <div className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-violet-700">The Kiosk Student Publication</div>
+                              <div className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-slate-900">The Kiosk Student Publication</div>
                               <div className="text-[11px] sm:text-xs text-slate-500">Official student newspaper, creative articles &amp; essays</div>
                             </div>
                           </div>
-                          <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-violet-600 shrink-0" />
+                          <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700 shrink-0" />
                         </a>
 
                         <a
                           href="https://openlab.sps.cuny.edu/sps-open-road/"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-3 rounded-2xl bg-white border border-slate-200/80 hover:border-violet-300 hover:bg-violet-50/40 transition-all flex items-center justify-between group cursor-pointer shadow-2xs"
+                          className="p-3 rounded-2xl bg-white border border-slate-200/80 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-between group cursor-pointer shadow-2xs"
                         >
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
                               <BookOpen className="w-4 h-4" />
                             </div>
                             <div>
-                              <div className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-violet-700">CUNY SPS Open Road</div>
+                              <div className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-slate-900">CUNY SPS Open Road</div>
                               <div className="text-[11px] sm:text-xs text-slate-500">Community news, spotlight stories &amp; updates</div>
                             </div>
                           </div>
-                          <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-violet-600 shrink-0" />
+                          <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700 shrink-0" />
                         </a>
                       </div>
                     </div>
@@ -1060,7 +1060,7 @@ export function StudentDiscoveryApp() {
                         href="https://openlab.sps.cuny.edu/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-bold text-violet-700 hover:text-violet-800 inline-flex items-center gap-1 group"
+                        className="font-bold text-slate-900 hover:text-black font-bold inline-flex items-center gap-1 group"
                       >
                         <span>Visit OpenLab Main Site</span>
                         <ExternalLink className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
@@ -1069,22 +1069,22 @@ export function StudentDiscoveryApp() {
                   </div>
 
                   {/* Office of Student Life Card */}
-                  <div className="bg-gradient-to-br from-[#0F0728] via-[#1E0B38] to-[#0A0318] rounded-3xl border border-violet-500/25 p-6 sm:p-8 text-white shadow-md relative overflow-hidden flex flex-col justify-between">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/15 rounded-full blur-3xl pointer-events-none" />
+                  <div className="bg-gradient-to-br from-[#0B0B0F] via-[#14141C] to-[#0B0B0F] rounded-3xl border border-white/10 p-6 sm:p-8 text-white shadow-md relative overflow-hidden flex flex-col justify-between">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-[#C4F500]/10 rounded-full blur-3xl pointer-events-none" />
 
                     <div className="relative z-10">
                       <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-violet-500/20 text-[#FFD100] border border-violet-400/20">
-                          <Shield className="w-3 h-3 text-[#FFD100]" />
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#C4F500]/15 text-[#C4F500] border border-[#C4F500]/30">
+                          <Shield className="w-3 h-3 text-[#C4F500]" />
                           Office of Student Life
                         </span>
-                        <span className="text-xs text-violet-300/80">Co-Curricular &amp; Leadership Hub</span>
+                        <span className="text-xs text-slate-400">Co-Curricular &amp; Leadership Hub</span>
                       </div>
 
                       <h3 className="text-xl sm:text-2xl font-extrabold text-white leading-snug">
                         Accessible Leadership &amp; Community Engagement
                       </h3>
-                      <p className="text-xs sm:text-sm text-violet-200/90 mt-1.5 leading-relaxed max-w-3xl">
+                      <p className="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed max-w-3xl">
                         Providing our diverse student population with accessible co-curricular and academic enrichment opportunities to develop leadership skills and community beyond the classroom.
                       </p>
 
@@ -1093,17 +1093,17 @@ export function StudentDiscoveryApp() {
                           href="https://www.cuny.edu/cuny-login/"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-violet-400/40 transition-all flex items-start gap-3 group cursor-pointer"
+                          className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all flex items-start gap-3 group cursor-pointer"
                         >
-                          <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-[#FFD100] flex items-center justify-center shrink-0 border border-amber-400/30">
+                          <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-[#C4F500] flex items-center justify-center shrink-0 border border-amber-400/30">
                             <Lock className="w-4 h-4" />
                           </div>
                           <div>
-                            <div className="text-xs sm:text-sm font-bold text-white group-hover:text-[#FFD100] flex items-center gap-1">
+                            <div className="text-xs sm:text-sm font-bold text-white group-hover:text-[#C4F500] flex items-center gap-1">
                               <span>CUNY Login Portal</span>
                               <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                             </div>
-                            <div className="text-[11px] sm:text-xs text-violet-300 mt-0.5">CUNYfirst, Brightspace &amp; SSO</div>
+                            <div className="text-[11px] sm:text-xs text-slate-400 mt-0.5">CUNYfirst, Brightspace &amp; SSO</div>
                           </div>
                         </a>
 
@@ -1111,23 +1111,23 @@ export function StudentDiscoveryApp() {
                           href="https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-violet-400/40 transition-all flex items-start gap-3 group cursor-pointer"
+                          className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all flex items-start gap-3 group cursor-pointer"
                         >
-                          <div className="w-8 h-8 rounded-xl bg-violet-500/20 text-violet-300 flex items-center justify-center shrink-0 border border-violet-400/30">
+                          <div className="w-8 h-8 rounded-xl bg-[#C4F500]/15 text-[#C4F500] flex items-center justify-center shrink-0 border border-[#C4F500]/30">
                             <Calendar className="w-4 h-4" />
                           </div>
                           <div>
-                            <div className="text-xs sm:text-sm font-bold text-white group-hover:text-violet-300 flex items-center gap-1">
+                            <div className="text-xs sm:text-sm font-bold text-white group-hover:text-[#C4F500] flex items-center gap-1">
                               <span>Student Life Calendar</span>
                               <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                             </div>
-                            <div className="text-[11px] sm:text-xs text-violet-300 mt-0.5">Official schedule of all student life events</div>
+                            <div className="text-[11px] sm:text-xs text-slate-400 mt-0.5">Official schedule of all student life events</div>
                           </div>
                         </a>
 
                         <a
                           href="mailto:studentlife@sps.cuny.edu"
-                          className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-violet-400/40 transition-all flex items-start gap-3 group cursor-pointer"
+                          className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all flex items-start gap-3 group cursor-pointer"
                         >
                           <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0 border border-emerald-400/30">
                             <Mail className="w-4 h-4" />
@@ -1137,7 +1137,7 @@ export function StudentDiscoveryApp() {
                               <span>Contact Student Life</span>
                               <ArrowRight className="w-2.5 h-2.5 opacity-60" />
                             </div>
-                            <div className="text-[11px] sm:text-xs text-violet-300 mt-0.5">studentlife@sps.cuny.edu</div>
+                            <div className="text-[11px] sm:text-xs text-slate-400 mt-0.5">studentlife@sps.cuny.edu</div>
                           </div>
                         </a>
 
@@ -1145,7 +1145,7 @@ export function StudentDiscoveryApp() {
                           href="https://openlab.sps.cuny.edu/help-documentation/"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-violet-400/40 transition-all flex items-start gap-3 group cursor-pointer"
+                          className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all flex items-start gap-3 group cursor-pointer"
                         >
                           <div className="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center shrink-0 border border-cyan-400/30">
                             <HelpCircle className="w-4 h-4" />
@@ -1155,19 +1155,19 @@ export function StudentDiscoveryApp() {
                               <span>Help &amp; Student Guides</span>
                               <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                             </div>
-                            <div className="text-[11px] sm:text-xs text-violet-300 mt-0.5">OpenLab guides and FAQs</div>
+                            <div className="text-[11px] sm:text-xs text-slate-400 mt-0.5">OpenLab guides and FAQs</div>
                           </div>
                         </a>
                       </div>
                     </div>
 
-                    <div className="mt-5 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-violet-300/80 relative z-10">
+                    <div className="mt-5 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-slate-400 relative z-10">
                       <span>CUNY School of Professional Studies</span>
                       <a
                         href="https://sps.cuny.edu/student-services/student-life"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-bold text-[#FFD100] hover:underline inline-flex items-center gap-1"
+                        className="font-bold text-[#C4F500] hover:underline inline-flex items-center gap-1"
                       >
                         <span>Official Student Life Page</span>
                         <ExternalLink className="w-3 h-3" />
@@ -1185,7 +1185,7 @@ export function StudentDiscoveryApp() {
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
                 {/* Page Header */}
                 <div>
-                  <div className="inline-flex items-center gap-2 text-xs font-semibold px-2.5 py-1 bg-violet-100 text-violet-800 rounded-full mb-2">
+                  <div className="inline-flex items-center gap-2 text-xs font-semibold px-2.5 py-1 bg-[#0B0B0F] text-[#C4F500] border border-black rounded-full mb-2">
                     <span>Student Directory</span>
                   </div>
                   <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -1206,7 +1206,7 @@ export function StudentDiscoveryApp() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search clubs by name, category, topic, or keyword..."
-                      className="w-full pl-11 pr-10 py-3 text-sm bg-white border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent min-h-[44px]"
+                      className="w-full pl-11 pr-10 py-3 text-sm bg-white border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0B0B0F] focus:border-transparent min-h-[44px]"
                       aria-label="Search clubs by name or keyword"
                     />
                     {searchQuery && (
@@ -1229,8 +1229,8 @@ export function StudentDiscoveryApp() {
                         type="button"
                         onClick={() => setSelectedCategory(cat)}
                         className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer min-h-[36px] flex items-center gap-1 ${selectedCategory === cat
-                          ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-sm shadow-violet-500/25'
-                          : 'bg-white text-slate-600 border border-slate-200 hover:border-violet-300 hover:text-violet-700'
+                          ? 'bg-[#0B0B0F] text-[#C4F500] font-bold shadow-xs border border-black'
+                          : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-400 hover:text-slate-900'
                           }`}
                       >
                         {cat}
@@ -1252,7 +1252,7 @@ export function StudentDiscoveryApp() {
                         setSearchQuery('');
                         setSelectedCategory('All');
                       }}
-                      className="text-xs font-semibold text-violet-600 hover:text-violet-700 hover:underline cursor-pointer"
+                      className="text-xs font-bold text-slate-900 hover:underline cursor-pointer"
                     >
                       Reset filters
                     </button>
@@ -1265,7 +1265,7 @@ export function StudentDiscoveryApp() {
                     {filteredClubs.map((club) => (
                       <article
                         key={club.clubId}
-                        className="bg-white rounded-2xl border border-slate-200/80 hover:border-violet-300 p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between group"
+                        className="bg-white rounded-2xl border border-slate-200/80 hover:border-slate-400 p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between group"
                       >
                         <div>
                           {/* Top Header: Monogram/Logo, Name, ShortCode */}
@@ -1379,7 +1379,7 @@ export function StudentDiscoveryApp() {
                           <button
                             type="button"
                             onClick={() => navigateTo('club-profile', club.clubId)}
-                            className="w-full min-h-[44px] py-2.5 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-sm shadow-violet-500/25 flex items-center justify-center gap-2 cursor-pointer group"
+                            className="w-full min-h-[44px] py-2.5 px-4 bg-[#0B0B0F] hover:bg-slate-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer group"
                           >
                             <span>View club</span>
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -1420,7 +1420,7 @@ export function StudentDiscoveryApp() {
                   <button
                     type="button"
                     onClick={() => navigateTo('clubs')}
-                    className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-violet-600 hover:text-violet-700 px-3 py-2 rounded-lg hover:bg-violet-50 transition-colors cursor-pointer min-h-[44px]"
+                    className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-800 hover:text-black px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer min-h-[44px]"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     <span>Back to club directory</span>
@@ -1472,20 +1472,20 @@ export function StudentDiscoveryApp() {
                       <p className="text-xs sm:text-sm text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
                         <span>CUNY SPS Chartered Student Organization</span>
                         <span>·</span>
-                        <a href="mailto:studentservices@sps.cuny.edu" className="text-violet-600 hover:underline">Office of Student Life</a>
+                        <a href="mailto:studentservices@sps.cuny.edu" className="text-slate-700 font-bold hover:underline">Office of Student Life</a>
                       </p>
                     </div>
                   </div>
 
                   {/* Who It Welcomes Callout (Required in Build Specs) */}
-                  <div className="bg-gradient-to-r from-violet-50 via-purple-50 to-indigo-50 border border-violet-100 rounded-2xl p-5">
+                  <div className="bg-slate-900 text-white border border-slate-800 rounded-2xl p-5">
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                      <div className="w-8 h-8 rounded-lg bg-[#0B0B0F] text-[#C4F500] border border-[#C4F500]/30 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                         <Users className="w-4 h-4" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-slate-900 text-sm">Who We Welcome</h3>
-                        <p className="text-xs sm:text-sm text-slate-700 mt-1 leading-relaxed">
+                        <h3 className="font-bold text-white text-sm">Who We Welcome</h3>
+                        <p className="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">
                           {selectedClub.whoItWelcomes}
                         </p>
                       </div>
@@ -1539,7 +1539,7 @@ export function StudentDiscoveryApp() {
                                 ? 'bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-95 text-white shadow-pink-200'
                                 : isLinkedIn
                                   ? 'bg-[#0A66C2] hover:bg-[#095196] text-white shadow-sky-200'
-                                  : 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-violet-200';
+                                  : 'bg-[#0B0B0F] hover:bg-slate-800 text-white shadow-slate-300';
 
                         return (
                           <div
@@ -1629,9 +1629,9 @@ export function StudentDiscoveryApp() {
                       href="https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-violet-700 hover:text-violet-800 bg-violet-50 hover:bg-violet-100 rounded-lg border border-violet-100 transition-colors self-start sm:self-auto cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-900 hover:text-black font-bold bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition-colors self-start sm:self-auto cursor-pointer"
                     >
-                      <Calendar className="w-3.5 h-3.5 text-violet-600" />
+                      <Calendar className="w-3.5 h-3.5 text-slate-700" />
                       <span>CUNY SPS Student Life Calendar</span>
                       <ExternalLink className="w-3 h-3 opacity-70" />
                     </a>
@@ -1645,7 +1645,7 @@ export function StudentDiscoveryApp() {
                           className="border border-slate-200 rounded-2xl p-4 bg-slate-50 flex flex-col justify-between"
                         >
                           <div>
-                            <div className="flex items-center justify-between text-xs font-mono text-violet-700 mb-1.5">
+                            <div className="flex items-center justify-between text-xs font-mono text-slate-900 font-bold mb-1.5">
                               <span className="font-bold">{ev.date}</span>
                               <span>{ev.time} EST</span>
                             </div>
@@ -1662,7 +1662,7 @@ export function StudentDiscoveryApp() {
                               href={ev.url || "https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-[11px] font-medium text-slate-500 hover:text-violet-600 flex items-center gap-1 cursor-pointer"
+                              className="text-[11px] font-medium text-slate-500 hover:text-slate-900 flex items-center gap-1 cursor-pointer"
                             >
                               <Calendar className="w-3.5 h-3.5 text-slate-400" />
                               <span>Student Life Calendar</span>
@@ -1672,7 +1672,7 @@ export function StudentDiscoveryApp() {
                               href={getGoogleCalendarUrl(ev)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-xs font-semibold text-violet-600 hover:text-violet-700 hover:underline flex items-center gap-1 cursor-pointer"
+                              className="text-xs font-bold text-slate-900 hover:underline flex items-center gap-1 cursor-pointer"
                             >
                               <span>Add to Calendar</span>
                               <ExternalLink className="w-3 h-3" />
@@ -1689,10 +1689,10 @@ export function StudentDiscoveryApp() {
                 </div>
 
                 {/* Official School Join & Inquiry Form */}
-                <div className="bg-gradient-to-br from-[#0F0728] via-[#1E0B36] to-[#090414] rounded-3xl p-6 sm:p-8 text-white space-y-5 border border-violet-500/20 shadow-xl shadow-purple-950/20 relative overflow-hidden">
+                <div className="bg-gradient-to-br from-[#0B0B0F] via-[#14141C] to-[#0B0B0F] rounded-3xl p-6 sm:p-8 text-white space-y-5 border border-white/10 shadow-xl relative overflow-hidden">
                   <div className="max-w-2xl space-y-2">
-                    <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-white/10 text-[#FFD100] text-[11px] font-bold tracking-wide uppercase">
-                      <Shield className="w-3.5 h-3.5 text-[#FFD100]" />
+                    <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-white/10 text-[#C4F500] text-[11px] font-bold tracking-wide uppercase">
+                      <Shield className="w-3.5 h-3.5 text-[#C4F500]" />
                       <span>Official School Form</span>
                     </div>
                     <h3 className="text-xl sm:text-2xl font-bold text-white">
@@ -1708,7 +1708,7 @@ export function StudentDiscoveryApp() {
                       href={selectedClub.joinUrl || "https://sps.cuny.edu/student-success/student-life/student-clubs-and-organizations"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-6 py-3.5 bg-[#FFB81C] hover:bg-[#e5a415] text-slate-950 font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 group cursor-pointer"
+                      className="px-6 py-3.5 bg-[#C4F500] hover:bg-[#b8e800] text-slate-950 font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 group cursor-pointer"
                     >
                       <span>Open Official {selectedClub.name} Form</span>
                       <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -1761,7 +1761,7 @@ export function StudentDiscoveryApp() {
                     href="https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs sm:text-sm font-bold rounded-xl shadow-md shadow-violet-500/25 hover:shadow-lg transition-all cursor-pointer shrink-0 self-start sm:self-auto"
+                    className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#0B0B0F] hover:bg-slate-800 text-[#C4F500] text-xs sm:text-sm font-bold rounded-xl border border-black shadow-md hover:shadow-lg transition-all cursor-pointer shrink-0 self-start sm:self-auto"
                   >
                     <Calendar className="w-4 h-4 text-[#FFB81C]" />
                     <span>Open Student Life Calendar</span>
@@ -1777,7 +1777,7 @@ export function StudentDiscoveryApp() {
                     value={eventSearch}
                     onChange={(e) => setEventSearch(e.target.value)}
                     placeholder="Search events by topic, club, or format..."
-                    className="w-full pl-11 pr-4 py-2.5 text-sm bg-white border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 min-h-[44px]"
+                    className="w-full pl-11 pr-4 py-2.5 text-sm bg-white border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0B0B0F] min-h-[44px]"
                     aria-label="Search events"
                   />
                 </div>
@@ -1790,7 +1790,7 @@ export function StudentDiscoveryApp() {
                       return (
                         <article
                           key={ev.eventId}
-                          className="bg-white rounded-3xl border border-violet-200/90 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group flex flex-col"
+                          className="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group flex flex-col"
                         >
                           {/* Photo Banner with Floating Date Block */}
                           <div
@@ -1801,17 +1801,17 @@ export function StudentDiscoveryApp() {
 
                             {/* Floating Date Block */}
                             <div className="absolute top-4 left-4 w-16 h-16 rounded-2xl bg-white/95 backdrop-blur-md border border-white/40 flex flex-col items-center justify-center text-center shadow-lg">
-                              <span className="text-[10px] font-bold text-violet-700 uppercase tracking-wider">
+                              <span className="text-[10px] font-bold text-slate-950 uppercase tracking-wider">
                                 {new Date(ev.date + 'T12:00:00Z').toLocaleString('en-US', { month: 'short' })}
                               </span>
-                              <span className="text-2xl font-extrabold text-violet-950 leading-none mt-0.5">
+                              <span className="text-2xl font-extrabold text-slate-950 leading-none mt-0.5">
                                 {ev.date.split('-')[2]}
                               </span>
                             </div>
 
                             {/* Top Right Badges */}
                             <div className="absolute top-4 right-4 flex items-center gap-1.5">
-                              <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#FFB71B] text-[#011D49] shadow-sm">
+                              <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#C4F500] text-slate-950 font-extrabold shadow-sm">
                                 Next Spotlight Event
                               </span>
                             </div>
@@ -1819,7 +1819,7 @@ export function StudentDiscoveryApp() {
                             {/* Bottom Overlay Info */}
                             <div className="absolute bottom-4 left-4 right-4 text-white">
                               <div className="flex items-center gap-2 mb-1">
-                                <span className="text-xs font-bold text-[#FFD100] uppercase tracking-wider">
+                                <span className="text-xs font-bold text-[#C4F500] uppercase tracking-wider">
                                   {ev.clubName}
                                 </span>
                                 <span className="opacity-60">·</span>
@@ -1839,7 +1839,7 @@ export function StudentDiscoveryApp() {
                               </p>
                               <div className="flex items-center gap-3 text-xs text-slate-500 flex-wrap">
                                 <span className="inline-flex items-center gap-1 font-medium">
-                                  <MapPin className="w-3.5 h-3.5 text-violet-600" />
+                                  <MapPin className="w-3.5 h-3.5 text-slate-700" />
                                   {ev.format} ({ev.location})
                                 </span>
                               </div>
@@ -1860,9 +1860,9 @@ export function StudentDiscoveryApp() {
                                   href={ev.url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="flex-1 md:flex-none px-4 py-2.5 bg-violet-50 hover:bg-violet-100 text-violet-700 text-xs font-semibold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5 border border-violet-100"
+                                  className="flex-1 md:flex-none px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5 border border-slate-200"
                                 >
-                                  <Calendar className="w-3.5 h-3.5 text-violet-600" />
+                                  <Calendar className="w-3.5 h-3.5 text-slate-700" />
                                   <span>Calendar Listing</span>
                                   <ExternalLink className="w-3 h-3 opacity-60" />
                                 </a>
@@ -1871,9 +1871,9 @@ export function StudentDiscoveryApp() {
                                 href={getGoogleCalendarUrl(ev)}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex-1 md:flex-none px-4 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm shadow-violet-500/25 transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5"
+                                className="flex-1 md:flex-none px-4 py-2.5 bg-[#0B0B0F] hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5"
                               >
-                                <Calendar className="w-3.5 h-3.5 text-[#FFB81C]" />
+                                <Calendar className="w-3.5 h-3.5 text-[#C4F500]" />
                                 <span>Add to Calendar</span>
                               </a>
                             </div>
@@ -1885,15 +1885,15 @@ export function StudentDiscoveryApp() {
                     return (
                       <div
                         key={ev.eventId}
-                        className="bg-white rounded-2xl border border-slate-200/80 hover:border-violet-300 p-5 sm:p-6 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-5 group"
+                        className="bg-white rounded-2xl border border-slate-200/80 hover:border-slate-400 p-5 sm:p-6 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-5 group"
                       >
                         <div className="flex items-start gap-4">
                           {/* Date Block */}
-                          <div className="w-16 h-16 rounded-2xl bg-gradient-to-b from-violet-50 to-purple-50 border border-violet-100 flex flex-col items-center justify-center text-center shrink-0">
-                            <span className="text-[10px] font-bold text-violet-700 uppercase">
+                          <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center text-center shrink-0">
+                            <span className="text-[10px] font-bold text-slate-700 uppercase">
                               {new Date(ev.date + 'T12:00:00Z').toLocaleString('en-US', { month: 'short' })}
                             </span>
-                            <span className="text-xl font-extrabold text-violet-950 leading-none mt-0.5">
+                            <span className="text-xl font-extrabold text-slate-950 leading-none mt-0.5">
                               {ev.date.split('-')[2]}
                             </span>
                           </div>
@@ -1904,7 +1904,7 @@ export function StudentDiscoveryApp() {
                               <button
                                 type="button"
                                 onClick={() => navigateTo('club-profile', ev.clubId)}
-                                className="text-xs font-bold text-violet-700 hover:text-violet-800 hover:underline cursor-pointer"
+                                className="text-xs font-bold text-slate-900 hover:text-black font-bold hover:underline cursor-pointer"
                               >
                                 {ev.clubName}
                               </button>
@@ -1944,9 +1944,9 @@ export function StudentDiscoveryApp() {
                               href={ev.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex-1 md:flex-none px-4 py-2.5 bg-violet-50 hover:bg-violet-100 text-violet-700 text-xs font-semibold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5 border border-violet-100"
+                              className="flex-1 md:flex-none px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5 border border-slate-200"
                             >
-                              <Calendar className="w-3.5 h-3.5 text-violet-600" />
+                              <Calendar className="w-3.5 h-3.5 text-slate-700" />
                               <span>Calendar Listing</span>
                               <ExternalLink className="w-3 h-3 opacity-60" />
                             </a>
@@ -1955,9 +1955,9 @@ export function StudentDiscoveryApp() {
                             href={getGoogleCalendarUrl(ev)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex-1 md:flex-none px-4 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm shadow-violet-500/25 transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5"
+                            className="flex-1 md:flex-none px-4 py-2.5 bg-[#0B0B0F] hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5"
                           >
-                            <Calendar className="w-3.5 h-3.5 text-[#FFB81C]" />
+                            <Calendar className="w-3.5 h-3.5 text-[#C4F500]" />
                             <span>Add to Calendar</span>
                           </a>
                         </div>
@@ -1976,8 +1976,8 @@ export function StudentDiscoveryApp() {
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-200">
                 {/* Header */}
                 <div>
-                  <div className="inline-flex items-center gap-2 text-xs font-semibold px-2.5 py-1 bg-violet-100 text-violet-800 rounded-full mb-2">
-                    <Globe className="w-3.5 h-3.5 text-violet-600" />
+                  <div className="inline-flex items-center gap-2 text-xs font-semibold px-2.5 py-1 bg-[#0B0B0F] text-[#C4F500] border border-black rounded-full mb-2">
+                    <Globe className="w-3.5 h-3.5 text-[#C4F500]" />
                     <span>Campus Services &amp; Portals</span>
                   </div>
                   <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -1992,7 +1992,7 @@ export function StudentDiscoveryApp() {
                   {/* Card 1: OpenLab Student Organizations */}
                   <div className="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                     <div>
-                      <div className="w-12 h-12 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center mb-4">
+                      <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center mb-4">
                         <Globe className="w-6 h-6" />
                       </div>
                       <h3 className="font-bold text-slate-900 text-base">Student Organizations Hub</h3>
@@ -2005,7 +2005,7 @@ export function StudentDiscoveryApp() {
                         href="https://openlab.sps.cuny.edu/groups/student-organizations/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-violet-700 hover:text-violet-800"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-900 hover:text-black font-bold"
                       >
                         <span>Visit Organizations Hub</span>
                         <ExternalLink className="w-3.5 h-3.5" />
@@ -2088,7 +2088,7 @@ export function StudentDiscoveryApp() {
                   {/* Card 5: Official CUNY Login */}
                   <div className="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                     <div>
-                      <div className="w-12 h-12 rounded-2xl bg-violet-100 text-violet-800 flex items-center justify-center mb-4">
+                      <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center mb-4">
                         <Lock className="w-6 h-6 text-[#FFB71B]" />
                       </div>
                       <h3 className="font-bold text-slate-900 text-base">CUNY Institutional Login</h3>
@@ -2101,7 +2101,7 @@ export function StudentDiscoveryApp() {
                         href="https://www.cuny.edu/cuny-login/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-violet-700 hover:text-violet-800"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-900 hover:text-black font-bold"
                       >
                         <span>Sign in via CUNY Portal</span>
                         <ExternalLink className="w-3.5 h-3.5" />
@@ -2221,7 +2221,7 @@ export function StudentDiscoveryApp() {
             aria-label="Mobile Navigation Sidebar"
           >
             {/* Drawer Header */}
-            <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-gradient-to-r from-slate-900 via-violet-950 to-slate-900 text-white sticky top-0 z-20">
+            <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-[#0B0B0F] text-white sticky top-0 z-20">
               <div className="flex items-center gap-3">
                 <img
                   src="./club-social-hub-mark.svg"
@@ -2230,7 +2230,7 @@ export function StudentDiscoveryApp() {
                 />
                 <div>
                   <h2 className="text-sm font-bold text-white tracking-tight">Club Social Hub</h2>
-                  <p className="text-[11px] text-violet-200">CUNY SPS Student Life</p>
+                  <p className="text-[11px] text-slate-400">CUNY SPS Student Life</p>
                 </div>
               </div>
               <button
@@ -2254,12 +2254,12 @@ export function StudentDiscoveryApp() {
                   type="button"
                   onClick={() => { navigateTo('home'); setMobileMenuOpen(false); }}
                   className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${currentTab === 'home'
-                    ? 'bg-violet-50 text-violet-700 font-bold border-l-4 border-violet-600 shadow-xs'
+                    ? 'bg-slate-900 text-[#C4F500] font-bold border-l-4 border-[#C4F500] shadow-xs'
                     : 'text-slate-700 hover:bg-slate-50'
                     }`}
                 >
                   <div className="flex items-center gap-3">
-                    <Compass className="w-4 h-4 text-violet-600" />
+                    <Compass className="w-4 h-4 text-[#C4F500]" />
                     <span>Home / Overview</span>
                   </div>
                   <ChevronRight className="w-4 h-4 text-slate-400" />
@@ -2269,7 +2269,7 @@ export function StudentDiscoveryApp() {
                   type="button"
                   onClick={() => { navigateTo('clubs'); setMobileMenuOpen(false); }}
                   className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${currentTab === 'clubs' || currentTab === 'club-profile'
-                    ? 'bg-violet-50 text-violet-700 font-bold border-l-4 border-violet-600 shadow-xs'
+                    ? 'bg-slate-900 text-[#C4F500] font-bold border-l-4 border-[#C4F500] shadow-xs'
                     : 'text-slate-700 hover:bg-slate-50'
                     }`}
                 >
@@ -2287,25 +2287,25 @@ export function StudentDiscoveryApp() {
                   type="button"
                   onClick={() => { navigateTo('events'); setMobileMenuOpen(false); }}
                   className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${currentTab === 'events'
-                    ? 'bg-violet-50 text-violet-700 font-bold border-l-4 border-violet-600 shadow-xs'
+                    ? 'bg-slate-900 text-[#C4F500] font-bold border-l-4 border-[#C4F500] shadow-xs'
                     : 'text-slate-700 hover:bg-slate-50'
                     }`}
                 >
                   <div className="flex items-center gap-3">
-                    <Calendar className="w-4 h-4 text-violet-600" />
+                    <Calendar className="w-4 h-4 text-[#C4F500]" />
                     <div className="text-left">
                       <div>Campus Events</div>
                       <div className="text-[10px] text-slate-500 font-normal">Meetings &amp; Workshops</div>
                     </div>
                   </div>
-                  <span className="px-2 py-0.5 text-[10px] font-extrabold bg-violet-100 text-violet-800 rounded-full">{EVENTS_DATA.length}</span>
+                  <span className="px-2 py-0.5 text-[10px] font-extrabold bg-[#C4F500]/20 text-[#C4F500] rounded-full">{EVENTS_DATA.length}</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => { navigateTo('resources'); setMobileMenuOpen(false); }}
                   className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${currentTab === 'resources'
-                    ? 'bg-violet-50 text-violet-700 font-bold border-l-4 border-violet-600 shadow-xs'
+                    ? 'bg-slate-900 text-[#C4F500] font-bold border-l-4 border-[#C4F500] shadow-xs'
                     : 'text-slate-700 hover:bg-slate-50'
                     }`}
                 >
@@ -2329,7 +2329,7 @@ export function StudentDiscoveryApp() {
                   href="https://www.cuny.edu/cuny-login/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-800 bg-slate-50 hover:bg-violet-50 hover:text-violet-700 transition-colors border border-slate-200"
+                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-800 bg-slate-50 hover:bg-slate-100 hover:text-slate-900 transition-colors border border-slate-200"
                 >
                   <div className="flex items-center gap-2.5">
                     <Lock className="w-4 h-4 text-[#FFB71B]" />
@@ -2342,7 +2342,7 @@ export function StudentDiscoveryApp() {
                   href="https://openlab.sps.cuny.edu/help/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-violet-700 transition-colors"
+                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
                     <HelpCircle className="w-4 h-4 text-teal-500" />
@@ -2387,16 +2387,16 @@ export function StudentDiscoveryApp() {
                   href="https://missme2026.github.io/club-hub-demo/?v=23#welcome"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between p-3.5 rounded-xl bg-gradient-to-r from-violet-900 to-indigo-900 text-white shadow-sm hover:opacity-95 transition-all text-xs font-bold"
+                  className="flex items-center justify-between p-3.5 rounded-xl bg-[#0B0B0F] border border-slate-800 text-white shadow-sm transition-colors text-xs font-bold"
                 >
                   <div className="flex items-center gap-2.5">
-                    <Smartphone className="w-5 h-5 text-[#FFD100]" />
+                    <Smartphone className="w-5 h-5 text-[#C4F500]" />
                     <div className="text-left">
                       <div>Interactive Mobile Demo</div>
-                      <div className="text-[10px] text-violet-200 font-normal">Open companion mobile web app</div>
+                      <div className="text-[10px] text-slate-400 font-normal">Open companion mobile web app</div>
                     </div>
                   </div>
-                  <ExternalLink className="w-4 h-4 text-violet-200" />
+                  <ExternalLink className="w-4 h-4 text-slate-400" />
                 </a>
               </div>
             </div>
@@ -2414,22 +2414,22 @@ export function StudentDiscoveryApp() {
         <button
           type="button"
           onClick={() => navigateTo('home')}
-          className={`flex flex-col items-center justify-center gap-0.5 py-1 px-2 rounded-xl transition-all cursor-pointer ${currentTab === 'home' ? 'text-violet-700 font-bold' : 'text-slate-500 hover:text-slate-900 font-medium'
+          className={`flex flex-col items-center justify-center gap-0.5 py-1 px-2 rounded-xl transition-all cursor-pointer ${currentTab === 'home' ? 'text-slate-950 font-bold' : 'text-slate-500 hover:text-slate-900 font-medium'
             }`}
         >
-          <Compass className={`w-5 h-5 ${currentTab === 'home' ? 'text-violet-600' : 'text-slate-400'}`} />
+          <Compass className={`w-5 h-5 ${currentTab === 'home' ? 'text-slate-950' : 'text-slate-400'}`} />
           <span className="text-[10px] leading-tight">Home</span>
         </button>
 
         <button
           type="button"
           onClick={() => navigateTo('clubs')}
-          className={`flex flex-col items-center justify-center gap-0.5 py-1 px-2 rounded-xl transition-all cursor-pointer relative ${currentTab === 'clubs' ? 'text-violet-700 font-bold' : 'text-slate-500 hover:text-slate-900 font-medium'
+          className={`flex flex-col items-center justify-center gap-0.5 py-1 px-2 rounded-xl transition-all cursor-pointer relative ${currentTab === 'clubs' ? 'text-slate-950 font-bold' : 'text-slate-500 hover:text-slate-900 font-medium'
             }`}
         >
-          <Users className={`w-5 h-5 ${currentTab === 'clubs' ? 'text-violet-600' : 'text-slate-400'}`} />
+          <Users className={`w-5 h-5 ${currentTab === 'clubs' ? 'text-slate-950' : 'text-slate-400'}`} />
           <span className="text-[10px] leading-tight">Clubs</span>
-          <span className="absolute -top-1 -right-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-violet-100 text-violet-800 border border-violet-200">
+          <span className="absolute -top-1 -right-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-[#0B0B0F] text-[#C4F500] border border-black">
             34
           </span>
         </button>
@@ -2442,12 +2442,12 @@ export function StudentDiscoveryApp() {
           title="Browse Upcoming Events"
         >
           <div className={`w-12 h-10 rounded-2xl flex items-center justify-center shadow-md transition-all ${currentTab === 'events'
-            ? 'bg-[#FFB71B] text-[#011D49] shadow-[#FFB71B]/40 scale-105'
-            : 'bg-gradient-to-tr from-violet-600 to-indigo-600 text-white shadow-violet-500/30 group-hover:scale-105'
+            ? 'bg-[#C4F500] text-slate-950 shadow-[#C4F500]/40 scale-105'
+            : 'bg-[#0B0B0F] text-[#C4F500] border-2 border-[#C4F500]/50 shadow-md group-hover:scale-105'
             }`}>
             <Calendar className="w-5 h-5" />
           </div>
-          <span className={`text-[10px] mt-1 font-bold ${currentTab === 'events' ? 'text-violet-800' : 'text-slate-600'
+          <span className={`text-[10px] mt-1 font-bold ${currentTab === 'events' ? 'text-slate-950' : 'text-slate-600'
             }`}>
             Events
           </span>
@@ -2456,20 +2456,20 @@ export function StudentDiscoveryApp() {
         <button
           type="button"
           onClick={() => navigateTo('resources')}
-          className={`flex flex-col items-center justify-center gap-0.5 py-1 px-2 rounded-xl transition-all cursor-pointer ${currentTab === 'resources' ? 'text-violet-700 font-bold' : 'text-slate-500 hover:text-slate-900 font-medium'
+          className={`flex flex-col items-center justify-center gap-0.5 py-1 px-2 rounded-xl transition-all cursor-pointer ${currentTab === 'resources' ? 'text-slate-950 font-bold' : 'text-slate-500 hover:text-slate-900 font-medium'
             }`}
         >
-          <Globe className={`w-5 h-5 ${currentTab === 'resources' ? 'text-violet-600' : 'text-slate-400'}`} />
+          <Globe className={`w-5 h-5 ${currentTab === 'resources' ? 'text-slate-950' : 'text-slate-400'}`} />
           <span className="text-[10px] leading-tight">Resources</span>
         </button>
 
         <button
           type="button"
           onClick={() => setMobileMenuOpen(true)}
-          className="flex flex-col items-center justify-center gap-0.5 py-1 px-2 rounded-xl text-slate-600 hover:text-violet-800 font-medium transition-all cursor-pointer"
+          className="flex flex-col items-center justify-center gap-0.5 py-1 px-2 rounded-xl text-slate-600 hover:text-slate-950 font-medium transition-all cursor-pointer"
           aria-label="Open navigation menu"
         >
-          <Menu className="w-5 h-5 text-violet-600" />
+          <Menu className="w-5 h-5 text-slate-800" />
           <span className="text-[10px] leading-tight font-semibold">Sections</span>
         </button>
       </nav>
