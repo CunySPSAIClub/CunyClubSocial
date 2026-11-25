@@ -117,9 +117,13 @@ test('Screen 4 (Events) contains event schedule and club linkage with 12-hour fo
     assert.match(ev.time, /^(0?[1-9]|1[0-2]):[0-5][0-9]\s*(AM|PM)$/i, `Event "${ev.title}" time must be in 12-hour format (e.g. 7:00 PM), got: ${ev.time}`);
     const matchedClub = CLUBS_DATA.find((c) => c.clubId === ev.clubId);
     assert.ok(matchedClub, `Event "${ev.title}" must link to an existing club`);
-    // Verify that passed events (September, October, Nov 23 past events, etc.) are excluded
-    assert.ok(ev.date >= '2026-11-24', `Passed event "${ev.title}" on ${ev.date} must not be included`);
+    // Verify that passed events (September, October, Nov 24 past events, etc.) are excluded
+    assert.ok(ev.date >= '2026-11-25', `Passed event "${ev.title}" on ${ev.date} must not be included`);
   }
+
+  // Explicitly verify passed event from 2026-11-24 is removed
+  const passedEvent = EVENTS_DATA.find((e) => e.eventId === 'evt-sigma-beta-delta-20261124-2' || e.date < '2026-11-25');
+  assert.equal(passedEvent, undefined, 'Passed event from 2026-11-24 must be removed from catalog');
 });
 
 test('Screen 5 (Official School Forms) maps all 34 clubs to official CUNY SPS join forms and directory', () => {

@@ -748,18 +748,6 @@ export const CLUBS_DATA: ClubDiscoveryItem[] = [
 
 export const EVENTS_DATA: DiscoveryEvent[] = [
   {
-    "clubId": "club-sigma-beta-delta",
-    "clubName": "Sigma Beta Delta Honor Society",
-    "title": "Sigma Beta Delta Honor Society",
-    "description": "Upcoming event hosted by Sigma Beta Delta Honor Society on CUNY SPS OpenLab. Join online or check the event link for full agenda and meeting details.",
-    "date": "2026-11-24",
-    "time": "7:00 PM",
-    "format": "Virtual",
-    "location": "Zoom (Virtual)",
-    "url": "https://openlab.sps.cuny.edu/events/event/sigma-beta-delta-honor-society-club-fair-3/",
-    "eventId": "evt-sigma-beta-delta-20261124-2"
-  },
-  {
     "clubId": "club-film-tv",
     "clubName": "Film & Television Club",
     "title": "Film Club Meeting",
