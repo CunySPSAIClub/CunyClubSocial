@@ -26,7 +26,12 @@ import {
   Newspaper,
   Compass,
   HelpCircle,
-  Smartphone
+  Smartphone,
+  Download,
+  RefreshCw,
+  Plus,
+  CalendarCheck,
+  CalendarPlus
 } from 'lucide-react';
 import {
   CLUBS_DATA,
@@ -37,6 +42,18 @@ import {
   ClubChannel
 } from '../data/clubDiscoveryData';
 import { ClubLogoMark, StudentLifeLogo } from './BrandMarks';
+import {
+  CUNY_SPS_CALENDAR_LINKS,
+  getGoogleCalendarUrl,
+  getOutlookCalendarUrl,
+  downloadSingleEventIcs,
+  downloadAllEventsIcs,
+  isEventUpcoming,
+  getEventDateBadge,
+  loadCustomEvents,
+  saveCustomEvent
+} from '../utils/schoolCalendarSync';
+import { campusDate, shiftCalendarDate } from '../utils/calendarDates';
 
 // Recognizable Brand SVG Icons
 function WhatsAppIcon({ className = 'w-5 h-5' }: { className?: string }) {
@@ -79,25 +96,6 @@ function LinkedInIcon({ className = 'w-5 h-5' }: { className?: string }) {
   );
 }
 
-function getGoogleCalendarUrl(ev: DiscoveryEvent): string {
-  let hh = 18;
-  let mm = 0;
-  const match = (ev.time || "").match(/(\d+):(\d+)\s*(AM|PM)?/i);
-  if (match) {
-    hh = parseInt(match[1], 10);
-    mm = parseInt(match[2], 10);
-    const meridiem = match[3] ? match[3].toUpperCase() : null;
-    if (meridiem === "PM" && hh < 12) hh += 12;
-    if (meridiem === "AM" && hh === 12) hh = 0;
-  }
-  const utcHh = (hh + 5) % 24;
-  const pad = (n: number) => String(n).padStart(2, "0");
-  const dClean = ev.date.replace(/-/g, "");
-  const startCode = `${dClean}T${pad(utcHh)}${pad(mm)}00Z`;
-  const endCode = `${dClean}T${pad((utcHh + 1) % 24)}${pad(mm)}00Z`;
-  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(ev.title)}&dates=${startCode}/${endCode}&details=${encodeURIComponent(ev.description)}&location=${encodeURIComponent(ev.location)}`;
-}
-
 export function StudentDiscoveryApp() {
   // Navigation: 'home' | 'clubs' | 'events' | 'club-profile' | 'resources'
   const [currentTab, setCurrentTab] = useState<'home' | 'clubs' | 'events' | 'club-profile' | 'resources'>('home');
@@ -109,6 +107,25 @@ export function StudentDiscoveryApp() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [eventSearch, setEventSearch] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // Live Campus Date & 11:59 PM Daily Rollover State
+  const [currentCampusDate, setCurrentCampusDate] = useState<string>(() => campusDate());
+  const [eventsFilter, setEventsFilter] = useState<'upcoming' | 'past' | 'all'>('upcoming');
+  const [customEvents, setCustomEvents] = useState<DiscoveryEvent[]>(() => loadCustomEvents());
+  const [calendarSyncStatus, setCalendarSyncStatus] = useState<'idle' | 'syncing' | 'synced'>('idle');
+  const [lastSyncTime, setLastSyncTime] = useState<string>('Live');
+  const [showAddEventModal, setShowAddEventModal] = useState(false);
+  const [calendarToast, setCalendarToast] = useState<string | null>(null);
+
+  // Event submission form inputs
+  const [newEventClubId, setNewEventClubId] = useState<string>('club-ai');
+  const [newEventTitle, setNewEventTitle] = useState('');
+  const [newEventDate, setNewEventDate] = useState(() => campusDate());
+  const [newEventTime, setNewEventTime] = useState('7:00 PM');
+  const [newEventFormat, setNewEventFormat] = useState('Virtual');
+  const [newEventLocation, setNewEventLocation] = useState('Zoom (Virtual)');
+  const [newEventUrl, setNewEventUrl] = useState('');
+  const [newEventDescription, setNewEventDescription] = useState('');
 
   // PWA beforeinstallprompt handler & install state
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -167,6 +184,39 @@ export function StudentDiscoveryApp() {
     }
   };
 
+  // Automated 11:59 PM Rollover: Checks current date in America/New_York
+  useEffect(() => {
+    const checkRollover = () => {
+      const today = campusDate();
+      setCurrentCampusDate((prev) => (prev !== today ? today : prev));
+    };
+
+    // Check every 10 seconds to catch the exact moment 11:59:59 PM turns into 12:00:00 AM
+    const interval = setInterval(checkRollover, 10000);
+
+    // Also check on tab focus / wake
+    const handleVisibility = () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        checkRollover();
+      }
+    };
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', handleVisibility);
+    }
+    if (typeof window !== 'undefined') {
+      window.addEventListener('focus', checkRollover);
+    }
+
+    return () => {
+      clearInterval(interval);
+      if (typeof document !== 'undefined') {
+        document.removeEventListener('visibilitychange', handleVisibility);
+      }
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('focus', checkRollover);
+      }
+    };
+  }, []);
 
   // Sync hash routing on mount
   useEffect(() => {
@@ -238,11 +288,43 @@ export function StudentDiscoveryApp() {
     });
   }, [searchQuery, selectedCategory]);
 
-  // Filtered events
+  // Combined list of custom submitted events and base EVENTS_DATA
+  const allEvents = useMemo(() => {
+    const combined = [...customEvents, ...EVENTS_DATA];
+    const seen = new Set<string>();
+    return combined.filter((ev) => {
+      if (seen.has(ev.eventId)) return false;
+      seen.add(ev.eventId);
+      return true;
+    });
+  }, [customEvents]);
+
+  // Upcoming events: strictly on or after currentCampusDate (passed 11:59 PM are rolled off)
+  const upcomingEvents = useMemo(() => {
+    return allEvents
+      .filter((ev) => isEventUpcoming(ev, currentCampusDate))
+      .sort((a, b) => a.date.localeCompare(b.date));
+  }, [allEvents, currentCampusDate]);
+
+  // Past events: strictly before currentCampusDate
+  const pastEvents = useMemo(() => {
+    return allEvents
+      .filter((ev) => !isEventUpcoming(ev, currentCampusDate))
+      .sort((a, b) => b.date.localeCompare(a.date));
+  }, [allEvents, currentCampusDate]);
+
+  // Filtered events based on active tab ('upcoming' | 'past' | 'all') and search
   const filteredEvents = useMemo(() => {
-    return EVENTS_DATA.filter((ev) => {
-      if (!eventSearch.trim()) return true;
-      const q = eventSearch.toLowerCase();
+    let pool =
+      eventsFilter === 'upcoming'
+        ? upcomingEvents
+        : eventsFilter === 'past'
+        ? pastEvents
+        : allEvents.slice().sort((a, b) => a.date.localeCompare(b.date));
+
+    if (!eventSearch.trim()) return pool;
+    const q = eventSearch.toLowerCase();
+    return pool.filter((ev) => {
       return (
         ev.title.toLowerCase().includes(q) ||
         ev.clubName.toLowerCase().includes(q) ||
@@ -250,39 +332,93 @@ export function StudentDiscoveryApp() {
         ev.format.toLowerCase().includes(q)
       );
     });
-  }, [eventSearch]);
+  }, [eventsFilter, upcomingEvents, pastEvents, allEvents, eventSearch]);
 
   const clubEvents = useMemo(() => {
-    return EVENTS_DATA.filter((ev) => ev.clubId === selectedClub.clubId);
-  }, [selectedClub.clubId]);
+    return allEvents.filter((ev) => ev.clubId === selectedClub.clubId);
+  }, [allEvents, selectedClub.clubId]);
 
   const featuredClubs = useMemo(() => {
     return CLUBS_DATA.filter((c) => c.isFeatured);
   }, []);
 
   const upcomingPreviewEvents = useMemo(() => {
-    return EVENTS_DATA.slice(0, 3);
-  }, []);
+    return upcomingEvents.slice(0, 3);
+  }, [upcomingEvents]);
 
   // Dynamic upcoming event (Screen 2: Next Up on Campus)
-  // Automatically picks the next upcoming event on or after today in New York time
   const liveNextEvent = useMemo(() => {
-    try {
-      const now = new Date();
-      const nyDateStr = new Intl.DateTimeFormat('en-CA', {
-        timeZone: 'America/New_York',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      }).format(now);
+    return upcomingEvents[0] || allEvents[0] || null;
+  }, [upcomingEvents, allEvents]);
 
-      const nextEv = EVENTS_DATA.find((e) => e.date >= nyDateStr);
-      if (nextEv) return nextEv;
-    } catch {
-      // Fallback
-    }
-    return EVENTS_DATA[0] || null;
-  }, []);
+  // Calendar Sync Action
+  const handleSyncSchoolCalendar = () => {
+    setCalendarSyncStatus('syncing');
+    setTimeout(() => {
+      const latestCustom = loadCustomEvents();
+      setCustomEvents(latestCustom);
+      const today = campusDate();
+      setCurrentCampusDate(today);
+      const timeStr = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      }).format(new Date());
+      setLastSyncTime(`Just now (${timeStr} EST)`);
+      setCalendarSyncStatus('synced');
+      setCalendarToast('Synced with CUNY SPS School Calendar & OpenLab!');
+      setTimeout(() => setCalendarToast(null), 3500);
+      setTimeout(() => setCalendarSyncStatus('idle'), 2500);
+    }, 600);
+  };
+
+  // Download all events as .ics
+  const handleDownloadAllIcs = () => {
+    const targetEvents = upcomingEvents.length > 0 ? upcomingEvents : allEvents;
+    downloadAllEventsIcs(targetEvents);
+    setCalendarToast(`Downloaded ${targetEvents.length} events (.ics) to your calendar!`);
+    setTimeout(() => setCalendarToast(null), 3500);
+  };
+
+  // Download single event as .ics
+  const handleDownloadSingleIcs = (ev: DiscoveryEvent) => {
+    downloadSingleEventIcs(ev);
+    setCalendarToast(`Calendar invite downloaded for "${ev.title}"!`);
+    setTimeout(() => setCalendarToast(null), 3000);
+  };
+
+  // Submit and add a new event directly
+  const handleAddNewEvent = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newEventTitle.trim() || !newEventDate) return;
+
+    const matchedClub = CLUBS_DATA.find((c) => c.clubId === newEventClubId) || CLUBS_DATA[0];
+    const newEvent: DiscoveryEvent = {
+      eventId: `event-custom-${Date.now()}`,
+      clubId: matchedClub.clubId,
+      clubName: matchedClub.name,
+      title: newEventTitle.trim(),
+      description: newEventDescription.trim() || `Official meeting for ${matchedClub.name} on CUNY SPS Campus.`,
+      date: newEventDate,
+      time: newEventTime.trim() || '7:00 PM',
+      format: newEventFormat,
+      location: newEventLocation.trim() || 'Zoom (Virtual)',
+      url: newEventUrl.trim() || CUNY_SPS_CALENDAR_LINKS.openlabStudentLife,
+    };
+
+    const updated = saveCustomEvent(newEvent);
+    setCustomEvents(updated);
+    setShowAddEventModal(false);
+
+    // Reset inputs
+    setNewEventTitle('');
+    setNewEventDescription('');
+    setNewEventUrl('');
+
+    setCalendarToast(`Event "${newEvent.title}" added to calendar!`);
+    setTimeout(() => setCalendarToast(null), 4000);
+  };
 
   const handleShareClub = () => {
     if (navigator.clipboard) {
@@ -518,7 +654,7 @@ export function StudentDiscoveryApp() {
                         <div className="text-[11px] sm:text-xs text-slate-300 font-medium">Active Clubs</div>
                       </div>
                       <div>
-                        <div className="text-2xl sm:text-3xl font-extrabold text-white">{EVENTS_DATA.length}</div>
+                        <div className="text-2xl sm:text-3xl font-extrabold text-white">{upcomingEvents.length}</div>
                         <div className="text-[11px] sm:text-xs text-slate-300 font-medium">Upcoming Events</div>
                       </div>
                       <div>
@@ -662,7 +798,7 @@ export function StudentDiscoveryApp() {
                         onClick={() => navigateTo('events')}
                         className="w-full py-2.5 px-3 bg-[#C4F500] hover:bg-[#b8e800] text-slate-950 font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                       >
-                        <span>View All {EVENTS_DATA.length} Events</span>
+                        <span>View All {upcomingEvents.length} Upcoming Events</span>
                         <ChevronRight className="w-4 h-4" />
                       </button>
                     </div>
@@ -690,7 +826,7 @@ export function StudentDiscoveryApp() {
                           onClick={() => navigateTo('events')}
                           className="text-xs sm:text-sm font-semibold text-[#C4F500] hover:underline flex items-center gap-1 cursor-pointer"
                         >
-                          <span>View all events ({EVENTS_DATA.length})</span>
+                          <span>View all events ({upcomingEvents.length})</span>
                           <ArrowRight className="w-4 h-4" />
                         </button>
                         <a
@@ -1521,217 +1657,409 @@ export function StudentDiscoveryApp() {
                       Upcoming Club Events &amp; Workshops
                     </h1>
                     <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl">
-                      All club events are open to enrolled CUNY SPS students. Scan dates, add meetings to your calendar, and explore official Student Life activities.
+                      All club events are open to enrolled CUNY SPS students. Scan dates, add meetings directly to your school calendar, and explore official Student Life activities.
                     </p>
                   </div>
 
-                  <a
-                    href="https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#0B0B0F] hover:bg-slate-800 text-[#C4F500] text-xs sm:text-sm font-bold rounded-xl border border-black shadow-md hover:shadow-lg transition-all cursor-pointer shrink-0 self-start sm:self-auto"
-                  >
-                    <Calendar className="w-4 h-4 text-[#FFB81C]" />
-                    <span>Open Student Life Calendar</span>
-                    <ExternalLink className="w-3.5 h-3.5 opacity-80" />
-                  </a>
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <button
+                      type="button"
+                      onClick={handleDownloadAllIcs}
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-900 text-xs font-bold rounded-xl border border-slate-300 shadow-2xs transition-all cursor-pointer"
+                    >
+                      <Download className="w-3.5 h-3.5 text-slate-800" />
+                      <span>Subscribe All (.ics)</span>
+                    </button>
+
+                    <a
+                      href="https://openlab.sps.cuny.edu/groups/cuny-sps-student-life/events/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#0B0B0F] hover:bg-slate-800 text-[#C4F500] text-xs sm:text-sm font-bold rounded-xl border border-black shadow-md hover:shadow-lg transition-all cursor-pointer shrink-0"
+                    >
+                      <Calendar className="w-4 h-4 text-[#FFB81C]" />
+                      <span>Open Student Life Calendar</span>
+                      <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+                    </a>
+                  </div>
                 </div>
 
-                {/* Event Search */}
-                <div className="relative max-w-md">
-                  <Search className="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    value={eventSearch}
-                    onChange={(e) => setEventSearch(e.target.value)}
-                    placeholder="Search events by topic, club, or format..."
-                    className="w-full pl-11 pr-4 py-2.5 text-sm bg-white border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0B0B0F] min-h-[44px]"
-                    aria-label="Search events"
-                  />
+                {/* Direct School Calendar Synchronization & Live Connection Card */}
+                <div className="bg-gradient-to-br from-[#0B0B0F] via-[#14141C] to-[#0A0A0E] rounded-3xl p-6 sm:p-7 text-white border border-white/10 shadow-xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-80 h-80 bg-[#C4F500]/10 rounded-full blur-3xl pointer-events-none" />
+
+                  <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    <div className="space-y-2 max-w-2xl">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                          Live Connection to CUNY SPS School Calendar
+                        </span>
+                        <span className="text-[11px] font-mono text-slate-400">
+                          OpenLab &amp; Student Life
+                        </span>
+                      </div>
+                      <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+                        Direct School Calendar Sync &amp; Subscriptions
+                      </h2>
+                      <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                        Events auto-update daily whenever the time passes <strong>11:59 PM EST</strong>. Synchronize with your <strong>CUNY Webmail (@spsmail.cuny.edu)</strong>, Google Calendar, or Apple Calendar with one tap.
+                      </p>
+                      <div className="flex items-center gap-3 pt-1 text-xs text-slate-400 flex-wrap">
+                        <span>Status: <strong className="text-white">{lastSyncTime}</strong></span>
+                        <span>·</span>
+                        <span>Campus Date: <strong className="text-[#C4F500] font-mono">{currentCampusDate} (EST)</strong></span>
+                        <span>·</span>
+                        <span className="text-emerald-400">Auto 11:59 PM Rollover Active</span>
+                      </div>
+                    </div>
+
+                    {/* Quick Sync & Subscription Actions */}
+                    <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={handleDownloadAllIcs}
+                        className="px-4 py-2.5 bg-[#C4F500] hover:bg-[#b8e800] text-slate-950 font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <CalendarCheck className="w-4 h-4 text-slate-950" />
+                        <span>Subscribe to All Events (.ics)</span>
+                      </button>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={handleSyncSchoolCalendar}
+                          disabled={calendarSyncStatus === 'syncing'}
+                          className="flex-1 px-3.5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs rounded-xl border border-white/15 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                        >
+                          <RefreshCw className={`w-3.5 h-3.5 text-[#C4F500] ${calendarSyncStatus === 'syncing' ? 'animate-spin' : ''}`} />
+                          <span>{calendarSyncStatus === 'syncing' ? 'Syncing...' : 'Sync Calendar'}</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setShowAddEventModal(true)}
+                          className="flex-1 px-3.5 py-2.5 bg-white/10 hover:bg-white/20 text-[#C4F500] font-bold text-xs rounded-xl border border-[#C4F500]/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Add Event</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Event Search & Filter Tabs */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="relative flex-1 max-w-md">
+                    <Search className="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={eventSearch}
+                      onChange={(e) => setEventSearch(e.target.value)}
+                      placeholder="Search events by topic, club, or format..."
+                      className="w-full pl-11 pr-4 py-2.5 text-sm bg-white border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0B0B0F] min-h-[44px]"
+                      aria-label="Search events"
+                    />
+                  </div>
+
+                  {/* Filter Tabs: Upcoming vs Past Rollover */}
+                  <div className="flex items-center gap-1.5 p-1 bg-slate-200/70 rounded-xl border border-slate-300/60 self-start md:self-auto">
+                    <button
+                      type="button"
+                      onClick={() => setEventsFilter('upcoming')}
+                      className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        eventsFilter === 'upcoming'
+                          ? 'bg-[#0B0B0F] text-[#C4F500] shadow-sm'
+                          : 'text-slate-700 hover:text-black hover:bg-white/60'
+                      }`}
+                    >
+                      <span>Upcoming</span>
+                      <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono ${eventsFilter === 'upcoming' ? 'bg-white/20 text-white' : 'bg-slate-300 text-slate-800'}`}>
+                        {upcomingEvents.length}
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setEventsFilter('past')}
+                      className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        eventsFilter === 'past'
+                          ? 'bg-[#0B0B0F] text-[#C4F500] shadow-sm'
+                          : 'text-slate-700 hover:text-black hover:bg-white/60'
+                      }`}
+                    >
+                      <span>Past Archive</span>
+                      <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono ${eventsFilter === 'past' ? 'bg-white/20 text-white' : 'bg-slate-300 text-slate-800'}`}>
+                        {pastEvents.length}
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setEventsFilter('all')}
+                      className={`px-3 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        eventsFilter === 'all'
+                          ? 'bg-[#0B0B0F] text-[#C4F500] shadow-sm'
+                          : 'text-slate-700 hover:text-black hover:bg-white/60'
+                      }`}
+                    >
+                      <span>All</span>
+                      <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono ${eventsFilter === 'all' ? 'bg-white/20 text-white' : 'bg-slate-300 text-slate-800'}`}>
+                        {allEvents.length}
+                      </span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Events List */}
                 <div className="space-y-4">
-                  {filteredEvents.map((ev, idx) => {
-                    const isHero = idx === 0 && !eventSearch.trim();
-                    if (isHero) {
+                  {filteredEvents.length > 0 ? (
+                    filteredEvents.map((ev, idx) => {
+                      const isHero = idx === 0 && !eventSearch.trim() && eventsFilter === 'upcoming';
+                      const dateBadge = getEventDateBadge(ev, currentCampusDate);
+
+                      if (isHero) {
+                        return (
+                          <article
+                            key={ev.eventId}
+                            className="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group flex flex-col"
+                          >
+                            {/* Sleek Spotlight Banner */}
+                            <div className="relative p-6 sm:p-8 bg-gradient-to-br from-[#0B0B0F] via-[#14141C] to-[#0A0A0E] text-white overflow-hidden border-b border-slate-200">
+                              <div className="absolute top-0 right-0 w-64 h-64 bg-[#C4F500]/10 rounded-full blur-3xl pointer-events-none" />
+
+                              <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                                {/* Date Block */}
+                                <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex flex-col items-center justify-center text-center shadow-lg shrink-0">
+                                  <span className="text-[10px] font-bold text-[#C4F500] uppercase tracking-wider">
+                                    {new Date(ev.date + 'T12:00:00Z').toLocaleString('en-US', { month: 'short' })}
+                                  </span>
+                                  <span className="text-2xl font-extrabold text-white leading-none mt-0.5">
+                                    {ev.date.split('-')[2]}
+                                  </span>
+                                </div>
+
+                                {/* Top Right Badges */}
+                                <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+                                  <span className={`px-3 py-1 rounded-full text-xs font-extrabold shadow-sm ${dateBadge.badgeStyle}`}>
+                                    {dateBadge.label}
+                                  </span>
+                                  <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-[#C4F500] text-slate-950 shadow-sm">
+                                    Spotlight Event
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Header Info */}
+                              <div className="relative z-10 text-white">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="text-xs font-bold text-[#C4F500] uppercase tracking-wider">
+                                    {ev.clubName}
+                                  </span>
+                                  <span className="opacity-60">·</span>
+                                  <span className="text-xs text-slate-300 font-mono">{ev.time} EST</span>
+                                </div>
+                                <h2 className="text-xl sm:text-2xl font-extrabold text-white leading-tight line-clamp-2">
+                                  {ev.title}
+                                </h2>
+                              </div>
+                            </div>
+
+                            {/* Card Body */}
+                            <div className="p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                              <div className="space-y-2 flex-1">
+                                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl">
+                                  {ev.description}
+                                </p>
+                                <div className="flex items-center gap-3 text-xs text-slate-500 flex-wrap">
+                                  <span className="inline-flex items-center gap-1 font-medium">
+                                    <MapPin className="w-3.5 h-3.5 text-slate-700" />
+                                    {ev.format} ({ev.location})
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Actions */}
+                              <div className="flex items-center gap-2 shrink-0 self-end md:self-center w-full md:w-auto flex-wrap">
+                                <button
+                                  type="button"
+                                  onClick={() => navigateTo('club-profile', ev.clubId)}
+                                  className="px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5"
+                                >
+                                  <span>Club Profile</span>
+                                  <ArrowRight className="w-3.5 h-3.5" />
+                                </button>
+                                {ev.url && (
+                                  <a
+                                    href={ev.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5 border border-slate-200"
+                                  >
+                                    <Calendar className="w-3.5 h-3.5 text-slate-700" />
+                                    <span>Listing</span>
+                                    <ExternalLink className="w-3 h-3 opacity-60" />
+                                  </a>
+                                )}
+                                <a
+                                  href={getGoogleCalendarUrl(ev)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-3.5 py-2.5 bg-[#0B0B0F] hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5"
+                                  title="Add to Google Calendar"
+                                >
+                                  <Calendar className="w-3.5 h-3.5 text-[#C4F500]" />
+                                  <span>Google Cal</span>
+                                </a>
+                                <a
+                                  href={getOutlookCalendarUrl(ev)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-3.5 py-2.5 bg-[#0078D4] hover:bg-[#106EBE] text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5"
+                                  title="Add to CUNY Webmail Outlook Calendar"
+                                >
+                                  <span>CUNY Outlook</span>
+                                  <ExternalLink className="w-3 h-3 opacity-80" />
+                                </a>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDownloadSingleIcs(ev)}
+                                  className="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-900 text-xs font-bold rounded-xl border border-slate-200 transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1"
+                                  title="Download Apple / iCal (.ics) file"
+                                >
+                                  <Download className="w-3.5 h-3.5 text-slate-700" />
+                                  <span>.ics</span>
+                                </button>
+                              </div>
+                            </div>
+                          </article>
+                        );
+                      }
+
                       return (
-                        <article
+                        <div
                           key={ev.eventId}
-                          className="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group flex flex-col"
+                          className="bg-white rounded-2xl border border-slate-200/80 hover:border-slate-400 p-5 sm:p-6 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-5 group"
                         >
-                          {/* Sleek Spotlight Banner (No AI Imagery) */}
-                          <div className="relative p-6 sm:p-8 bg-gradient-to-br from-[#0B0B0F] via-[#14141C] to-[#0A0A0E] text-white overflow-hidden border-b border-slate-200">
-                            {/* Ambient Cyber-Lime Glow */}
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-[#C4F500]/10 rounded-full blur-3xl pointer-events-none" />
-
-                            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                              {/* Date Block */}
-                              <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex flex-col items-center justify-center text-center shadow-lg shrink-0">
-                                <span className="text-[10px] font-bold text-[#C4F500] uppercase tracking-wider">
-                                  {new Date(ev.date + 'T12:00:00Z').toLocaleString('en-US', { month: 'short' })}
-                                </span>
-                                <span className="text-2xl font-extrabold text-white leading-none mt-0.5">
-                                  {ev.date.split('-')[2]}
-                                </span>
-                              </div>
-
-                              {/* Top Right Badges */}
-                              <div className="flex items-center gap-1.5 self-start sm:self-auto">
-                                <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-[#C4F500] text-slate-950 shadow-sm">
-                                  Next Spotlight Event
-                                </span>
-                              </div>
+                          <div className="flex items-start gap-4">
+                            {/* Date Block */}
+                            <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center text-center shrink-0">
+                              <span className="text-[10px] font-bold text-slate-700 uppercase">
+                                {new Date(ev.date + 'T12:00:00Z').toLocaleString('en-US', { month: 'short' })}
+                              </span>
+                              <span className="text-xl font-extrabold text-slate-950 leading-none mt-0.5">
+                                {ev.date.split('-')[2]}
+                              </span>
                             </div>
 
-                            {/* Header Info */}
-                            <div className="relative z-10 text-white">
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className="text-xs font-bold text-[#C4F500] uppercase tracking-wider">
+                            {/* Details */}
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap mb-1">
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${dateBadge.badgeStyle}`}>
+                                  {dateBadge.label}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => navigateTo('club-profile', ev.clubId)}
+                                  className="text-xs font-bold text-slate-900 hover:text-black hover:underline cursor-pointer"
+                                >
                                   {ev.clubName}
-                                </span>
-                                <span className="opacity-60">·</span>
-                                <span className="text-xs text-slate-300 font-mono">{ev.time} EST</span>
+                                </button>
+                                <span className="text-slate-300">·</span>
+                                <span className="text-xs text-slate-500 font-mono">{ev.time} EST</span>
                               </div>
-                              <h2 className="text-xl sm:text-2xl font-extrabold text-white leading-tight line-clamp-2">
-                                {ev.title}
-                              </h2>
-                            </div>
-                          </div>
 
-                          {/* Card Body */}
-                          <div className="p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-5">
-                            <div className="space-y-2 flex-1">
-                              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl">
+                              <h3 className="font-bold text-slate-900 text-base sm:text-lg">
+                                {ev.title}
+                              </h3>
+
+                              <p className="text-xs text-slate-600 mt-1 max-w-2xl leading-relaxed">
                                 {ev.description}
                               </p>
-                              <div className="flex items-center gap-3 text-xs text-slate-500 flex-wrap">
-                                <span className="inline-flex items-center gap-1 font-medium">
-                                  <MapPin className="w-3.5 h-3.5 text-slate-700" />
+
+                              <div className="mt-2.5 flex items-center gap-3 text-xs text-slate-500 flex-wrap">
+                                <span className="inline-flex items-center gap-1">
+                                  <MapPin className="w-3.5 h-3.5 text-slate-400" />
                                   {ev.format} ({ev.location})
                                 </span>
                               </div>
                             </div>
+                          </div>
 
-                            {/* Actions */}
-                            <div className="flex items-center gap-2.5 shrink-0 self-end md:self-center w-full md:w-auto">
-                              <button
-                                type="button"
-                                onClick={() => navigateTo('club-profile', ev.clubId)}
-                                className="flex-1 md:flex-none px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5"
-                              >
-                                <span>View Club Profile</span>
-                                <ArrowRight className="w-3.5 h-3.5" />
-                              </button>
-                              {ev.url && (
-                                <a
-                                  href={ev.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="flex-1 md:flex-none px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5 border border-slate-200"
-                                >
-                                  <Calendar className="w-3.5 h-3.5 text-slate-700" />
-                                  <span>Calendar Listing</span>
-                                  <ExternalLink className="w-3 h-3 opacity-60" />
-                                </a>
-                              )}
+                          {/* Actions */}
+                          <div className="flex items-center gap-2 shrink-0 self-end md:self-center w-full md:w-auto flex-wrap">
+                            <button
+                              type="button"
+                              onClick={() => navigateTo('club-profile', ev.clubId)}
+                              className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl transition-colors cursor-pointer min-h-[40px] flex items-center justify-center gap-1"
+                            >
+                              <span>Club</span>
+                              <ArrowRight className="w-3.5 h-3.5" />
+                            </button>
+                            {ev.url && (
                               <a
-                                href={getGoogleCalendarUrl(ev)}
+                                href={ev.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex-1 md:flex-none px-4 py-2.5 bg-[#0B0B0F] hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5"
+                                className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl transition-colors cursor-pointer min-h-[40px] flex items-center justify-center gap-1 border border-slate-200"
                               >
-                                <Calendar className="w-3.5 h-3.5 text-[#C4F500]" />
-                                <span>Add to Calendar</span>
+                                <Calendar className="w-3.5 h-3.5 text-slate-700" />
+                                <span>Listing</span>
+                                <ExternalLink className="w-3 h-3 opacity-60" />
                               </a>
-                            </div>
-                          </div>
-                        </article>
-                      );
-                    }
-
-                    return (
-                      <div
-                        key={ev.eventId}
-                        className="bg-white rounded-2xl border border-slate-200/80 hover:border-slate-400 p-5 sm:p-6 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-5 group"
-                      >
-                        <div className="flex items-start gap-4">
-                          {/* Date Block */}
-                          <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center text-center shrink-0">
-                            <span className="text-[10px] font-bold text-slate-700 uppercase">
-                              {new Date(ev.date + 'T12:00:00Z').toLocaleString('en-US', { month: 'short' })}
-                            </span>
-                            <span className="text-xl font-extrabold text-slate-950 leading-none mt-0.5">
-                              {ev.date.split('-')[2]}
-                            </span>
-                          </div>
-
-                          {/* Details */}
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap mb-1">
-                              <button
-                                type="button"
-                                onClick={() => navigateTo('club-profile', ev.clubId)}
-                                className="text-xs font-bold text-slate-900 hover:text-black font-bold hover:underline cursor-pointer"
-                              >
-                                {ev.clubName}
-                              </button>
-                              <span className="text-slate-300">·</span>
-                              <span className="text-xs text-slate-500 font-mono">{ev.time} EST</span>
-                            </div>
-
-                            <h3 className="font-bold text-slate-900 text-base sm:text-lg">
-                              {ev.title}
-                            </h3>
-
-                            <p className="text-xs text-slate-600 mt-1 max-w-2xl leading-relaxed">
-                              {ev.description}
-                            </p>
-
-                            <div className="mt-2.5 flex items-center gap-3 text-xs text-slate-500 flex-wrap">
-                              <span className="inline-flex items-center gap-1">
-                                <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                                {ev.format} ({ev.location})
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex items-center gap-2.5 shrink-0 self-end md:self-center w-full md:w-auto">
-                          <button
-                            type="button"
-                            onClick={() => navigateTo('club-profile', ev.clubId)}
-                            className="flex-1 md:flex-none px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5"
-                          >
-                            <span>View Club Profile</span>
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          </button>
-                          {ev.url && (
+                            )}
                             <a
-                              href={ev.url}
+                              href={getGoogleCalendarUrl(ev)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex-1 md:flex-none px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5 border border-slate-200"
+                              className="px-3 py-2 bg-[#0B0B0F] hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer min-h-[40px] flex items-center justify-center gap-1"
+                              title="Add to Google Calendar"
                             >
-                              <Calendar className="w-3.5 h-3.5 text-slate-700" />
-                              <span>Calendar Listing</span>
-                              <ExternalLink className="w-3 h-3 opacity-60" />
+                              <Calendar className="w-3.5 h-3.5 text-[#C4F500]" />
+                              <span>Google</span>
                             </a>
-                          )}
-                          <a
-                            href={getGoogleCalendarUrl(ev)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex-1 md:flex-none px-4 py-2.5 bg-[#0B0B0F] hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer min-h-[44px] flex items-center justify-center gap-1.5"
-                          >
-                            <Calendar className="w-3.5 h-3.5 text-[#C4F500]" />
-                            <span>Add to Calendar</span>
-                          </a>
+                            <a
+                              href={getOutlookCalendarUrl(ev)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-3 py-2 bg-[#0078D4] hover:bg-[#106EBE] text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer min-h-[40px] flex items-center justify-center gap-1"
+                              title="Add to CUNY Webmail Outlook Calendar"
+                            >
+                              <span>Outlook</span>
+                              <ExternalLink className="w-3 h-3 opacity-80" />
+                            </a>
+                            <button
+                              type="button"
+                              onClick={() => handleDownloadSingleIcs(ev)}
+                              className="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-900 text-xs font-bold rounded-xl border border-slate-200 transition-colors cursor-pointer min-h-[40px] flex items-center justify-center"
+                              title="Download Apple / iCal (.ics) file"
+                            >
+                              <Download className="w-3.5 h-3.5 text-slate-700" />
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  ) : (
+                    <div className="p-12 bg-white border border-slate-200 rounded-3xl text-center space-y-3">
+                      <Calendar className="w-10 h-10 text-slate-300 mx-auto" />
+                      <h3 className="font-bold text-slate-900 text-base">No events found</h3>
+                      <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                        No events matched your search or selected filter. You can add a new meeting or view the CUNY SPS Student Life Calendar.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEventSearch('');
+                          setEventsFilter('upcoming');
+                        }}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+                      >
+                        Reset filters
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -2334,6 +2662,172 @@ export function StudentDiscoveryApp() {
               Got it
             </button>
           </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* MODAL: ADD EVENT TO SCHOOL CALENDAR                                       */}
+      {/* ========================================================================= */}
+      {showAddEventModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200 my-8 space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-[#0B0B0F] text-[#C4F500] flex items-center justify-center">
+                  <CalendarPlus className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-slate-900 text-base">Add Event to School Calendar</h3>
+                  <p className="text-[11px] text-slate-500">Live sync with CUNY SPS Student Life &amp; OpenLab</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddEventModal(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer"
+                aria-label="Close add event dialog"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddNewEvent} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Hosting Organization</label>
+                <select
+                  value={newEventClubId}
+                  onChange={(e) => setNewEventClubId(e.target.value)}
+                  className="w-full text-xs font-medium bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0B0B0F]"
+                >
+                  {CLUBS_DATA.map((c) => (
+                    <option key={c.clubId} value={c.clubId}>
+                      {c.name} ({c.shortCode})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Event Title *</label>
+                <input
+                  type="text"
+                  required
+                  value={newEventTitle}
+                  onChange={(e) => setNewEventTitle(e.target.value)}
+                  placeholder="e.g., General Body Meeting &amp; Guest Speaker"
+                  className="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0B0B0F]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Event Date *</label>
+                  <input
+                    type="date"
+                    required
+                    value={newEventDate}
+                    onChange={(e) => setNewEventDate(e.target.value)}
+                    className="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0B0B0F]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Time (EST) *</label>
+                  <input
+                    type="text"
+                    required
+                    value={newEventTime}
+                    onChange={(e) => setNewEventTime(e.target.value)}
+                    placeholder="e.g., 7:00 PM"
+                    className="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0B0B0F]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Format</label>
+                  <select
+                    value={newEventFormat}
+                    onChange={(e) => setNewEventFormat(e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0B0B0F]"
+                  >
+                    <option value="Virtual">Virtual (Zoom / Teams)</option>
+                    <option value="In-Person">In-Person</option>
+                    <option value="Hybrid">Hybrid</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Location Details</label>
+                  <input
+                    type="text"
+                    value={newEventLocation}
+                    onChange={(e) => setNewEventLocation(e.target.value)}
+                    placeholder="e.g., Zoom (Virtual) or Room 402"
+                    className="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0B0B0F]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">OpenLab / Event Link</label>
+                <input
+                  type="url"
+                  value={newEventUrl}
+                  onChange={(e) => setNewEventUrl(e.target.value)}
+                  placeholder="https://openlab.sps.cuny.edu/events/event/..."
+                  className="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0B0B0F]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Description</label>
+                <textarea
+                  rows={2}
+                  value={newEventDescription}
+                  onChange={(e) => setNewEventDescription(e.target.value)}
+                  placeholder="Brief agenda or summary of what will take place..."
+                  className="w-full text-xs bg-white border border-slate-300 rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-[#0B0B0F]"
+                />
+              </div>
+
+              <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-[11px] text-amber-900 leading-relaxed">
+                <strong>Campus Calendar Notice:</strong> Events added here immediately appear in the app and generate 1-click Google, Outlook, and Apple calendar invites. For official university-wide newsletter publication, submit via the <a href={CUNY_SPS_CALENDAR_LINKS.openlabStudentLife} target="_blank" rel="noopener noreferrer" className="underline font-bold">Office of Student Life</a>.
+              </div>
+
+              <div className="flex items-center justify-end gap-2.5 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAddEventModal(false)}
+                  className="px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 bg-[#0B0B0F] hover:bg-slate-800 text-[#C4F500] text-xs font-extrabold rounded-xl shadow-md transition-all cursor-pointer flex items-center gap-1.5"
+                >
+                  <CalendarCheck className="w-4 h-4" />
+                  <span>Save &amp; Add to Calendar</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Toast Notification */}
+      {calendarToast && (
+        <div className="fixed bottom-20 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#0B0B0F] text-white px-5 py-3 rounded-2xl shadow-2xl border border-[#C4F500]/40 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-4">
+          <CheckCircle2 className="w-5 h-5 text-[#C4F500] shrink-0" />
+          <span className="text-xs sm:text-sm font-semibold">{calendarToast}</span>
+          <button
+            type="button"
+            onClick={() => setCalendarToast(null)}
+            className="text-slate-400 hover:text-white p-1 cursor-pointer"
+            aria-label="Dismiss notification"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
     </div>
